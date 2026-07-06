@@ -374,7 +374,7 @@
 
     <script>
         // ── CONFIG
-        const SEARCH_URL = "{{ route('products.search') }}";
+        const SEARCH_URL = "{{ route('products.search', [], false) }}";
         const WA_NUMBER  = "{{ $s['wa_number'] ?? '' }}";
         const DEFAULT_IMG = 'https://images.unsplash.com/photo-1620912189865-1e8a33da4c5e?auto=format&fit=crop&w=400&q=80';
 

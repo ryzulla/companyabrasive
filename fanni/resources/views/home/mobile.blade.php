@@ -608,7 +608,7 @@
         const FEATURED   = @json($products);
         const CATEGORIES = @json($categoriesJson);
         const WA         = "{{ $s['wa_number'] ?? '' }}";
-        const SEARCH_URL = "{{ route('products.search') }}";
+        const SEARCH_URL = "{{ route('products.search', [], false) }}";
         const FALLBACK_IMG = 'https://images.unsplash.com/photo-1620912189865-1e8a33da4c5e?auto=format&fit=crop&w=400&q=80';
 
         /* ───── SCREEN NAV ───── */
