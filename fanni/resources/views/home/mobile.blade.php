@@ -260,7 +260,8 @@
         }
         .sheet.open { transform: translateY(0); }
         .sheet-handle { width: 42px; height: 5px; border-radius: 3px; background: #cbd5e1; margin: 10px auto 4px; }
-        .sheet-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border-radius: 50%; background: rgba(15,23,42,0.06); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1rem; z-index: 5; }
+        .sheet-close { position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 50%; background: rgba(15,23,42,0.6); color: #fff; border: 1.5px solid rgba(255,255,255,0.85); box-shadow: 0 2px 8px rgba(0,0,0,0.35); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; z-index: 10; }
+        .sheet-close:active { background: rgba(15,23,42,0.8); }
         .sheet-img { width: 100%; height: 240px; object-fit: cover; background: #f1f5f9; }
         .sheet-content { padding: 18px 18px 0; }
         .sheet-badge { display: inline-block; background: var(--primary); color: #fff; font-size: 0.68rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; }
@@ -271,6 +272,9 @@
         .spec-list div:last-child { border-bottom: none; }
         .spec-list span { color: var(--secondary); }
         .spec-list b { color: var(--primary); text-align: right; }
+        .related-title { font-size: 1rem; color: var(--primary); font-weight: 600; margin: 22px 0 4px; }
+        .related-rail { margin: 0 -18px; padding: 8px 18px 20px; }
+        .related-rail .prod-card { width: 160px; }
 
         /* toast */
         .toast { position: fixed; bottom: calc(var(--tab-h) + 20px + var(--safe-bottom)); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--primary); color: #fff; padding: 11px 20px; border-radius: 30px; font-size: 0.82rem; z-index: 400; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; }
@@ -743,8 +747,29 @@
                         <div><span>Material Aplikasi</span><b>${escapeHtml(p.material || '-')}</b></div>
                     </div>
                     <button class="btn btn-wa btn-block" onclick="waProduct('${encodeURIComponent(p.title)}', 'memesan')"><i class="fa-brands fa-whatsapp"></i> Pesan via WhatsApp</button>
+                    <div id="relatedWrap"></div>
                 </div>`;
             showSheet();
+            renderRelated(p);
+        }
+
+        /* ───── PRODUK SERUPA (kategori sama) ───── */
+        async function renderRelated(p) {
+            const wrap = document.getElementById('relatedWrap');
+            if (!wrap || !p.type) return;
+            try {
+                const url = new URL(SEARCH_URL, window.location.origin);
+                url.searchParams.set('category', p.type);
+                const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                const data = await res.json();
+                const related = (data.products || []).filter(x => x.id !== p.id).slice(0, 6);
+                if (!related.length) return;
+                // cache agar bisa dibuka saat diklik
+                related.forEach(r => { if (!_resultsCache.some(c => c.id === r.id)) _resultsCache.push(r); });
+                wrap.innerHTML = `
+                    <h3 class="related-title">Produk Serupa</h3>
+                    <div class="rail related-rail">${related.map(cardHTML).join('')}</div>`;
+            } catch (e) { /* diam-diam sembunyikan jika gagal */ }
         }
         function showSheet() {
             sheetBackdrop.classList.add('open');

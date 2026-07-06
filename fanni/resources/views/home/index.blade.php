@@ -203,6 +203,20 @@
         .modal-specs div { display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 8px 0; font-size: 0.87rem; }
         .modal-specs div:last-child { border: none; }
         .modal-specs strong { color: var(--primary); }
+        .related-section { padding: 6px 28px 30px; border-top: 1px solid #eef2f7; }
+        .related-heading { color: var(--primary); font-size: 1.15rem; font-weight: 600; margin: 20px 0 16px; }
+        .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .related-card { background: var(--card-bg); border: 1px solid #f1f5f9; border-radius: 10px; overflow: hidden; cursor: pointer; transition: var(--transition); display: flex; flex-direction: column; }
+        .related-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,0.1); border-color: #e2e8f0; }
+        .related-img { height: 120px; background: #f1f5f9; overflow: hidden; }
+        .related-img img { width: 100%; height: 100%; object-fit: cover; }
+        .related-body { padding: 10px 12px 14px; }
+        .related-meta { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.4px; color: var(--accent); font-weight: 600; margin-bottom: 4px; }
+        .related-title { font-size: 0.85rem; color: var(--primary); font-weight: 600; line-height: 1.35; }
+        @media (max-width: 768px) {
+            .related-section { padding: 6px 22px 24px; }
+            .related-grid { grid-template-columns: repeat(2, 1fr); }
+        }
         .modal-wa-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: #25d366; color: #fff; padding: 13px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 600; font-family: inherit; width: 100%; transition: background 0.3s; }
         .modal-wa-btn:hover { background: #1da851; }
 
@@ -769,9 +783,39 @@
                         <button onclick="window.open('https://wa.me/${waNumber}?text=Halo%2C+saya+ingin+memesan+${encodeURIComponent(prod.title)}', '_blank')" class="modal-wa-btn"><i class="fa-brands fa-whatsapp"></i> Pesan via WhatsApp</button>
                     </div>
                 </div>
+                <div id="modal-related"></div>
             `;
             modal.classList.add('show');
             document.body.style.overflow = 'hidden';
+            renderRelated(prod);
+        }
+
+        // ── PRODUK SERUPA (kategori sama) ──
+        const SEARCH_URL = "{{ route('products.search', [], false) }}";
+        async function renderRelated(prod) {
+            const wrap = document.getElementById('modal-related');
+            if (!wrap || !prod.type) return;
+            try {
+                const res  = await fetch(`${SEARCH_URL}?category=${encodeURIComponent(prod.type)}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                const data = await res.json();
+                const related = (data.products || []).filter(x => x.id !== prod.id).slice(0, 4);
+                if (!related.length) return;
+                related.forEach(r => { if (!productsData.some(c => c.id === r.id)) productsData.push(r); });
+                wrap.innerHTML = `
+                    <div class="related-section">
+                        <h3 class="related-heading">Produk Serupa</h3>
+                        <div class="related-grid">
+                            ${related.map(r => `
+                                <div class="related-card" onclick="openModal(${r.id})">
+                                    <div class="related-img"><img src="${r.img || 'https://images.unsplash.com/photo-1620912189865-1e8a33da4c5e?auto=format&fit=crop&w=400&q=80'}" alt="${(r.title||'').replace(/"/g,'&quot;')}" loading="lazy"></div>
+                                    <div class="related-body">
+                                        <div class="related-meta">${r.meta || ''}</div>
+                                        <h4 class="related-title">${r.title || ''}</h4>
+                                    </div>
+                                </div>`).join('')}
+                        </div>
+                    </div>`;
+            } catch (e) { /* sembunyikan jika gagal */ }
         }
         document.querySelector('.close-modal').onclick = () => { modal.classList.remove('show'); document.body.style.overflow = ''; }
 

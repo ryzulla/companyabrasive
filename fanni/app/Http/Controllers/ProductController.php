@@ -31,6 +31,7 @@ class ProductController extends Controller
 
         $products = $paginated->getCollection()->map(fn($p) => [
             'id'            => $p->id,
+            'type'          => $p->category_id,
             'meta'          => $p->meta,
             'title'         => $p->title,
             'badge'         => $p->badge ?? '',
