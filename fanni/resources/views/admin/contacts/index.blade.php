@@ -29,8 +29,8 @@
             <p class="text-sm">Belum ada pesan masuk</p>
         </div>
     @else
-        <div class="overflow-x-auto">
-        <table class="w-full text-sm min-w-[560px]">
+        <div class="overflow-x-auto admin-table-wrap">
+        <table class="w-full text-sm min-w-[560px] admin-table">
             <thead class="bg-slate-50 border-b border-slate-100">
                 <tr>
                     <th class="text-left px-6 py-3 font-medium text-slate-600">Pengirim</th>
@@ -42,16 +42,16 @@
             <tbody class="divide-y divide-slate-50">
                 @foreach($messages as $message)
                     <tr class="hover:bg-slate-50/50 transition">
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4" data-label="Pengirim">
                             <div class="font-medium text-slate-700">{{ $message->name }}</div>
                             <div class="text-slate-400 text-xs">{{ $message->email }}</div>
                             <div class="text-slate-400 text-xs">{{ $message->phone }}</div>
                         </td>
-                        <td class="px-6 py-4 text-slate-600 max-w-sm">
+                        <td class="px-6 py-4 text-slate-600 max-w-sm" data-label="Pesan">
                             <p class="line-clamp-2">{{ $message->message }}</p>
                         </td>
-                        <td class="px-6 py-4 text-slate-500 whitespace-nowrap">{{ $message->created_at->format('d M Y H:i') }}</td>
-                        <td class="px-6 py-4 text-right">
+                        <td class="px-6 py-4 text-slate-500 whitespace-nowrap" data-label="Tanggal">{{ $message->created_at->format('d M Y H:i') }}</td>
+                        <td class="px-6 py-4 text-right cell-actions">
                             <div class="flex items-center justify-end gap-3">
                                 <a href="{{ route('admin.contacts.show', $message) }}"
                                    class="text-blue-500 hover:text-blue-700 text-xs font-medium transition">Lihat</a>

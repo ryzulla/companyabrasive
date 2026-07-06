@@ -10,11 +10,12 @@ use App\Models\Product;
 use App\Models\Setting;
 use App\Models\Testimonial;
 use App\Models\Video;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $s = Setting::allKeyed();
 
@@ -42,9 +43,36 @@ class HomeController extends Controller
         $faqs        = Faq::all();
         $blogs       = Blog::latest()->take(3)->get();
 
-        return view('home.index', compact(
+        $view = $this->isMobile($request) ? 'home.mobile' : 'home.index';
+
+        return view($view, compact(
             's', 'categories', 'products', 'videos',
             'clients', 'testimonials', 'faqs', 'blogs'
         ));
+    }
+
+    /**
+     * Deteksi perangkat mobile via User-Agent.
+     * Bisa dipaksa untuk pengujian: ?view=mobile atau ?view=desktop.
+     */
+    private function isMobile(Request $request): bool
+    {
+        if ($request->query('view') === 'mobile') {
+            return true;
+        }
+        if ($request->query('view') === 'desktop') {
+            return false;
+        }
+
+        $ua = (string) $request->header('User-Agent');
+
+        if ($ua === '' || preg_match('/iPad|Tablet|PlayBook|Silk|Kindle/i', $ua)) {
+            return false; // tablet & UA kosong → tampilan desktop
+        }
+
+        return (bool) preg_match(
+            '/Mobile|Android.+Mobile|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|webOS|Windows Phone/i',
+            $ua
+        );
     }
 }

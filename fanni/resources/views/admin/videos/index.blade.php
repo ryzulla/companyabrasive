@@ -33,8 +33,8 @@
             <p class="text-sm">{{ request('q') ? 'Tidak ada video yang cocok.' : 'Belum ada video' }}</p>
         </div>
     @else
-        <div class="overflow-x-auto">
-        <table class="w-full text-sm min-w-[500px]">
+        <div class="overflow-x-auto admin-table-wrap">
+        <table class="w-full text-sm min-w-[500px] admin-table">
             <thead class="bg-slate-50 border-b border-slate-100">
                 <tr>
                     <th class="text-left px-6 py-3 font-medium text-slate-600">Thumbnail</th>
@@ -46,14 +46,14 @@
             <tbody class="divide-y divide-slate-50">
                 @foreach($videos as $video)
                     <tr class="hover:bg-slate-50/50 transition">
-                        <td class="px-6 py-3">
+                        <td class="px-6 py-3 cell-media">
                             <img src="https://img.youtube.com/vi/{{ $video->id }}/mqdefault.jpg" class="w-20 h-12 object-cover rounded-lg" alt="">
                         </td>
-                        <td class="px-6 py-3">
+                        <td class="px-6 py-3" data-label="YouTube ID">
                             <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-xs font-mono">{{ $video->id }}</span>
                         </td>
-                        <td class="px-6 py-3 font-medium text-slate-700">{{ $video->title }}</td>
-                        <td class="px-6 py-3 text-right">
+                        <td class="px-6 py-3 font-medium text-slate-700" data-label="Judul">{{ $video->title }}</td>
+                        <td class="px-6 py-3 text-right cell-actions">
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('admin.videos.edit', $video) }}" class="text-blue-600 hover:text-blue-800 text-xs font-medium transition">Edit</a>
                                 <form method="POST" action="{{ route('admin.videos.destroy', $video) }}" onsubmit="return confirm('Hapus video ini?')">

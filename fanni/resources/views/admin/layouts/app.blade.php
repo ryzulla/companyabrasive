@@ -80,6 +80,65 @@
                 box-shadow: 4px 0 24px rgba(0,0,0,0.12);
             }
             .admin-sidebar.open { transform: translateX(0); }
+
+            /* Konten lebih rapat di layar kecil */
+            .admin-content { padding: 16px !important; }
+
+            /* ─── TABEL → KARTU (tampilan asli mobile, bukan sekadar scroll) ─── */
+            .admin-table-wrap { overflow: visible !important; }
+            table.admin-table { min-width: 0 !important; width: 100%; }
+            table.admin-table thead { display: none; }
+            table.admin-table tbody { display: block; }
+            table.admin-table tr {
+                display: block;
+                background: #fff;
+                border: 1px solid #e5e7eb !important;
+                border-radius: 12px;
+                padding: 12px 14px;
+                margin-bottom: 12px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            }
+            table.admin-table tr:last-child { margin-bottom: 0; }
+            table.admin-table td {
+                display: block;
+                text-align: left;
+                padding: 5px 0 5px 40% !important;
+                position: relative;
+                border: none !important;
+                min-height: 30px;
+                max-width: 100%;
+                word-break: break-word;
+            }
+            table.admin-table td[data-label]::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                top: 5px;
+                width: 36%;
+                text-align: left;
+                font-size: 12px;
+                font-weight: 600;
+                color: #6b7280;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            /* Sel gambar/thumbnail: tampil penuh di atas kartu, tanpa label */
+            table.admin-table td.cell-media {
+                padding: 0 0 10px 0 !important;
+                margin-bottom: 6px;
+                border-bottom: 1px solid #f1f5f9 !important;
+            }
+            /* Sel aksi: tombol lebih besar, dipisah garis, rata kanan */
+            table.admin-table td.cell-actions {
+                padding: 12px 0 2px 0 !important;
+                margin-top: 8px;
+                border-top: 1px solid #f1f5f9 !important;
+                text-align: right;
+            }
+            table.admin-table td.cell-actions > div { justify-content: flex-end; gap: 20px; }
+            table.admin-table td.cell-actions a,
+            table.admin-table td.cell-actions button { font-size: 14px !important; padding: 4px 0; }
         }
     </style>
 </head>
@@ -235,7 +294,7 @@
         </header>
 
         {{-- Content --}}
-        <main style="flex:1; padding:24px; overflow-y:auto;">
+        <main class="admin-content" style="flex:1; padding:24px; overflow-y:auto;">
 
             @if(session('success'))
                 <div style="margin-bottom:16px; padding:12px 16px; background:#f0fdf4; border:1px solid #bbf7d0; color:#15803d; font-size:14px; border-radius:6px;">

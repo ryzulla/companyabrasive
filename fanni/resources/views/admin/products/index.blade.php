@@ -33,8 +33,8 @@
             <p class="text-sm">{{ request('q') ? 'Tidak ada produk yang cocok.' : 'Belum ada produk' }}</p>
         </div>
     @else
-        <div class="overflow-x-auto">
-        <table class="w-full text-sm min-w-[600px]">
+        <div class="overflow-x-auto admin-table-wrap">
+        <table class="w-full text-sm min-w-[600px] admin-table">
             <thead class="bg-slate-50 border-b border-slate-100">
                 <tr>
                     <th class="text-left px-6 py-3 font-medium text-slate-600">Gambar</th>
@@ -47,7 +47,7 @@
             <tbody class="divide-y divide-slate-50">
                 @foreach($products as $product)
                     <tr class="hover:bg-slate-50/50 transition">
-                        <td class="px-6 py-3">
+                        <td class="px-6 py-3 cell-media">
                             @if($product->img)
                                 <img src="{{ Storage::url($product->img) }}" class="w-12 h-12 object-cover rounded-lg" alt="">
                             @else
@@ -56,21 +56,21 @@
                                 </div>
                             @endif
                         </td>
-                        <td class="px-6 py-3">
+                        <td class="px-6 py-3" data-label="Judul">
                             <div class="font-medium text-slate-700">{{ $product->title }}</div>
                             <div class="text-slate-400 text-xs">{{ $product->meta }}</div>
                         </td>
-                        <td class="px-6 py-3">
+                        <td class="px-6 py-3" data-label="Kategori">
                             <span class="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-xs">{{ $product->category?->title ?? $product->category_id }}</span>
                         </td>
-                        <td class="px-6 py-3">
+                        <td class="px-6 py-3" data-label="Badge">
                             @if($product->badge)
                                 <span class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded text-xs font-medium">{{ $product->badge }}</span>
                             @else
                                 <span class="text-slate-300">-</span>
                             @endif
                         </td>
-                        <td class="px-6 py-3 text-right">
+                        <td class="px-6 py-3 text-right cell-actions">
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('admin.products.edit', $product) }}" class="text-blue-600 hover:text-blue-800 text-xs font-medium transition">Edit</a>
                                 <form method="POST" action="{{ route('admin.products.destroy', $product) }}" onsubmit="return confirm('Hapus produk ini?')">

@@ -1,3 +1,4 @@
+@php $show = fn($k) => ($s[$k] ?? '1') !== '0'; @endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -124,8 +125,13 @@
         /* ── VIDEO ── */
         .video-card { background-color: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; transition: var(--transition); }
         .video-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); }
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background: #000; }
-        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        .video-card { cursor: pointer; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background: #000 center/cover no-repeat; }
+        .video-wrapper::before { content: ''; position: absolute; inset: 0; background: rgba(15,23,42,0.30); transition: var(--transition); }
+        .video-card:hover .video-wrapper::before { background: rgba(15,23,42,0.12); }
+        .video-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 62px; height: 62px; border-radius: 50%; background: rgba(234,88,12,0.94); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; border: none; cursor: pointer; z-index: 2; box-shadow: 0 6px 20px rgba(0,0,0,0.4); transition: var(--transition); }
+        .video-play i { margin-left: 3px; }
+        .video-card:hover .video-play { transform: translate(-50%,-50%) scale(1.12); }
         .video-info { padding: 18px; }
         .video-info h3 { font-size: 1rem; color: var(--primary); margin-bottom: 6px; font-weight: 600; }
         .video-info p { font-size: 0.87rem; color: var(--secondary); }
@@ -199,6 +205,28 @@
         .modal-specs strong { color: var(--primary); }
         .modal-wa-btn { display: flex; align-items: center; justify-content: center; gap: 10px; background: #25d366; color: #fff; padding: 13px; border-radius: 8px; border: none; cursor: pointer; font-size: 0.95rem; font-weight: 600; font-family: inherit; width: 100%; transition: background 0.3s; }
         .modal-wa-btn:hover { background: #1da851; }
+
+        /* ── VIDEO MODAL (desktop: lebih besar) ── */
+        .video-modal-content { max-width: 960px; background: #0b1220; }
+        .video-modal-frame { position: relative; padding-bottom: 56.25%; height: 0; background: #000; border-radius: 14px 14px 0 0; overflow: hidden; }
+        .video-modal-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+        .video-modal-caption { padding: 16px 22px; }
+        .video-modal-caption h3 { color: #fff; font-size: 1.05rem; font-weight: 600; }
+        .video-modal .close-modal { color: #fff; right: 14px; top: 8px; text-shadow: 0 1px 6px rgba(0,0,0,0.7); }
+
+        /* ── BLOG MODAL / ARTIKEL ── */
+        .blog-card { cursor: pointer; }
+        .blog-modal-content { max-width: 760px; }
+        .article-hero { width: 100%; height: 300px; object-fit: cover; border-radius: 14px 14px 0 0; background: #f1f5f9; display: block; }
+        .article-body-wrap { padding: 30px 34px 36px; }
+        .article-body-wrap .badge { display: inline-block; background: var(--accent); color: #fff; padding: 4px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; margin-bottom: 14px; }
+        .article-body-wrap h2 { color: var(--primary); font-size: 1.7rem; line-height: 1.3; margin-bottom: 16px; }
+        .article-content { color: var(--secondary); font-size: 0.96rem; line-height: 1.85; white-space: pre-line; }
+        @media (max-width: 480px) {
+            .article-body-wrap { padding: 20px 18px 26px; }
+            .article-body-wrap h2 { font-size: 1.35rem; }
+            .article-hero { height: 200px; }
+        }
 
         /* ── CONTACT ── */
         .contact { background-color: var(--primary); color: #fff; }
@@ -303,7 +331,7 @@
             </a>
             <ul class="nav-menu">
                 <li><a href="#home" class="nav-link">Beranda</a></li>
-                <li><a href="#about" class="nav-link">Tentang</a></li>
+                <li><a href="{{ route('about') }}" class="nav-link">Tentang</a></li>
                 <li><a href="#products" class="nav-link">Produk</a></li>
                 <li><a href="#clients" class="nav-link">Klien</a></li>
                 <li><a href="#faq" class="nav-link">FAQ</a></li>
@@ -317,7 +345,7 @@
     <div class="nav-backdrop" id="navBackdrop" onclick="closeMobileNav()"></div>
     <nav class="mobile-nav" id="mobileNav">
         <a href="#home"     onclick="closeMobileNav()"><i class="fa-solid fa-house"></i> Beranda</a>
-        <a href="#about"    onclick="closeMobileNav()"><i class="fa-solid fa-circle-info"></i> Tentang</a>
+        <a href="{{ route('about') }}"><i class="fa-solid fa-circle-info"></i> Tentang</a>
         <a href="#products" onclick="closeMobileNav()"><i class="fa-solid fa-box-open"></i> Produk</a>
         <a href="#clients"  onclick="closeMobileNav()"><i class="fa-solid fa-building-user"></i> Klien</a>
         <a href="#faq"      onclick="closeMobileNav()"><i class="fa-solid fa-circle-question"></i> FAQ</a>
@@ -329,7 +357,7 @@
         <div class="container">
             <div class="hero-content">
                 <h1>{!! $s['hero_title'] ?? '' !!}</h1>
-                <p>{{ $s['hero_subtitle'] ?? '' }}</p>
+                <p>{!! $s['hero_subtitle'] ?? '' !!}</p>
                 <div class="hero-buttons">
                     <a href="#products" class="btn-primary">{{ $s['hero_btn_primary'] ?? 'Jelajahi Produk' }} <i class="fa-solid fa-arrow-right"></i></a>
                     <a href="#contact" class="btn-outline" style="color:#fff;border-color:#fff;">{{ $s['hero_btn_secondary'] ?? 'Minta Penawaran' }}</a>
@@ -338,41 +366,8 @@
         </div>
     </section>
 
-    {{-- TENTANG KAMI --}}
-    <section id="about" class="container section-padding">
-        <div class="about-grid">
-            <div class="about-img">
-                @if(!empty($s['about_img']))
-                    <img src="{{ Storage::url($s['about_img']) }}" alt="Tentang Kami">
-                @else
-                    <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80" alt="Tentang Kami">
-                @endif
-            </div>
-            <div class="about-text">
-                <h3>{{ $s['about_title'] ?? '' }}</h3>
-                <p>{!! $s['about_desc'] ?? '' !!}</p>
-                <div class="features-list">
-                    @foreach([1,2,3,4] as $i)
-                        @if(!empty($s['about_feature_'.$i]))
-                            <div class="feature-item"><i class="fa-solid fa-circle-check"></i> {{ $s['about_feature_'.$i] }}</div>
-                        @endif
-                    @endforeach
-                </div>
-                <div class="certifications">
-                    @foreach([1,2,3] as $i)
-                        @if(!empty($s['about_cert_'.$i]))
-                            <span class="cert-badge">
-                                <i class="fa-solid {{ $s['about_cert_'.$i.'_icon'] ?? 'fa-certificate' }}"></i>
-                                {{ $s['about_cert_'.$i] }}
-                            </span>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </section>
-
     {{-- MILESTONE --}}
+    @if($show('show_milestone'))
     <section class="milestone-section">
         <div class="container milestone-grid">
             <div class="milestone-card">
@@ -397,9 +392,10 @@
             </div>
         </div>
     </section>
+    @endif
 
     {{-- KATEGORI --}}
-    @if($categories->count())
+    @if($show('show_categories') && $categories->count())
     <section id="categories" class="categories section-padding">
         <div class="container">
             <div class="section-header">
@@ -422,6 +418,7 @@
     @endif
 
     {{-- PRODUK --}}
+    @if($show('show_products'))
     <section id="products" class="container section-padding" style="padding-bottom: 40px;">
         <div class="section-header">
             <h2>{{ $s['products_title'] ?? 'Katalog Produk' }}</h2>
@@ -435,6 +432,7 @@
             </a>
         </div>
     </section>
+    @endif
 
     {{-- MODAL PRODUK --}}
     <div id="productModal" class="modal">
@@ -444,8 +442,25 @@
         </div>
     </div>
 
+    {{-- MODAL VIDEO --}}
+    <div id="videoModal" class="modal video-modal">
+        <div class="modal-content video-modal-content">
+            <span class="close-modal" id="closeVideoModal">&times;</span>
+            <div class="video-modal-frame" id="videoModalPlayer"></div>
+            <div class="video-modal-caption"><h3 id="videoModalTitle"></h3></div>
+        </div>
+    </div>
+
+    {{-- MODAL ARTIKEL --}}
+    <div id="blogModal" class="modal">
+        <div class="modal-content blog-modal-content">
+            <span class="close-modal" id="closeBlogModal">&times;</span>
+            <div id="blogModalBody"></div>
+        </div>
+    </div>
+
     {{-- VIDEO --}}
-    @if($videos->count())
+    @if($show('show_video') && $videos->count())
     <section class="container section-padding" style="padding-top: 0;">
         <div class="section-header" style="margin-bottom: 30px;">
             <h2 style="font-size: 2rem;">{{ $s['video_title'] ?? 'Video' }}</h2>
@@ -453,9 +468,9 @@
         </div>
         <div class="dynamic-grid">
             @foreach($videos as $video)
-                <div class="video-card">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/{{ $video->id }}" title="{{ $video->title }}" allowfullscreen></iframe>
+                <div class="video-card" onclick="openVideoModal('{{ $video->id }}')">
+                    <div class="video-wrapper" style="background-image: url('https://img.youtube.com/vi/{{ $video->id }}/hqdefault.jpg');">
+                        <button class="video-play" aria-label="Putar video"><i class="fa-solid fa-play"></i></button>
                     </div>
                     <div class="video-info">
                         <h3>{{ $video->title }}</h3>
@@ -468,6 +483,7 @@
     @endif
 
     {{-- CTA BANNER --}}
+    @if($show('show_cta'))
     <section class="container">
         <div class="cta-banner">
             <h2>{{ $s['cta_title'] ?? 'Butuh Spesifikasi Teknis Lengkap?' }}</h2>
@@ -482,9 +498,10 @@
             </div>
         </div>
     </section>
+    @endif
 
     {{-- KLIEN --}}
-    @if($clients->count())
+    @if($show('show_clients') && $clients->count())
     <section id="clients" class="clients-section section-padding">
         <div class="section-header">
             <h2>{{ $s['clients_title'] ?? 'Klien Kami' }}</h2>
@@ -507,7 +524,7 @@
     @endif
 
     {{-- TESTIMONI --}}
-    @if($testimonials->count())
+    @if($show('show_testimonials') && $testimonials->count())
     <section class="container section-padding" style="padding-top: 0;">
         <div class="section-header" style="margin-bottom: 40px;">
             <h2 style="font-size: 2rem;">{{ $s['testimonials_title'] ?? 'Apa Kata Mereka?' }}</h2>
@@ -530,7 +547,7 @@
     @endif
 
     {{-- FAQ --}}
-    @if($faqs->count())
+    @if($show('show_faq') && $faqs->count())
     <section id="faq" class="faq-section section-padding">
         <div class="container">
             <div class="section-header">
@@ -553,7 +570,7 @@
     @endif
 
     {{-- BLOG --}}
-    @if($blogs->count())
+    @if($show('show_blog') && $blogs->count())
     <section class="container section-padding">
         <div class="section-header">
             <h2>{{ $s['blog_title'] ?? 'Blog' }}</h2>
@@ -561,13 +578,13 @@
         </div>
         <div class="dynamic-grid">
             @foreach($blogs as $blog)
-                <div class="blog-card">
+                <div class="blog-card" onclick="openBlogModal({{ $blog->id }})">
                     <div class="blog-img" style="background-image: url('{{ $blog->img ? Storage::url($blog->img) : 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80' }}')"></div>
                     <div class="blog-content">
                         <div class="blog-meta">{{ $blog->meta }}</div>
                         <h3>{{ $blog->title }}</h3>
                         <p>{{ Str::limit($blog->desc, 100) }}</p>
-                        <a href="#" class="read-more">Baca Artikel <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="javascript:void(0)" class="read-more">Baca Artikel <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
             @endforeach
@@ -576,6 +593,7 @@
     @endif
 
     {{-- KONTAK --}}
+    @if($show('show_contact'))
     <section id="contact" class="contact section-padding">
         <div class="container">
             <div class="section-header">
@@ -643,6 +661,7 @@
             </div>
         </div>
     </section>
+    @endif
 
     <footer>
         <div class="container">
@@ -674,6 +693,7 @@
 
         function renderFilterButtons() {
             const container = document.getElementById('filter-container');
+            if (!container) return;
             let html = `<button class="filter-btn active" data-filter="all">Semua Produk</button>`;
             categoriesData.forEach(cat => {
                 html += `<button class="filter-btn" data-filter="${cat.id}">${cat.title}</button>`;
@@ -701,6 +721,7 @@
 
         function renderProducts(filterType) {
             const container = document.getElementById('product-container');
+            if (!container) return;
             const filteredData = filterType === 'all' ? productsData : productsData.filter(p => p.type === filterType);
 
             if(filteredData.length === 0) {
@@ -753,8 +774,61 @@
             document.body.style.overflow = 'hidden';
         }
         document.querySelector('.close-modal').onclick = () => { modal.classList.remove('show'); document.body.style.overflow = ''; }
-        window.onclick = (e) => { if(e.target == modal) { modal.classList.remove('show'); document.body.style.overflow = ''; } }
-        document.addEventListener('keydown', e => { if(e.key === 'Escape') { modal.classList.remove('show'); document.body.style.overflow = ''; } });
+
+        // ── VIDEO MODAL (desktop: tampil lebih besar) ──
+        @php
+            $videosData = $videos->map(fn($v) => ['id' => (string) $v->id, 'title' => $v->title]);
+            $blogsData  = $blogs->map(fn($b) => ['id' => $b->id, 'meta' => $b->meta, 'title' => $b->title, 'desc' => $b->desc, 'img' => $b->img ? asset('storage/'.$b->img) : '']);
+        @endphp
+        const videosData  = @json($videosData);
+        const videoModal  = document.getElementById('videoModal');
+        const videoPlayer = document.getElementById('videoModalPlayer');
+        window.openVideoModal = function(id) {
+            const v = videosData.find(x => x.id === String(id));
+            videoPlayer.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="${v ? escapeAttr(v.title) : ''}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+            document.getElementById('videoModalTitle').textContent = v ? v.title : '';
+            videoModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        };
+        function closeVideoModal() { videoModal.classList.remove('show'); videoPlayer.innerHTML = ''; document.body.style.overflow = ''; }
+        document.getElementById('closeVideoModal').onclick = closeVideoModal;
+
+        // ── BLOG MODAL (baca artikel) ──
+        const blogsData = @json($blogsData);
+        const blogModal = document.getElementById('blogModal');
+        window.openBlogModal = function(id) {
+            const b = blogsData.find(x => x.id === id);
+            if (!b) return;
+            const img = b.img || 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1000&q=80';
+            document.getElementById('blogModalBody').innerHTML = `
+                <img src="${img}" alt="${escapeAttr(b.title)}" class="article-hero">
+                <div class="article-body-wrap">
+                    ${b.meta ? `<span class="badge">${escapeHtml(b.meta)}</span>` : ''}
+                    <h2>${escapeHtml(b.title)}</h2>
+                    <div class="article-content">${escapeHtml(b.desc)}</div>
+                </div>`;
+            blogModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        };
+        function closeBlogModal() { blogModal.classList.remove('show'); document.body.style.overflow = ''; }
+        document.getElementById('closeBlogModal').onclick = closeBlogModal;
+
+        function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
+        function escapeAttr(s) { return escapeHtml(s); }
+
+        // ── CLOSE HANDLERS (klik luar + Escape) untuk semua modal ──
+        window.onclick = (e) => {
+            if (e.target == modal)      { modal.classList.remove('show'); document.body.style.overflow = ''; }
+            if (e.target == videoModal) { closeVideoModal(); }
+            if (e.target == blogModal)  { closeBlogModal(); }
+        };
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Escape') return;
+            modal.classList.remove('show');
+            if (videoModal.classList.contains('show')) closeVideoModal();
+            if (blogModal.classList.contains('show'))  closeBlogModal();
+            document.body.style.overflow = '';
+        });
 
         function toggleMobileNav() {
             var nav = document.getElementById('mobileNav');

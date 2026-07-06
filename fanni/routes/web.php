@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 // Frontend
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/tentang', [AboutController::class, 'index'])->name('about');
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');

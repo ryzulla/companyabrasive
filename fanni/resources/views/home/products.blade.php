@@ -200,7 +200,7 @@
             </a>
             <ul class="nav-menu">
                 <li><a href="{{ route('home') }}" class="nav-link">Beranda</a></li>
-                <li><a href="{{ route('home') }}#about" class="nav-link">Tentang</a></li>
+                <li><a href="{{ route('about') }}" class="nav-link">Tentang</a></li>
                 <li><a href="{{ route('products.index') }}" class="nav-link active">Produk</a></li>
                 <li><a href="{{ route('home') }}#clients" class="nav-link">Klien</a></li>
                 <li><a href="{{ route('home') }}#faq" class="nav-link">FAQ</a></li>
@@ -213,7 +213,7 @@
     </header>
     <nav class="mobile-nav" id="mobileNav">
         <a href="{{ route('home') }}"><i class="fa-solid fa-house"></i> Beranda</a>
-        <a href="{{ route('home') }}#about"><i class="fa-solid fa-circle-info"></i> Tentang</a>
+        <a href="{{ route('about') }}"><i class="fa-solid fa-circle-info"></i> Tentang</a>
         <a href="{{ route('products.index') }}" style="color:var(--accent)"><i class="fa-solid fa-box-open"></i> Produk</a>
         <a href="{{ route('home') }}#clients"><i class="fa-solid fa-building-user"></i> Klien</a>
         <a href="{{ route('home') }}#faq"><i class="fa-solid fa-circle-question"></i> FAQ</a>

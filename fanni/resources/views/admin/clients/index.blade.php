@@ -32,8 +32,8 @@
             <p class="text-sm">{{ request('q') ? 'Tidak ada klien yang cocok.' : 'Belum ada klien/mitra terdaftar' }}</p>
         </div>
     @else
-        <div class="overflow-x-auto">
-        <table class="w-full text-sm min-w-[480px]">
+        <div class="overflow-x-auto admin-table-wrap">
+        <table class="w-full text-sm min-w-[480px] admin-table">
             <thead class="bg-slate-50 border-b border-slate-100">
                 <tr>
                     <th class="text-left px-6 py-3 font-medium text-slate-600">Logo</th>
@@ -45,7 +45,7 @@
             <tbody class="divide-y divide-slate-50">
                 @foreach($clients as $client)
                     <tr class="hover:bg-slate-50/50 transition">
-                        <td class="px-6 py-3">
+                        <td class="px-6 py-3 cell-media">
                             @if($client->logo)
                                 <img src="{{ Storage::url($client->logo) }}" alt="{{ $client->name }}" class="h-10 w-auto max-w-[100px] object-contain rounded bg-slate-50 border border-slate-100 p-1">
                             @else
@@ -54,9 +54,9 @@
                                 </div>
                             @endif
                         </td>
-                        <td class="px-6 py-3 font-medium text-slate-700">{{ $client->name }}</td>
-                        <td class="px-6 py-3 text-slate-500">{{ $client->order }}</td>
-                        <td class="px-6 py-3 text-right">
+                        <td class="px-6 py-3 font-medium text-slate-700" data-label="Nama">{{ $client->name }}</td>
+                        <td class="px-6 py-3 text-slate-500" data-label="Urutan">{{ $client->order }}</td>
+                        <td class="px-6 py-3 text-right cell-actions">
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('admin.clients.edit', $client) }}" class="text-blue-600 hover:text-blue-800 text-xs font-medium transition">Edit</a>
                                 <form method="POST" action="{{ route('admin.clients.destroy', $client) }}" onsubmit="return confirm('Hapus klien ini?')">

@@ -33,8 +33,8 @@
             <p class="text-sm">{{ request('q') ? 'Tidak ada artikel yang cocok.' : 'Belum ada artikel' }}</p>
         </div>
     @else
-        <div class="overflow-x-auto">
-        <table class="w-full text-sm min-w-[500px]">
+        <div class="overflow-x-auto admin-table-wrap">
+        <table class="w-full text-sm min-w-[500px] admin-table">
             <thead class="bg-slate-50 border-b border-slate-100">
                 <tr>
                     <th class="text-left px-6 py-3 font-medium text-slate-600">Gambar</th>
@@ -46,7 +46,7 @@
             <tbody class="divide-y divide-slate-50">
                 @foreach($blogs as $blog)
                     <tr class="hover:bg-slate-50/50 transition">
-                        <td class="px-6 py-3">
+                        <td class="px-6 py-3 cell-media">
                             @if($blog->img)
                                 <img src="{{ Storage::url($blog->img) }}" class="w-16 h-10 object-cover rounded-lg" alt="">
                             @else
@@ -55,12 +55,12 @@
                                 </div>
                             @endif
                         </td>
-                        <td class="px-6 py-3">
+                        <td class="px-6 py-3" data-label="Judul">
                             <div class="font-medium text-slate-700">{{ $blog->title }}</div>
                             <div class="text-slate-400 text-xs">{{ $blog->meta }}</div>
                         </td>
-                        <td class="px-6 py-3 text-slate-500">{{ $blog->created_at->format('d M Y') }}</td>
-                        <td class="px-6 py-3 text-right">
+                        <td class="px-6 py-3 text-slate-500" data-label="Tanggal">{{ $blog->created_at->format('d M Y') }}</td>
+                        <td class="px-6 py-3 text-right cell-actions">
                             <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('admin.blogs.edit', $blog) }}" class="text-blue-600 hover:text-blue-800 text-xs font-medium transition">Edit</a>
                                 <form method="POST" action="{{ route('admin.blogs.destroy', $blog) }}" onsubmit="return confirm('Hapus artikel ini?')">
