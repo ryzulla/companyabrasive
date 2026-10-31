@@ -154,7 +154,7 @@
         </div>
         <p id="product-empty" style="{{ $products->isEmpty() ? '' : 'display:none; ' }}text-align:center; color:#666;">Belum ada produk di kategori ini.</p>
         <div style="text-align: center; margin-top: 50px;">
-            <a href="{{ route('products.index') }}" class="btn-primary" style="display: inline-flex;">
+            <a href="{{ route('products.index') }}" id="allProductsLink" class="btn-primary" style="display: inline-flex;">
                 Lihat Semua Produk <i class="fa-solid fa-arrow-right"></i>
             </a>
         </div>
@@ -471,8 +471,6 @@
             renderProducts(type);
         }
 
-        // Kartu produk dirender server-side; filter hanya menampilkan/menyembunyikan
-
         // ── TAMPILAN THUMBNAIL / DAFTAR (disimpan di browser; default thumbnail)
         function setProdView(mode) {
             document.getElementById('product-container').classList.toggle('list-view', mode === 'list');
@@ -481,16 +479,67 @@
         }
         (function () { let m = 'grid'; try { m = localStorage.getItem('prodView') === 'list' ? 'list' : 'grid'; } catch (e) {} setProdView(m); })();
 
-        function renderProducts(filterType) {
-            const cards = document.querySelectorAll('#product-container .product-card');
-            let visible = 0;
-            cards.forEach(card => {
-                const show = filterType === 'all' || card.dataset.type === String(filterType);
-                card.style.display = show ? '' : 'none';
-                if (show) visible++;
-            });
+        // Beranda hanya memuat 8 produk terbaru. Untuk kategori tertentu, produknya diambil dari server
+        // supaya kategori yang produknya tidak termasuk 8 terbaru tidak tampil kosong.
+        const SEARCH_URL = @json(route('products.search', [], false));
+        const WA_NUMBER  = @json($s['wa_number'] ?? '');
+        const FALLBACK_IMG = 'https://images.unsplash.com/photo-1620912189865-1e8a33da4c5e?auto=format&fit=crop&w=400&q=80';
+        const catCache = {};
+        let renderToken = 0;
+
+        function productCardHTML(p) {
+            const wa = WA_NUMBER ? `<a class="btn-sm" href="https://wa.me/${WA_NUMBER}?text=Halo%2C+saya+tertarik+dengan+${encodeURIComponent(p.title)}" target="_blank" rel="noopener" aria-label="Tanya ${escapeAttr(p.title)} via WhatsApp" onclick="event.stopPropagation()"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>` : '';
+            return `<div class="product-card fetched" data-type="${escapeAttr(p.type)}" onclick="location.href='${escapeAttr(p.url)}'">
+                <div class="product-img-wrapper">
+                    ${p.badge ? `<span class="product-badge">${escapeHtml(p.badge)}</span>` : ''}
+                    <img src="${escapeAttr(p.img || FALLBACK_IMG)}" alt="${escapeAttr(p.title)}" loading="lazy">
+                </div>
+                <div class="product-info">
+                    <div class="product-meta">${escapeHtml(p.meta)}</div>
+                    <h3 class="product-title"><a href="${escapeAttr(p.url)}">${escapeHtml(p.title)}</a></h3>
+                    <p class="product-desc">${escapeHtml(p.desc)}</p>
+                    <div class="product-footer">
+                        <div class="product-spec">${escapeHtml(p.specLabel)}:<span>${escapeHtml(p.specVal)}</span></div>
+                        ${wa}
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        async function renderProducts(filterType) {
+            const container = document.getElementById('product-container');
             const empty = document.getElementById('product-empty');
-            if (empty) empty.style.display = visible ? 'none' : 'block';
+            const token = ++renderToken;
+            const allLink = document.getElementById('allProductsLink');
+            if (allLink) allLink.href = @json(route('products.index')) + (filterType === 'all' ? '' : '?category=' + encodeURIComponent(filterType));
+            const initial = container.querySelectorAll('.product-card:not(.fetched)');
+            container.querySelectorAll('.product-card.fetched').forEach(el => el.remove());
+
+            if (filterType === 'all') {
+                initial.forEach(card => card.style.display = '');
+                empty.style.display = initial.length ? 'none' : 'block';
+                return;
+            }
+
+            initial.forEach(card => card.style.display = 'none');
+            empty.style.display = 'none';
+            container.classList.add('loading');
+            try {
+                if (!catCache[filterType]) {
+                    const res = await fetch(SEARCH_URL + '?category=' + encodeURIComponent(filterType), { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+                    catCache[filterType] = (await res.json()).products || [];
+                }
+                if (token !== renderToken) return; // pengguna sudah pindah kategori
+                const items = catCache[filterType];
+                container.insertAdjacentHTML('beforeend', items.map(productCardHTML).join(''));
+                empty.style.display = items.length ? 'none' : 'block';
+            } catch (e) {
+                if (token !== renderToken) return;
+                empty.textContent = 'Gagal memuat produk. Coba lagi.';
+                empty.style.display = 'block';
+            } finally {
+                if (token === renderToken) container.classList.remove('loading');
+            }
         }
 
         // ── VIDEO MODAL (desktop: tampil lebih besar) ──
