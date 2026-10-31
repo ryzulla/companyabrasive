@@ -35,8 +35,9 @@
                     <input type="text" name="title" value="{{ old('title', $product->title) }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Meta / Subtitle <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Merek · Jenis <span class="text-red-500">*</span></label>
                     <input type="text" name="meta" value="{{ old('meta', $product->meta) }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <p class="text-xs text-slate-400 mt-1">Format: Merek · Jenis produk, tampil di kartu dan halaman detail.</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -45,22 +46,26 @@
                     <input type="text" name="badge" value="{{ old('badge', $product->badge) }}" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Material <span class="text-red-500">*</span></label>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Material / Aplikasi <span class="text-red-500">*</span></label>
                     <input type="text" name="material" value="{{ old('material', $product->material) }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <p class="text-xs text-slate-400 mt-1">Bahan atau tempat produk dipakai, mis. "Logam, kayu, cat" atau "Tembok, pagar".</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1.5">Label Spesifikasi <span class="text-red-500">*</span></label>
                     <input type="text" name="spec_label" value="{{ old('spec_label', $product->spec_label) }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <p class="text-xs text-slate-400 mt-1">Pilih dari yang sudah ada agar konsisten, atau ketik label baru.</p>
+                    <datalist id="specLabels">@foreach(\App\Models\Product::query()->distinct()->orderBy('spec_label')->pluck('spec_label') as $lbl)<option value="{{ $lbl }}">@endforeach</datalist>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1.5">Nilai Spesifikasi <span class="text-red-500">*</span></label>
                     <input type="text" name="spec_val" value="{{ old('spec_val', $product->spec_val) }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">RPM <span class="text-slate-400 font-normal">(opsional)</span></label>
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Kecepatan Maks (RPM) <span class="text-slate-400 font-normal">(opsional)</span></label>
                     <input type="text" name="rpm" value="{{ old('rpm', $product->rpm) }}" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <p class="text-xs text-slate-400 mt-1">Isi hanya untuk produk berputar (batu gerinda, flap disc, dll). Kosongkan untuk produk lain.</p>
                 </div>
             </div>
             <div>

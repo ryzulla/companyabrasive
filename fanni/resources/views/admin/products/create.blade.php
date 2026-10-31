@@ -35,32 +35,37 @@
                     <input type="text" name="title" value="{{ old('title') }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Nama produk">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Meta / Subtitle <span class="text-red-500">*</span></label>
-                    <input type="text" name="meta" value="{{ old('meta') }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Deskripsi singkat">
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Merek · Jenis <span class="text-red-500">*</span></label>
+                    <input type="text" name="meta" value="{{ old('meta') }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: TAIYO · Waterproof">
+                    <p class="text-xs text-slate-400 mt-1">Format: Merek · Jenis produk, tampil di kartu dan halaman detail.</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1.5">Badge <span class="text-slate-400 font-normal">(opsional)</span></label>
-                    <input type="text" name="badge" value="{{ old('badge') }}" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: New, Best Seller">
+                    <input type="text" name="badge" value="{{ old('badge') }}" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Baru, Terlaris">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Material <span class="text-red-500">*</span></label>
-                    <input type="text" name="material" value="{{ old('material') }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Stainless Steel">
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Material / Aplikasi <span class="text-red-500">*</span></label>
+                    <input type="text" name="material" value="{{ old('material') }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Logam, kayu, cat">
+                    <p class="text-xs text-slate-400 mt-1">Bahan atau tempat produk dipakai, mis. "Logam, kayu, cat" atau "Tembok, pagar".</p>
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1.5">Label Spesifikasi <span class="text-red-500">*</span></label>
-                    <input type="text" name="spec_label" value="{{ old('spec_label') }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Power">
+                    <input type="text" name="spec_label" value="{{ old('spec_label') }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Grit" list="specLabels" autocomplete="off">
+                    <p class="text-xs text-slate-400 mt-1">Pilih dari yang sudah ada agar konsisten, atau ketik label baru.</p>
+                    <datalist id="specLabels">@foreach(\App\Models\Product::query()->distinct()->orderBy('spec_label')->pluck('spec_label') as $lbl)<option value="{{ $lbl }}">@endforeach</datalist>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700 mb-1.5">Nilai Spesifikasi <span class="text-red-500">*</span></label>
-                    <input type="text" name="spec_val" value="{{ old('spec_val') }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: 500W">
+                    <input type="text" name="spec_val" value="{{ old('spec_val') }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: P400 atau 4 inch">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">RPM <span class="text-slate-400 font-normal">(opsional)</span></label>
-                    <input type="text" name="rpm" value="{{ old('rpm') }}" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: 1450">
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Kecepatan Maks (RPM) <span class="text-slate-400 font-normal">(opsional)</span></label>
+                    <input type="text" name="rpm" value="{{ old('rpm') }}" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: 15.300">
+                    <p class="text-xs text-slate-400 mt-1">Isi hanya untuk produk berputar (batu gerinda, flap disc, dll). Kosongkan untuk produk lain.</p>
                 </div>
             </div>
             <div>
