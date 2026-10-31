@@ -377,3 +377,49 @@
     .lb-thumbs button { flex: 0 0 56px; height: 44px; padding: 0; border-radius: 8px; overflow: hidden; border: 2px solid transparent; opacity: 0.55; background: #0f172a; }
     .lb-thumbs button.active { border-color: var(--accent); opacity: 1; }
     .lb-thumbs img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ─────────── ARTIKEL / PAGINASI (halaman terpisah) ─────────── */
+    .art-cover { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: #e2e8f0; }
+    .art-body { background: #fff; padding: 18px 16px 24px; border-radius: 0 0 22px 22px; box-shadow: 0 6px 18px rgba(15,23,42,0.05); }
+    .art-date { font-size: 0.74rem; color: #94a3b8; margin-bottom: 16px; }
+    .art-share { display: flex; align-items: center; gap: 10px; margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--secondary); }
+    .art-share a { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; color: var(--primary); }
+    .pg-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 18px; }
+    .pg-btn { padding: 10px 16px; border-radius: 12px; border: 1.5px solid var(--border); background: #fff; font-size: 0.8rem; font-weight: 600; color: var(--accent); }
+    .pg-btn.disabled { color: #cbd5e1; }
+    .pg-info { font-size: 0.78rem; color: var(--secondary); }
+    .rich-content { color: var(--secondary); font-size: 0.92rem; line-height: 1.8; overflow-wrap: anywhere; }
+    .rich-content > :first-child { margin-top: 0; }
+    .rich-content p { margin: 0 0 1em; }
+    .rich-content h2 { color: var(--primary); font-size: 1.15rem; margin: 1.5em 0 0.6em; line-height: 1.3; }
+    .rich-content h3 { color: var(--primary); font-size: 1.02rem; margin: 1.2em 0 0.5em; line-height: 1.3; }
+    .rich-content ul, .rich-content ol { margin: 0 0 1em 1.3em; }
+    .rich-content ul { list-style: disc; } .rich-content ol { list-style: decimal; }
+    .rich-content li { margin-bottom: 0.35em; }
+    .rich-content a { color: var(--accent); text-decoration: underline; }
+    .rich-content blockquote { border-left: 4px solid var(--accent); background: #f8fafc; margin: 1.2em 0; padding: 10px 14px; border-radius: 0 10px 10px 0; font-style: italic; }
+    .rich-content img { max-width: 100%; height: auto; border-radius: 10px; display: block; }
+    .rich-content figure { margin: 1.2em 0; }
+    .rich-content figure.image img { margin: 0 auto; }
+    .rich-content figcaption { font-size: 0.78em; color: #94a3b8; text-align: center; margin-top: 6px; }
+    .rich-content .video-embed { position: relative; width: 100%; aspect-ratio: 16 / 9; margin: 1.2em 0; border-radius: 10px; overflow: hidden; background: #000; }
+    .rich-content .video-embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .rich-content table { width: 100%; border-collapse: collapse; margin: 1.2em 0; font-size: 0.9em; display: block; overflow-x: auto; }
+    .rich-content th, .rich-content td { border: 1px solid #e2e8f0; padding: 8px 10px; }
+
+    /* ─────────── VISI & MISI (mobile) ─────────── */
+    .vm-card { background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: 0 2px 10px rgba(15,23,42,0.04); }
+    .vm-card h4 { font-size: 1rem; color: var(--primary); display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+    .vm-card h4 i { color: var(--accent); }
+    .vm-card ul { list-style: disc; padding-left: 18px; display: grid; gap: 7px; font-size: 0.85rem; color: var(--secondary); }
+    .about-text h1 { font-size: 1.25rem; color: var(--primary); margin-bottom: 10px; }
+    .about-desc { color: var(--secondary); font-size: 0.88rem; margin-bottom: 14px; }
+    .about-desc p { margin-bottom: 0.8em; }
+    .about-desc p:last-child { margin-bottom: 0; }
+
+    /* ─────────── DAFTAR PRODUK (halaman terpisah) ─────────── */
+    .search-form { display: contents; }
+    a.chip { text-decoration: none; }
+    .pl-count { font-size: 0.78rem; color: var(--secondary); padding: 4px 16px 10px; }
+    .prod-grid a.prod-card { text-decoration: none; color: inherit; }
+    .pl-empty { grid-column: 1 / -1; text-align: center; color: #94a3b8; font-size: 0.85rem; padding: 30px 0; }

@@ -27,6 +27,7 @@
                 <li><a href="#home" class="nav-link">Beranda</a></li>
                 <li><a href="{{ route('about') }}" class="nav-link">Tentang</a></li>
                 <li><a href="#products" class="nav-link">Produk</a></li>
+                <li><a href="{{ route('blog.index') }}" class="nav-link">Blog</a></li>
                 <li><a href="#clients" class="nav-link">Klien</a></li>
                 <li><a href="#faq" class="nav-link">FAQ</a></li>
                 <li><a href="#contact" class="nav-link">Kontak</a></li>
@@ -41,6 +42,7 @@
         <a href="#home"     onclick="closeMobileNav()"><i class="fa-solid fa-house"></i> Beranda</a>
         <a href="{{ route('about') }}"><i class="fa-solid fa-circle-info"></i> Tentang</a>
         <a href="#products" onclick="closeMobileNav()"><i class="fa-solid fa-box-open"></i> Produk</a>
+        <a href="{{ route('blog.index') }}"><i class="fa-solid fa-newspaper"></i> Blog</a>
         <a href="#clients"  onclick="closeMobileNav()"><i class="fa-solid fa-building-user"></i> Klien</a>
         <a href="#faq"      onclick="closeMobileNav()"><i class="fa-solid fa-circle-question"></i> FAQ</a>
         <a href="#contact"  onclick="closeMobileNav()"><i class="fa-solid fa-envelope"></i> Kontak</a>
@@ -299,22 +301,22 @@
         </div>
         <div class="dynamic-grid">
             @foreach($blogs as $blog)
-                <div class="blog-card" @if($loop->index >= 4) data-blog-extra style="display:none" @endif onclick="openBlogModal({{ $blog->id }})">
+                <div class="blog-card" onclick="location.href='{{ route('blog.show', $blog) }}'">
                     <div class="blog-img" style="background-image: url('{{ $blog->img ? Storage::url($blog->img) : 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80' }}')"></div>
                     <div class="blog-content">
                         <div class="blog-meta">{{ $blog->meta }}</div>
-                        <h3>{{ $blog->title }}</h3>
+                        <h3><a href="{{ route('blog.show', $blog) }}">{{ $blog->title }}</a></h3>
                         <p>{{ $blog->excerpt(100) }}</p>
-                        <a href="javascript:void(0)" class="read-more">Baca Artikel <i class="fa-solid fa-arrow-right"></i></a>
+                        <a href="{{ route('blog.show', $blog) }}" class="read-more">Baca Artikel <i class="fa-solid fa-arrow-right"></i></a>
                     </div>
                 </div>
             @endforeach
         </div>
-        @if($blogs->count() > 4)
+        @if($blogsTotal > $blogs->count())
         <div style="text-align: center; margin-top: 40px;">
-            <button type="button" class="btn-outline" id="blogShowAll" onclick="showAllBlogs()" style="cursor:pointer; background:none;">
-                Lihat Semua Artikel ({{ $blogs->count() }}) <i class="fa-solid fa-chevron-down"></i>
-            </button>
+            <a href="{{ route('blog.index') }}" class="btn-outline">
+                Lihat Semua Artikel ({{ $blogsTotal }}) <i class="fa-solid fa-arrow-right"></i>
+            </a>
         </div>
         @endif
     </section>
@@ -563,10 +565,6 @@
         // ── BLOG MODAL (baca artikel) ──
         const blogsData = @json($blogsData);
         const blogModal = document.getElementById('blogModal');
-        function showAllBlogs() {
-            document.querySelectorAll('[data-blog-extra]').forEach(el => el.style.display = '');
-            document.getElementById('blogShowAll').parentElement.style.display = 'none';
-        }
         window.openBlogModal = function(id) {
             const b = blogsData.find(x => x.id === id);
             if (!b) return;

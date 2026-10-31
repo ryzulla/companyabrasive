@@ -25,9 +25,6 @@
             </a>
         <div class="header-actions">
             <button class="icon-btn" onclick="showScreen('products'); setTimeout(()=>document.getElementById('mSearch').focus(),350)" aria-label="Cari"><i class="fa-solid fa-magnifying-glass"></i></button>
-            @if(!empty($s['phone']))
-            <a class="icon-btn" href="tel:{{ preg_replace('/[^0-9+]/', '', $s['phone']) }}" aria-label="Telepon"><i class="fa-solid fa-phone"></i></a>
-            @endif
             @if($hasWa)
             <a class="icon-btn wa" href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+bertanya+tentang+produk+Anda" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
             @endif
@@ -222,7 +219,7 @@
             </div>
             <div class="pad" style="padding-top: 6px;">
                 @foreach($blogs as $blog)
-                    <div class="blog-card" @if($loop->index >= 4) data-blog-extra style="display:none" @endif onclick="openBlogSheet({{ $blog->id }})">
+                    <div class="blog-card" onclick="location.href='{{ route('blog.show', $blog) }}'">
                         <div class="blog-thumb" style="background-image: url('{{ $blog->img ? Storage::url($blog->img) : 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=300&q=80' }}');"></div>
                         <div class="blog-info">
                             <span class="bm">{{ $blog->meta }}</span>
@@ -231,8 +228,8 @@
                         </div>
                     </div>
                 @endforeach
-                @if($blogs->count() > 4)
-                <button type="button" class="btn btn-ghost btn-block" id="blogShowAll" onclick="showAllBlogs()" style="color:var(--accent);border-color:var(--accent);">Lihat Semua Artikel ({{ $blogs->count() }})</button>
+                @if($blogsTotal > $blogs->count())
+                <a href="{{ route('blog.index') }}" class="btn btn-ghost btn-block" style="color:var(--accent);border-color:var(--accent);">Lihat Semua Artikel ({{ $blogsTotal }})</a>
                 @endif
             </div>
             @endif
@@ -271,45 +268,7 @@
 
         {{-- ═══════════════════ SCREEN: TENTANG ═══════════════════ --}}
         <section class="screen" id="screen-about">
-            <div class="pad">
-                <div class="about-img">
-                    <img src="{{ !empty($s['about_img']) ? Storage::url($s['about_img']) : 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80' }}" alt="Tentang Kami">
-                </div>
-                <div class="about-text">
-                    <h3>{{ $s['about_title'] ?? 'Tentang Kami' }}</h3>
-                    <p>{!! $s['about_desc'] ?? '' !!}</p>
-                    <div class="feat-list">
-                        @foreach([1,2,3,4] as $i)
-                            @if(!empty($s['about_feature_'.$i]))
-                                <div class="feat-item"><i class="fa-solid fa-circle-check"></i> {{ $s['about_feature_'.$i] }}</div>
-                            @endif
-                        @endforeach
-                    </div>
-                    <div class="certs">
-                        @foreach([1,2,3] as $i)
-                            @if(!empty($s['about_cert_'.$i]))
-                                <span class="cert"><i class="fa-solid {{ $s['about_cert_'.$i.'_icon'] ?? 'fa-certificate' }}"></i> {{ $s['about_cert_'.$i] }}</span>
-                            @endif
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            {{-- STATISTIK RINGKAS --}}
-            <div class="stats-strip" style="margin: 0 16px; border-radius: 18px;">
-                <div class="stat-box"><i class="fa-solid fa-calendar-check"></i><h3><span class="counter" data-target="{{ $s['milestone_years'] ?? 0 }}">0</span>+</h3><p>Tahun Pengalaman</p></div>
-                <div class="stat-box"><i class="fa-solid fa-building-user"></i><h3><span class="counter" data-target="{{ $s['milestone_clients'] ?? 0 }}">0</span>+</h3><p>Klien Aktif</p></div>
-                <div class="stat-box"><i class="fa-solid fa-box-open"></i><h3><span class="counter" data-target="{{ $s['milestone_products'] ?? 0 }}">0</span>+</h3><p>Varian Produk</p></div>
-                <div class="stat-box"><i class="fa-solid fa-truck-fast"></i><h3><span class="counter" data-target="{{ $s['milestone_delivery'] ?? 0 }}">0</span>%</h3><p>Tepat Waktu</p></div>
-            </div>
-
-            {{-- CTA KONTAK --}}
-            <div class="pad" style="padding-top: 18px;">
-                <button class="btn btn-primary btn-block" style="margin-bottom: 10px;" onclick="showScreen('contact')"><i class="fa-solid fa-paper-plane"></i> Hubungi Kami</button>
-                @if($hasWa)
-                <a href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+bertanya+tentang+perusahaan+Anda" target="_blank" rel="noopener" class="btn btn-wa btn-block"><i class="fa-brands fa-whatsapp"></i> Chat via WhatsApp</a>
-                @endif
-            </div>
+            @include('home._m_about', ['standalone' => false])
 
             @include('home._social')
             <div class="footer-note">{{ $s['footer_text'] ?? '© '.date('Y').' All Rights Reserved.' }}</div>
@@ -592,10 +551,6 @@
         @endphp
         const BLOGS = @json($blogsData);
         const BLOG_FALLBACK = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80';
-        function showAllBlogs() {
-            document.querySelectorAll('[data-blog-extra]').forEach(el => el.style.display = '');
-            document.getElementById('blogShowAll').style.display = 'none';
-        }
         function openBlogSheet(id) {
             const b = BLOGS.find(x => x.id === id);
             if (!b) return;

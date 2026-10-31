@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Blog;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Setting;
@@ -93,7 +94,15 @@ class ProductController extends Controller
             'material'  => $p->material,
         ]);
 
-        return view('home.products', compact('s', 'categories', 'products', 'productsJson'));
+        if (Device::isMobile($request)) {
+            return response()
+                ->view('home.products-mobile', compact('s', 'categories', 'products'))
+                ->header('Vary', 'User-Agent');
+        }
+
+        return response()
+            ->view('home.products', compact('s', 'categories', 'products', 'productsJson'))
+            ->header('Vary', 'User-Agent');
     }
 
     /** URL lama /products/{id} dialihkan permanen (301) ke URL slug. */
@@ -110,7 +119,14 @@ class ProductController extends Controller
             ['loc' => route('home'), 'lastmod' => null, 'priority' => '1.0'],
             ['loc' => route('about'), 'lastmod' => null, 'priority' => '0.6'],
             ['loc' => route('products.index'), 'lastmod' => null, 'priority' => '0.9'],
+            ['loc' => route('blog.index'), 'lastmod' => null, 'priority' => '0.7'],
         ])->concat(
+            Blog::orderBy('id')->get()->map(fn($b) => [
+                'loc'      => route('blog.show', $b),
+                'lastmod'  => $b->updated_at?->toAtomString(),
+                'priority' => '0.6',
+            ])
+        )->concat(
             Product::orderBy('id')->get()->map(fn($p) => [
                 'loc'      => route('products.show', $p),
                 'lastmod'  => $p->updated_at?->toAtomString(),

@@ -46,7 +46,8 @@ class HomeController extends Controller
         $clients     = Client::orderBy('order')->orderBy('name')->get();
         $testimonials = Testimonial::all();
         $faqs        = Faq::all();
-        $blogs       = Blog::latest()->get();
+        $blogs       = Blog::latest()->take(4)->get();
+        $blogsTotal  = Blog::count();
 
         // Dari tombol "Minta Penawaran" di halaman produk
         $prefill = null;
@@ -65,7 +66,7 @@ class HomeController extends Controller
         // Satu URL, dua tampilan (desktop/mobile) → beri tahu cache & mesin pencari
         return response()->view($view, compact(
             's', 'categories', 'products', 'productsTotal', 'videos',
-            'clients', 'testimonials', 'faqs', 'blogs', 'prefill'
+            'clients', 'testimonials', 'faqs', 'blogs', 'blogsTotal', 'prefill'
         ))->header('Vary', 'User-Agent');
     }
 }

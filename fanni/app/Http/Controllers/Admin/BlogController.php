@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Support\ImageOptimizer;
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class BlogController extends Controller
     {
         $request->validate(['upload' => ['required', 'image', 'max:5120']]);
 
-        $path = $request->file('upload')->store('blogs/content', 'public');
+        $path = ImageOptimizer::store($request->file('upload'), 'blogs/content');
 
         return response()->json(['url' => Storage::url($path)]);
     }
@@ -49,7 +50,7 @@ class BlogController extends Controller
         ]);
 
         if ($request->hasFile('img')) {
-            $data['img'] = $request->file('img')->store('blogs', 'public');
+            $data['img'] = ImageOptimizer::store($request->file('img'), 'blogs');
         }
 
         Blog::create($data);
@@ -76,7 +77,7 @@ class BlogController extends Controller
             if ($blog->img) {
                 Storage::disk('public')->delete($blog->img);
             }
-            $data['img'] = $request->file('img')->store('blogs', 'public');
+            $data['img'] = ImageOptimizer::store($request->file('img'), 'blogs');
         } else {
             unset($data['img']);
         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Support\ImageOptimizer;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use Illuminate\Http\Request;
@@ -35,7 +36,7 @@ class ClientController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('clients', 'public');
+            $data['logo'] = ImageOptimizer::store($request->file('logo'), 'clients', 600);
         }
 
         Client::create($data);
@@ -61,7 +62,7 @@ class ClientController extends Controller
             if ($client->logo) {
                 Storage::disk('public')->delete($client->logo);
             }
-            $data['logo'] = $request->file('logo')->store('clients', 'public');
+            $data['logo'] = ImageOptimizer::store($request->file('logo'), 'clients', 600);
         } else {
             unset($data['logo']);
         }

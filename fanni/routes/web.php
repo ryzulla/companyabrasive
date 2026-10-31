@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\BlogController as PublicBlogController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\CategoryController;
@@ -26,6 +27,8 @@ Route::get('/products', [ProductController::class, 'index'])->name('products.ind
 Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
 Route::get('/products/{id}', [ProductController::class, 'legacyRedirect'])->whereNumber('id');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+Route::get('/blog', [PublicBlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{blog:slug}', [PublicBlogController::class, 'show'])->name('blog.show');
 Route::get('/sitemap.xml', [ProductController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', function () {
     $noindex = \App\Models\Setting::get('seo_noindex', '0') === '1';

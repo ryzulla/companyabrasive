@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Support\ImageOptimizer;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
@@ -41,7 +42,7 @@ class CategoryController extends Controller
 
         // Foto opsional (kartu kategori memakai ikon); kolom di database tidak boleh NULL, jadi diisi kosong.
         $data['img'] = $request->hasFile('img')
-            ? $request->file('img')->store('categories', 'public')
+            ? ImageOptimizer::store($request->file('img'), 'categories', 1000)
             : '';
 
         Category::create($data);
@@ -68,7 +69,7 @@ class CategoryController extends Controller
             if ($category->img) {
                 Storage::disk('public')->delete($category->img);
             }
-            $data['img'] = $request->file('img')->store('categories', 'public');
+            $data['img'] = ImageOptimizer::store($request->file('img'), 'categories', 1000);
         } else {
             unset($data['img']);
         }

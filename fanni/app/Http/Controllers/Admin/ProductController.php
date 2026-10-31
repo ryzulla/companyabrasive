@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Support\ImageOptimizer;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
@@ -120,7 +121,7 @@ class ProductController extends Controller
 
         foreach ($files as $file) {
             $product->images()->create([
-                'path' => $file->store('products', 'public'),
+                'path' => ImageOptimizer::store($file, 'products'),
                 'sort' => ++$sort,
             ]);
         }

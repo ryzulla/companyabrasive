@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Support\ImageOptimizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -71,7 +72,7 @@ class SettingController extends Controller
                 if ($old) {
                     Storage::disk('public')->delete($old);
                 }
-                Setting::set($key, $request->file($field)->store($folder, 'public'));
+                Setting::set($key, ImageOptimizer::store($request->file($field), $folder));
             }
         }
 
