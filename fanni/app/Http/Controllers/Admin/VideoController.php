@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Video;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class VideoController extends Controller
 {
@@ -18,8 +19,7 @@ class VideoController extends Controller
                 });
             })
             ->latest()
-            ->paginate(15)
-            ->withQueryString();
+            ->get();
 
         return view('admin.videos.index', compact('videos'));
     }
@@ -51,6 +51,7 @@ class VideoController extends Controller
     public function update(Request $request, Video $video)
     {
         $data = $request->validate([
+            'id' => ['required', 'string', 'max:20', Rule::unique('videos', 'id')->ignore($video->id, 'id')],
             'title' => ['required', 'string', 'max:255'],
             'desc' => ['required', 'string'],
         ]);

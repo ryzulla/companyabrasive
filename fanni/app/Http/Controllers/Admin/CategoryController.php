@@ -19,8 +19,7 @@ class CategoryController extends Controller
                         ->orWhere('id', 'like', "%{$s}%");
                 });
             })
-            ->paginate(15)
-            ->withQueryString();
+            ->get();
 
         return view('admin.categories.index', compact('categories'));
     }
@@ -36,12 +35,14 @@ class CategoryController extends Controller
             'id' => ['required', 'string', 'max:50', 'unique:categories,id'],
             'title' => ['required', 'string', 'max:255'],
             'desc' => ['required', 'string'],
-            'img' => ['required', 'image', 'max:2048'],
+            'icon' => ['nullable', 'string', 'max:60', 'regex:/^fa-[a-z0-9-]+$/'],
+            'img' => ['nullable', 'image', 'max:2048'],
         ]);
 
-        if ($request->hasFile('img')) {
-            $data['img'] = $request->file('img')->store('categories', 'public');
-        }
+        // Foto opsional (kartu kategori memakai ikon); kolom di database tidak boleh NULL, jadi diisi kosong.
+        $data['img'] = $request->hasFile('img')
+            ? $request->file('img')->store('categories', 'public')
+            : '';
 
         Category::create($data);
 
@@ -59,6 +60,7 @@ class CategoryController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'desc' => ['required', 'string'],
+            'icon' => ['nullable', 'string', 'max:60', 'regex:/^fa-[a-z0-9-]+$/'],
             'img' => ['nullable', 'image', 'max:2048'],
         ]);
 

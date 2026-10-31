@@ -19,10 +19,19 @@ class BlogController extends Controller
                 });
             })
             ->latest()
-            ->paginate(15)
-            ->withQueryString();
+            ->get();
 
         return view('admin.blogs.index', compact('blogs'));
+    }
+
+    /** Upload gambar dari dalam editor artikel (pilih file / tempel / seret). */
+    public function uploadImage(Request $request)
+    {
+        $request->validate(['upload' => ['required', 'image', 'max:5120']]);
+
+        $path = $request->file('upload')->store('blogs/content', 'public');
+
+        return response()->json(['url' => Storage::url($path)]);
     }
 
     public function create()

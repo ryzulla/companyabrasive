@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Katalog Produk | {{ $s['company_name'] ?? 'Company Profile' }}</title>
+    @include('home._seo', ['page' => [
+        'title'       => 'Katalog Produk | ' . ($s['company_name'] ?? 'Company Profile'),
+        'description' => $s['products_desc'] ?? null,
+        'canonical'   => route('products.index'),
+        'robots'      => (request()->filled('q') || request()->filled('category')) ? 'noindex, follow' : 'index, follow, max-image-preview:large',
+    ]])
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -71,6 +76,20 @@
         .clear-btn:hover { background: var(--accent); color: #fff; }
         .result-count { font-size: 0.84rem; color: var(--secondary); white-space: nowrap; flex-shrink: 0; }
         .result-count strong { color: var(--primary); }
+
+        /* Pilihan tampilan: thumbnail (kotak) atau daftar */
+        .view-toggle { display: inline-flex; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+        .vt-btn { width: 40px; height: 36px; border: 0; background: transparent; color: #94a3b8; font-size: 0.95rem; cursor: pointer; transition: all 0.2s ease; }
+        .vt-btn:hover { color: var(--accent); }
+        .vt-btn.active { background: rgba(234,88,12,0.1); color: var(--accent); }
+        .list-view { grid-template-columns: 1fr !important; gap: 14px !important; }
+        .list-view .product-card { flex-direction: row; }
+        .list-view .product-card:hover { transform: translateY(-3px); }
+        .list-view .product-img-wrapper { width: 190px; flex-shrink: 0; align-self: stretch; aspect-ratio: auto; min-height: 190px; }
+        .list-view .product-info { padding: 18px 22px; justify-content: center; min-width: 0; }
+        .list-view .product-desc { -webkit-line-clamp: 3; flex-grow: 0; }
+        .list-view .product-footer { margin-top: 12px; }
+        @media (max-width: 560px) { .list-view .product-img-wrapper { width: 120px; min-height: 120px; } .list-view .product-info { padding: 12px 14px; } }
         /* Row 2: category pills — always wrap */
         .pills-row { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
         .category-pill { padding: 6px 14px; border: 1.5px solid #e2e8f0; background: #fff; color: var(--secondary); border-radius: 30px; font-size: 0.82rem; font-weight: 500; cursor: pointer; font-family: inherit; transition: var(--transition); white-space: nowrap; line-height: 1.4; }
@@ -94,7 +113,7 @@
         /* PRODUCT CARD */
         .product-card { background-color: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.05); transition: var(--transition); border: 1px solid #f1f5f9; cursor: pointer; display: flex; flex-direction: column; }
         .product-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); border-color: #e2e8f0; }
-        .product-img-wrapper { position: relative; height: 210px; background-color: #f1f5f9; overflow: hidden; }
+        .product-img-wrapper { position: relative; aspect-ratio: 1 / 1; background-color: #f1f5f9; overflow: hidden; }
         .product-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
         .product-card:hover .product-img-wrapper img { transform: scale(1.06); }
         .product-badge { position: absolute; top: 12px; left: 12px; background-color: var(--primary); color: #fff; padding: 3px 10px; font-size: 0.72rem; font-weight: 600; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.3px; }
@@ -129,39 +148,6 @@
         .pagination-wrapper span.disabled { opacity: 0.4; cursor: not-allowed; }
         .pagination-info { text-align: center; margin-top: 16px; font-size: 0.85rem; color: var(--secondary); }
 
-        /* MODAL */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease; }
-        .modal.show { display: flex; align-items: center; justify-content: center; opacity: 1; }
-        .modal-content { background-color: var(--card-bg); border-radius: 14px; width: 90%; max-width: 820px; max-height: 92vh; overflow-y: auto; position: relative; transform: translateY(-20px); transition: transform 0.3s ease; }
-        .modal.show .modal-content { transform: translateY(0); }
-        .close-modal { position: absolute; right: 18px; top: 14px; font-size: 26px; font-weight: bold; color: var(--secondary); cursor: pointer; z-index: 10; transition: var(--transition); line-height: 1; }
-        .close-modal:hover { color: var(--accent); }
-        .modal-body-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
-        .modal-img-wrap { background: #f1f5f9; border-radius: 14px 0 0 14px; overflow: hidden; min-height: 300px; display: flex; align-items: center; }
-        .modal-img { width: 100%; height: 100%; object-fit: cover; min-height: 300px; }
-        .modal-details { padding: 35px 35px 35px 30px; display: flex; flex-direction: column; }
-        .modal-details .badge { display: inline-block; background: var(--primary); color: #fff; padding: 4px 14px; border-radius: 20px; font-size: 0.75rem; margin-bottom: 12px; align-self: flex-start; }
-        .modal-details h2 { color: var(--primary); font-size: 1.7rem; line-height: 1.3; margin-bottom: 12px; }
-        .modal-details p { color: var(--secondary); margin-bottom: 20px; font-size: 0.95rem; flex-grow: 1; }
-        .modal-specs { background: var(--light-bg); padding: 14px 16px; border-radius: 8px; margin-bottom: 25px; }
-        .modal-specs div { display: flex; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 8px 0; font-size: 0.88rem; }
-        .modal-specs div:last-child { border: none; }
-        .modal-specs strong { color: var(--primary); font-weight: 600; }
-        .related-section { padding: 6px 35px 32px; border-top: 1px solid #eef2f7; }
-        .related-heading { color: var(--primary); font-size: 1.15rem; font-weight: 600; margin: 22px 0 16px; }
-        .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .related-card { background: var(--card-bg); border: 1px solid #f1f5f9; border-radius: 10px; overflow: hidden; cursor: pointer; transition: var(--transition); display: flex; flex-direction: column; }
-        .related-card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(0,0,0,0.1); border-color: #e2e8f0; }
-        .related-img { height: 120px; background: #f1f5f9; overflow: hidden; }
-        .related-img img { width: 100%; height: 100%; object-fit: cover; }
-        .related-body { padding: 10px 12px 14px; }
-        .related-meta { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.4px; color: var(--accent); font-weight: 600; margin-bottom: 4px; }
-        .related-title { font-size: 0.85rem; color: var(--primary); font-weight: 600; line-height: 1.35; }
-        @media (max-width: 768px) {
-            .related-section { padding: 6px 22px 24px; }
-            .related-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
         /* FOOTER */
         footer { background-color: #020617; color: #64748b; padding: 28px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center; font-size: 0.88rem; }
         footer span { color: var(--accent); }
@@ -171,12 +157,6 @@
         .float-wa:hover { background-color: #128C7E; transform: scale(1.1); color: #fff; }
         @keyframes pulse-wa { 0% { box-shadow: 0 0 0 0 rgba(37,211,102,0.7); } 70% { box-shadow: 0 0 0 15px rgba(37,211,102,0); } 100% { box-shadow: 0 0 0 0 rgba(37,211,102,0); } }
 
-        @media (max-width: 992px) {
-            .modal-body-grid { grid-template-columns: 1fr; }
-            .modal-img-wrap { border-radius: 14px 14px 0 0; min-height: 200px; }
-            .modal-img { min-height: 200px; max-height: 240px; }
-            .modal-details { padding: 22px; }
-        }
         @media (max-width: 768px) {
             .hamburger { display: flex; }
             .nav-menu { display: none; }
@@ -191,13 +171,10 @@
         @media (max-width: 480px) {
             .container { padding: 0 14px; }
             .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .product-img-wrapper { height: 160px; }
             .product-info { padding: 12px 14px 12px; }
             .product-title { font-size: 0.9rem; }
             .product-desc { -webkit-line-clamp: 2; font-size: 0.78rem; margin-bottom: 10px; }
             .page-header h1 { font-size: 1.4rem; }
-            .modal-details h2 { font-size: 1.25rem; }
-            .modal-details { padding: 16px; }
             .search-filter-bar { position: static; }
         }
     </style>
@@ -208,9 +185,7 @@
     <header>
         <div class="container nav-container">
             <a href="{{ route('home') }}" class="logo">
-                <i class="fa-solid {{ $s['company_logo_icon'] ?? 'fa-gear' }}"></i>
-                {{ explode(' ', $s['company_name'] ?? 'Company')[0] }}
-                <span>{{ implode(' ', array_slice(explode(' ', $s['company_name'] ?? ''), 1)) }}</span>
+                @include('home._brand')
             </a>
             <ul class="nav-menu">
                 <li><a href="{{ route('home') }}" class="nav-link">Beranda</a></li>
@@ -269,6 +244,10 @@
                 <div class="result-count" id="resultCount">
                     <strong>{{ $products->total() }}</strong> produk
                 </div>
+                <div class="view-toggle" role="group" aria-label="Tampilan produk">
+                    <button type="button" class="vt-btn" data-view="grid" onclick="setProdView('grid')" aria-label="Tampilan thumbnail" title="Thumbnail"><i class="fa-solid fa-table-cells-large"></i></button>
+                    <button type="button" class="vt-btn" data-view="list" onclick="setProdView('list')" aria-label="Tampilan daftar" title="Daftar"><i class="fa-solid fa-list"></i></button>
+                </div>
             </div>
 
             {{-- Row 2: Category Pills (wraps automatically) --}}
@@ -309,7 +288,7 @@
             {{-- Product Grid --}}
             <div class="product-grid" id="productGrid">
                 @forelse($products as $p)
-                    <div class="product-card" onclick="openModal({{ $p->id }})">
+                    <div class="product-card" onclick="location.href='{{ route('products.show', $p, false) }}'">
                         <div class="product-img-wrapper">
                             @if($p->badge)
                                 <span class="product-badge">{{ $p->badge }}</span>
@@ -333,11 +312,13 @@
                                     <span>{{ $p->spec_val }}</span>
                                 </div>
                                 <div class="card-actions">
+                                    @if(!empty($s['wa_number']))
                                     <button class="btn-icon btn-icon-wa"
                                         onclick="event.stopPropagation(); window.open('https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+tertarik+dengan+{{ urlencode($p->title) }}', '_blank')"
                                         title="Tanya via WhatsApp">
                                         <i class="fa-brands fa-whatsapp"></i>
                                     </button>
+                                    @endif
                                     <button class="btn-icon btn-icon-info" title="Detail Produk">
                                         <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                     </button>
@@ -367,24 +348,19 @@
         </div>
     </section>
 
-    {{-- MODAL PRODUK --}}
-    <div id="productModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <div id="modal-body"></div>
-        </div>
-    </div>
-
     {{-- FOOTER --}}
     <footer>
         <div class="container">
+            @include('home._social')
             <p>{{ $s['footer_text'] ?? '© '.date('Y').' All Rights Reserved.' }}</p>
         </div>
     </footer>
 
-    <a href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+bertanya+tentang+produk+Anda" class="float-wa" target="_blank">
-        <i class="fa-brands fa-whatsapp"></i>
+    @if(!empty($s['wa_number']))
+    <a href="https://wa.me/{{ $s['wa_number'] }}?text=Halo%2C+saya+ingin+bertanya+tentang+produk+Anda" class="float-wa" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
+        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
     </a>
+    @endif
 
     <script>
         // ── CONFIG
@@ -409,7 +385,6 @@
         const filterText   = document.getElementById('activeFilterText');
         const pagWrapper   = document.getElementById('paginationWrapper');
         const pagInfo      = document.getElementById('paginationInfo');
-        const modal        = document.getElementById('productModal');
 
         // ── INITIAL RENDER (dari data server)
         renderGrid(currentProducts);
@@ -495,7 +470,7 @@
                 return;
             }
             grid.innerHTML = products.map(p => `
-                <div class="product-card" onclick="openModal(${p.id})">
+                <div class="product-card" onclick="location.href='${p.url}'">
                     <div class="product-img-wrapper">
                         ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
                         ${p.categoryTitle ? `<span class="product-category-tag">${p.categoryTitle}</span>` : ''}
@@ -508,13 +483,12 @@
                         <div class="product-footer">
                             <div class="product-spec">${p.specLabel}:<span>${p.specVal}</span></div>
                             <div class="card-actions">
-                                <button class="btn-icon btn-icon-wa" data-title="${p.title.replace(/"/g,'&quot;')}"
+                                ${WA_NUMBER ? `<button class="btn-icon btn-icon-wa" data-title="${p.title.replace(/"/g,'&quot;')}"
                                     onclick="event.stopPropagation();openWA(this.dataset.title)"
                                     title="Tanya via WhatsApp">
                                     <i class="fa-brands fa-whatsapp"></i>
-                                </button>
-                                <button class="btn-icon btn-icon-info" title="Detail Produk"
-                                    onclick="event.stopPropagation();openModal(${p.id})">
+                                </button>` : ''}
+                                <button class="btn-icon btn-icon-info" title="Detail Produk">
                                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                 </button>
                             </div>
@@ -571,6 +545,15 @@
             filterBar.style.display = 'flex';
         }
 
+
+        // ── TAMPILAN THUMBNAIL / DAFTAR (disimpan di browser; default thumbnail)
+        function setProdView(mode) {
+            document.getElementById('productGrid').classList.toggle('list-view', mode === 'list');
+            document.querySelectorAll('.vt-btn').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
+            try { localStorage.setItem('prodView', mode); } catch (e) {}
+        }
+        (function () { let m = 'grid'; try { m = localStorage.getItem('prodView') === 'list' ? 'list' : 'grid'; } catch (e) {} setProdView(m); })();
+
         // ── HELPERS
         function goPage(page) {
             state.page = page;
@@ -594,69 +577,6 @@
             let timer;
             return function (...args) { clearTimeout(timer); timer = setTimeout(() => fn.apply(this, args), delay); };
         }
-
-        // ── MODAL
-        window.openModal = function (id) {
-            const prod = currentProducts.find(p => p.id === id);
-            if (!prod) return;
-            document.getElementById('modal-body').innerHTML = `
-                <div class="modal-body-grid">
-                    <div class="modal-img-wrap">
-                        <img src="${prod.img || DEFAULT_IMG}" alt="${prod.title}" class="modal-img">
-                    </div>
-                    <div class="modal-details">
-                        <span class="badge">${prod.meta}</span>
-                        <h2>${prod.title}</h2>
-                        <p>${prod.desc}</p>
-                        <div class="modal-specs">
-                            <div><span>${prod.specLabel}</span> <strong>${prod.specVal}</strong></div>
-                            <div><span>Kecepatan Maks (RPM)</span> <strong>${prod.rpm}</strong></div>
-                            <div><span>Material Aplikasi</span> <strong>${prod.material}</strong></div>
-                        </div>
-                        <button onclick="openWA('${prod.title.replace(/'/g, "\\'")}')"
-                            style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;background:#25d366;color:#fff;padding:13px;border-radius:8px;border:none;cursor:pointer;font-size:0.95rem;font-weight:600;font-family:inherit;transition:background 0.3s"
-                            onmouseover="this.style.background='#1da851'" onmouseout="this.style.background='#25d366'">
-                            <i class="fa-brands fa-whatsapp"></i> Pesan via WhatsApp
-                        </button>
-                    </div>
-                </div>
-                <div id="modal-related"></div>`;
-            modal.classList.add('show');
-            document.body.style.overflow = 'hidden';
-            renderRelated(prod);
-        };
-
-        // ── PRODUK SERUPA (kategori sama)
-        async function renderRelated(prod) {
-            const wrap = document.getElementById('modal-related');
-            if (!wrap || !prod.type) return;
-            try {
-                const res  = await fetch(`${SEARCH_URL}?category=${encodeURIComponent(prod.type)}`);
-                const data = await res.json();
-                const related = (data.products || []).filter(x => x.id !== prod.id).slice(0, 4);
-                if (!related.length) return;
-                related.forEach(r => { if (!currentProducts.some(c => c.id === r.id)) currentProducts.push(r); });
-                wrap.innerHTML = `
-                    <div class="related-section">
-                        <h3 class="related-heading">Produk Serupa</h3>
-                        <div class="related-grid">
-                            ${related.map(r => `
-                                <div class="related-card" onclick="openModal(${r.id})">
-                                    <div class="related-img"><img src="${r.img || DEFAULT_IMG}" alt="${(r.title||'').replace(/"/g,'&quot;')}" loading="lazy"></div>
-                                    <div class="related-body">
-                                        <div class="related-meta">${r.meta || ''}</div>
-                                        <h4 class="related-title">${r.title || ''}</h4>
-                                    </div>
-                                </div>`).join('')}
-                        </div>
-                    </div>`;
-            } catch (e) { /* sembunyikan jika gagal */ }
-        }
-
-        const closeModal = () => { modal.classList.remove('show'); document.body.style.overflow = ''; };
-        document.querySelector('.close-modal').onclick = closeModal;
-        window.onclick = e => { if (e.target === modal) closeModal(); };
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
         // ── MOBILE NAV
         function toggleMobileNav() {

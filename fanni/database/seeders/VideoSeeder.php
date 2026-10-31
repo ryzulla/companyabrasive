@@ -11,34 +11,34 @@ class VideoSeeder extends Seeder
     {
         $videos = [
             [
-                'id'    => 'dQw4w9WgXcQ',
-                'title' => 'Proses Produksi Grinding Wheel Berkualitas Tinggi',
-                'desc'  => 'Lihat bagaimana grinding wheel kami diproduksi dengan teknologi terkini dan pengawasan kualitas ketat di setiap tahap produksi.',
+                'id'    => 'eK_ump70x8w',
+                'title' => 'Grit Amplas: Apa Bedanya dan Cara Memilih yang Tepat',
+                'desc'  => 'Penjelasan arti angka grit pada amplas dan cara memilihnya sesuai pekerjaan (video dari Saindo).',
             ],
             [
-                'id'    => 'jNQXAC9IVRw',
-                'title' => 'Demo Penggunaan Cutting Disc untuk Pemotongan Baja',
-                'desc'  => 'Demonstrasi langsung penggunaan cutting disc premium kami pada berbagai jenis baja — baja karbon, stainless steel, dan besi cor.',
+                'id'    => '6Z25BiVItMI',
+                'title' => 'Cara Memilih Amplas untuk Kayu, Besi, dan Tembok',
+                'desc'  => 'Panduan memilih jenis amplas yang tepat untuk tiap bahan (video dari Terrace Interior).',
             ],
             [
-                'id'    => 'M7lc1UVf-VE',
-                'title' => 'Teknik Finishing dengan Flap Disc: Dari Kasar ke Halus',
-                'desc'  => 'Tutorial lengkap penggunaan flap disc untuk mendapatkan hasil finishing permukaan logam yang sempurna di berbagai aplikasi industri.',
+                'id'    => 'Kf6K1MueXL4',
+                'title' => 'Mengenal Jenis Mata Gerinda Tangan',
+                'desc'  => 'Pengenalan berbagai mata gerinda tangan dan fungsinya masing-masing (video dari Tukang Jadi jadian).',
             ],
             [
-                'id'    => 'ZZ5LpwO-An4',
-                'title' => 'Panduan Keselamatan Kerja Menggunakan Produk Abrasif',
-                'desc'  => 'Video edukasi tentang standar keselamatan kerja yang wajib diterapkan saat menggunakan grinding wheel, cutting disc, dan produk abrasif lainnya.',
+                'id'    => 'OSqf5cuBiHk',
+                'title' => 'Tips Aman dan Teknik Memakai Gerinda Tangan',
+                'desc'  => 'Tips keselamatan dan teknik dasar memakai gerinda tangan untuk pemula (video dari Dhi Dhut).',
             ],
             [
-                'id'    => 'oHg5SJYRHA0',
-                'title' => 'Kunjungan Pabrik: Fasilitas Produksi & Quality Control',
-                'desc'  => 'Tur virtual fasilitas produksi kami yang modern, dilengkapi mesin-mesin canggih dan laboratorium pengujian kualitas berstandar internasional.',
+                'id'    => 'RjbTyTTRLzc',
+                'title' => 'Metal Polishing Compounds & Buffing Wheels Explained',
+                'desc'  => 'Penjelasan compound poles dan roda poles untuk logam, berbahasa Inggris (video dari Maverick Abrasives).',
             ],
         ];
 
         foreach ($videos as $data) {
-            Video::firstOrCreate(['id' => $data['id']], $data);
+            Video::updateOrCreate(['id' => $data['id']], $data);
         }
     }
 }

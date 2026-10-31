@@ -5,22 +5,9 @@
 @section('content')
 <div class="flex items-center justify-between mb-4">
     <p class="text-sm text-slate-500">
-        {{ $messages->total() }} pesan masuk
-        @if(request('q'))<span class="ml-1 text-slate-400">— hasil "<strong class="text-slate-600">{{ request('q') }}</strong>"</span>@endif
+        {{ $messages->count() }} pesan masuk
     </p>
 </div>
-
-<form method="GET" action="{{ route('admin.contacts.index') }}" class="mb-6 flex gap-2">
-    <div class="flex items-center gap-2 flex-1 max-w-sm bg-white border border-slate-300 rounded-lg px-3 transition">
-        <svg class="w-3.5 h-3.5 text-slate-400 shrink-0 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/></svg>
-        <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama, email, atau pesan..."
-               class="w-full text-sm py-2.5 text-slate-700 placeholder:text-slate-400 focus:outline-none bg-transparent">
-    </div>
-    <button type="submit" class="text-sm text-white px-4 py-2.5 rounded-lg font-medium shrink-0" style="background:#4f46e5;">Cari</button>
-    @if(request('q'))
-        <a href="{{ route('admin.contacts.index') }}" class="text-sm border border-slate-200 hover:bg-slate-50 text-slate-500 px-3 py-2.5 rounded-lg transition shrink-0">Reset</a>
-    @endif
-</form>
 
 <div class="bg-white rounded-xl border border-slate-100 overflow-hidden">
     @if($messages->isEmpty())
@@ -30,7 +17,7 @@
         </div>
     @else
         <div class="overflow-x-auto admin-table-wrap">
-        <table class="w-full text-sm min-w-[560px] admin-table">
+        <table class="w-full text-sm min-w-[560px] admin-table js-datatable">
             <thead class="bg-slate-50 border-b border-slate-100">
                 <tr>
                     <th class="text-left px-6 py-3 font-medium text-slate-600">Pengirim</th>
@@ -48,6 +35,7 @@
                             <div class="text-slate-400 text-xs">{{ $message->phone }}</div>
                         </td>
                         <td class="px-6 py-4 text-slate-600 max-w-sm" data-label="Pesan">
+                            @if($message->subject)<span class="inline-block text-xs bg-blue-50 text-blue-600 rounded px-2 py-0.5 mb-1">{{ $message->subject }}</span>@endif
                             <p class="line-clamp-2">{{ $message->message }}</p>
                         </td>
                         <td class="px-6 py-4 text-slate-500 whitespace-nowrap" data-label="Tanggal">{{ $message->created_at->format('d M Y H:i') }}</td>
@@ -65,9 +53,6 @@
                 @endforeach
             </tbody>
         </table>
-        </div>
-        <div class="px-6 py-4 border-t border-slate-50">
-            {{ $messages->links() }}
         </div>
     @endif
 </div>

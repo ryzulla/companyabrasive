@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,8 +23,7 @@ class ProductController extends Controller
                 });
             })
             ->latest()
-            ->paginate(15)
-            ->withQueryString();
+            ->get();
 
         return view('admin.products.index', compact('products'));
     }
@@ -41,7 +41,8 @@ class ProductController extends Controller
             'meta' => ['required', 'string', 'max:255'],
             'title' => ['required', 'string', 'max:255'],
             'badge' => ['nullable', 'string', 'max:50'],
-            'img' => ['required', 'image', 'max:2048'],
+            'images' => ['required', 'array', 'min:1', 'max:10'],
+            'images.*' => ['image', 'max:2048'],
             'desc' => ['required', 'string'],
             'spec_label' => ['required', 'string', 'max:100'],
             'spec_val' => ['required', 'string', 'max:100'],
@@ -49,11 +50,10 @@ class ProductController extends Controller
             'material' => ['required', 'string', 'max:255'],
         ]);
 
-        if ($request->hasFile('img')) {
-            $data['img'] = $request->file('img')->store('products', 'public');
-        }
-
-        Product::create($data);
+        unset($data['images']);
+        $data['img'] = '';
+        $product = Product::create($data);
+        $this->addImages($product, $request->file('images'));
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produk berhasil ditambahkan.');
@@ -72,7 +72,10 @@ class ProductController extends Controller
             'meta' => ['required', 'string', 'max:255'],
             'title' => ['required', 'string', 'max:255'],
             'badge' => ['nullable', 'string', 'max:50'],
-            'img' => ['nullable', 'image', 'max:2048'],
+            'images' => ['nullable', 'array', 'max:10'],
+            'images.*' => ['image', 'max:2048'],
+            'remove_images' => ['nullable', 'array'],
+            'remove_images.*' => ['integer'],
             'desc' => ['required', 'string'],
             'spec_label' => ['required', 'string', 'max:100'],
             'spec_val' => ['required', 'string', 'max:100'],
@@ -80,16 +83,21 @@ class ProductController extends Controller
             'material' => ['required', 'string', 'max:255'],
         ]);
 
-        if ($request->hasFile('img')) {
-            if ($product->img) {
-                Storage::disk('public')->delete($product->img);
-            }
-            $data['img'] = $request->file('img')->store('products', 'public');
-        } else {
-            unset($data['img']);
+        $remove = $product->images()->whereIn('id', $request->input('remove_images', []))->get();
+        $newFiles = $request->file('images', []);
+
+        if ($product->images()->count() - $remove->count() + count($newFiles) < 1) {
+            throw ValidationException::withMessages(['images' => 'Produk harus memiliki minimal 1 foto.']);
         }
 
+        unset($data['images'], $data['remove_images']);
         $product->update($data);
+
+        foreach ($remove as $image) {
+            Storage::disk('public')->delete($image->path);
+            $image->delete();
+        }
+        $this->addImages($product, $newFiles);
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produk berhasil diperbarui.');
@@ -97,12 +105,26 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if ($product->img) {
-            Storage::disk('public')->delete($product->img);
+        foreach ($product->images as $image) {
+            Storage::disk('public')->delete($image->path);
         }
         $product->delete();
 
         return redirect()->route('admin.products.index')
             ->with('success', 'Produk berhasil dihapus.');
+    }
+
+    private function addImages(Product $product, array $files): void
+    {
+        $sort = (int) $product->images()->max('sort');
+
+        foreach ($files as $file) {
+            $product->images()->create([
+                'path' => $file->store('products', 'public'),
+                'sort' => ++$sort,
+            ]);
+        }
+
+        $product->syncCover();
     }
 }

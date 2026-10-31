@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tentang Kami | {{ $s['company_name'] ?? 'Company Profile' }}</title>
+    @include('home._seo', ['page' => [
+        'title'       => 'Tentang Kami | ' . ($s['company_name'] ?? 'Company Profile'),
+        'description' => ($s['about_title'] ?? '') . '. ' . strip_tags($s['about_desc'] ?? ''),
+        'canonical'   => route('about'),
+        'jsonld'      => [[
+            '@context' => 'https://schema.org', '@type' => 'AboutPage', 'name' => 'Tentang Kami',
+            'url' => route('about'), 'isPartOf' => ['@type' => 'WebSite', 'url' => url('/')],
+        ]],
+    ]])
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -74,6 +82,11 @@
         .features-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; margin-bottom: 24px; }
         .feature-item { display: flex; align-items: center; gap: 8px; font-weight: 500; color: var(--primary); font-size: 0.92rem; }
         .feature-item i { color: var(--accent); flex-shrink: 0; }
+        .vm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+        .vm-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+        .vm-card h3 { color: var(--primary); font-size: 1.2rem; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+        .vm-card h3 i { color: var(--accent); }
+        .vm-card ul { list-style: disc; padding-left: 20px; color: var(--secondary); display: flex; flex-direction: column; gap: 8px; }
         .certifications { display: flex; gap: 10px; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 18px; flex-wrap: wrap; }
         .cert-badge { background: #e2e8f0; color: var(--primary); padding: 6px 13px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; display: flex; align-items: center; gap: 5px; }
 
@@ -131,12 +144,7 @@
     <header>
         <div class="container nav-container">
             <a href="{{ route('home') }}" class="logo">
-                @if(!empty($s['company_logo']))
-                    <img src="{{ Storage::url($s['company_logo']) }}" alt="{{ $s['company_name'] ?? '' }}">
-                @else
-                    {{ explode(' ', $s['company_name'] ?? 'Company')[0] }}
-                    <span>{{ implode(' ', array_slice(explode(' ', $s['company_name'] ?? ''), 1)) }}</span>
-                @endif
+                @include('home._brand')
             </a>
             <ul class="nav-menu">
                 <li><a href="{{ route('home') }}" class="nav-link">Beranda</a></li>
@@ -207,6 +215,27 @@
         </div>
     </section>
 
+    @if(!empty($s['about_vision']) || !empty($s['about_mission']))
+    {{-- VISI & MISI --}}
+    <section class="section-padding" style="padding-top:0;">
+        <div class="container">
+            <div class="vm-grid">
+                @foreach(['about_vision' => ['Visi', 'fa-eye'], 'about_mission' => ['Misi', 'fa-bullseye']] as $key => [$label, $icon])
+                    @php $items = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', $s[$key] ?? '')))); @endphp
+                    @if($items)
+                    <div class="vm-card">
+                        <h3><i class="fa-solid {{ $icon }}"></i> {{ $label }}</h3>
+                        <ul>
+                            @foreach($items as $item)<li>{{ $item }}</li>@endforeach
+                        </ul>
+                    </div>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+    </section>
+    @endif
+
     {{-- MILESTONE --}}
     <section class="milestone-section">
         <div class="container milestone-grid">
@@ -237,7 +266,7 @@
     <section class="container">
         <div class="cta-banner">
             <h2>{{ $s['cta_title'] ?? 'Siap Bekerja Sama dengan Kami?' }}</h2>
-            <p>{{ $s['cta_desc'] ?? 'Diskusikan kebutuhan Anda bersama tim kami dan temukan solusi terbaik.' }}</p>
+            <p>{{ strip_tags($s['cta_desc'] ?? 'Diskusikan kebutuhan Anda bersama tim kami dan temukan solusi terbaik.') }}</p>
             <div class="cta-buttons">
                 <a href="{{ route('products.index') }}" class="btn-primary"><i class="fa-solid fa-box-open"></i> Lihat Produk Kami</a>
                 <a href="{{ route('home') }}#contact" class="btn-outline" style="color:#fff;border-color:#fff;"><i class="fa-solid fa-paper-plane"></i> Hubungi Kami</a>
@@ -247,13 +276,16 @@
 
     <footer>
         <div class="container">
+            @include('home._social')
             <p>{{ $s['footer_text'] ?? '© '.date('Y').' All Rights Reserved.' }}</p>
         </div>
     </footer>
 
-    <a href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+bertanya+tentang+perusahaan+Anda" class="float-wa" target="_blank">
-        <i class="fa-brands fa-whatsapp"></i>
+    @if(!empty($s['wa_number']))
+    <a href="https://wa.me/{{ $s['wa_number'] }}?text=Halo%2C+saya+ingin+bertanya+tentang+perusahaan+Anda" class="float-wa" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
+        <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
     </a>
+    @endif
 
     <script>
         function toggleMobileNav() {

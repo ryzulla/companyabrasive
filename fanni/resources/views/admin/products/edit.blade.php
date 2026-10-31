@@ -68,25 +68,28 @@
                 <textarea name="desc" rows="4" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none">{{ old('desc', $product->desc) }}</textarea>
             </div>
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1.5">Gambar</label>
-                <div class="relative">
-                    <input type="file" name="img" accept="image/*" id="imgInput" class="sr-only">
-                    <label for="imgInput" id="imgLabel" class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 transition overflow-hidden" style="min-height:160px;">
-                        @if($product->img)
-                            <div id="imgEmpty" class="hidden"></div>
-                            <img id="imgPreview" src="{{ Storage::url($product->img) }}" alt="Preview" class="w-full h-40 object-cover">
-                        @else
-                            <div id="imgEmpty" class="flex flex-col items-center gap-2 text-slate-400 py-8">
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                <span class="text-sm">Klik untuk pilih gambar</span>
-                                <span class="text-xs">JPG, PNG, WebP · Maks 2MB</span>
-                            </div>
-                            <img id="imgPreview" src="" alt="Preview" class="w-full h-40 object-cover hidden">
-                        @endif
-                    </label>
-                    <button type="button" id="imgChange" class="absolute bottom-2 right-2 {{ $product->img ? '' : 'hidden' }} bg-white text-xs text-slate-600 px-2.5 py-1 rounded-md border border-slate-200 hover:bg-slate-50 transition shadow-sm" onclick="document.getElementById('imgInput').click()">Ganti</button>
-                </div>
-                <p class="text-xs text-slate-400 mt-1.5">Kosongkan jika tidak ingin mengubah gambar.</p>
+                <label class="block text-sm font-medium text-slate-700 mb-1.5">Foto Produk <span class="text-slate-400 font-normal">(bisa lebih dari satu, maks 10)</span></label>
+                @if($product->images->isNotEmpty())
+                    <div class="gap-3 mb-3" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,130px));">
+                        @foreach($product->images as $image)
+                            <label class="relative block rounded-lg overflow-hidden border border-slate-200 cursor-pointer">
+                                <img src="{{ Storage::url($image->path) }}" class="w-full object-cover" style="aspect-ratio:1/1; display:block;" alt="">
+                                @if($loop->first)<span class="absolute top-1 left-1 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded">Cover</span>@endif
+                                <span class="absolute inset-x-0 bottom-0 bg-white/95 flex items-center gap-1.5 px-2 py-1 text-xs text-red-600">
+                                    <input type="checkbox" name="remove_images[]" value="{{ $image->id }}"> Hapus
+                                </span>
+                            </label>
+                        @endforeach
+                    </div>
+                @endif
+                <input type="file" name="images[]" accept="image/*" id="imagesInput" class="sr-only" multiple>
+                <label for="imagesInput" class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition py-6 text-slate-400">
+                    <svg class="w-8 h-8 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span class="text-sm">Klik untuk tambah foto</span>
+                    <span class="text-xs">JPG, PNG, WebP · Maks 2MB per foto</span>
+                </label>
+                <div id="imagesPreview" class="gap-3 mt-3" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,130px));"></div>
+                <p class="text-xs text-slate-400 mt-1.5">Foto yang dicentang "Hapus" akan dihapus saat disimpan. Foto pertama menjadi cover di daftar produk.</p>
             </div>
             <div class="flex gap-3 pt-2">
                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition">Simpan Perubahan</button>
@@ -99,17 +102,30 @@
 
 @push('scripts')
 <script>
-document.getElementById('imgInput').addEventListener('change', function() {
-    const file = this.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-        document.getElementById('imgPreview').src = e.target.result;
-        document.getElementById('imgPreview').classList.remove('hidden');
-        document.getElementById('imgEmpty').classList.add('hidden');
-        document.getElementById('imgChange').classList.remove('hidden');
-    };
-    reader.readAsDataURL(file);
+const imagesInput = document.getElementById('imagesInput');
+const imagesPreview = document.getElementById('imagesPreview');
+// FileList tidak bisa ditambah langsung, jadi kumpulkan lewat DataTransfer agar pilihan berikutnya menambah, bukan mengganti.
+const picked = new DataTransfer();
+imagesInput.addEventListener('change', function () {
+    for (const f of this.files) picked.items.add(f);
+    this.files = picked.files;
+    renderPreview();
 });
+function removePicked(i) {
+    picked.items.remove(i);
+    imagesInput.files = picked.files;
+    renderPreview();
+}
+function renderPreview() {
+    imagesPreview.innerHTML = '';
+    Array.from(picked.files).forEach((f, i) => {
+        const url = URL.createObjectURL(f);
+        const el = document.createElement('div');
+        el.className = 'relative rounded-lg overflow-hidden border border-slate-200';
+        el.innerHTML = `<img src="${url}" class="w-full object-cover" style="aspect-ratio:1/1; display:block;" alt="">
+            <button type="button" onclick="removePicked(${i})" class="absolute top-1 right-1 bg-white/90 text-red-600 rounded-full w-5 h-5 text-xs leading-5">&times;</button>`;
+        imagesPreview.appendChild(el);
+    });
+}
 </script>
 @endpush

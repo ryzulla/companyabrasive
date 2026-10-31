@@ -1,303 +1,36 @@
-@php $show = fn($k) => ($s[$k] ?? '1') !== '0'; @endphp
+@php $show = fn($k) => ($s[$k] ?? '1') !== '0'; $hasWa = !empty($s['wa_number']); @endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
     <meta name="theme-color" content="#0f172a">
-    <title>{{ $s['company_name'] ?? 'Company Profile' }} | {{ $s['company_tagline'] ?? '' }}</title>
+    @include('home._seo', ['page' => ['canonical' => route('home'), 'org' => true]])
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
-    <style>
-        :root {
-            --primary: #0f172a;
-            --secondary: #475569;
-            --accent: #ea580c;
-            --accent-hover: #c2410c;
-            --light-bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --border: #eef2f7;
-            --header-h: 56px;
-            --tab-h: 62px;
-            --safe-top: env(safe-area-inset-top, 0px);
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --transition: all 0.25s ease;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
-        body {
-            background: var(--light-bg); color: var(--text-main); line-height: 1.55;
-            overflow-x: hidden; font-size: 15px;
-            -webkit-font-smoothing: antialiased;
-        }
-        a { text-decoration: none; color: inherit; }
-        ul { list-style: none; }
-        img { max-width: 100%; display: block; }
-        button { font-family: inherit; cursor: pointer; border: none; background: none; }
-        ::-webkit-scrollbar { width: 0; height: 0; }
-
-        /* ─────────── APP HEADER ─────────── */
-        .app-header {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-            height: calc(var(--header-h) + var(--safe-top));
-            padding-top: var(--safe-top);
-            background: rgba(255,255,255,0.94); backdrop-filter: blur(14px);
-            display: flex; align-items: center; justify-content: space-between;
-            padding-left: 16px; padding-right: 12px;
-            border-bottom: 1px solid var(--border);
-        }
-        .app-logo { display: flex; align-items: center; gap: 8px; font-size: 1.08rem; font-weight: 700; color: var(--primary); }
-        .app-logo span { color: var(--accent); }
-        .app-logo img { height: 30px; width: auto; object-fit: contain; }
-        .header-actions { display: flex; align-items: center; gap: 4px; }
-        .icon-btn {
-            width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            color: var(--primary); font-size: 1.05rem; transition: var(--transition);
-        }
-        .icon-btn:active { background: var(--light-bg); }
-        .icon-btn.wa { color: #25d366; }
-
-        /* ─────────── SCREEN SYSTEM ─────────── */
-        .app-main {
-            padding-top: calc(var(--header-h) + var(--safe-top));
-            padding-bottom: calc(var(--tab-h) + var(--safe-bottom));
-            min-height: 100vh; min-height: 100svh;
-        }
-        .screen { display: none; animation: fadeUp 0.32s ease; }
-        .screen.active { display: block; }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .pad { padding: 20px 16px; }
-        .sec-title { font-size: 1.15rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-        .sec-sub { font-size: 0.82rem; color: var(--secondary); margin-bottom: 16px; }
-        .link-more { font-size: 0.78rem; font-weight: 600; color: var(--accent); display: inline-flex; align-items: center; gap: 5px; }
-
-        /* ─────────── HERO ─────────── */
-        .hero {
-            position: relative; min-height: 62vh; min-height: 62svh; display: flex; align-items: flex-end;
-            color: #fff; padding: 28px 18px 34px;
-            background: linear-gradient(rgba(15,23,42,0.35), rgba(15,23,42,0.9)),
-                        url('https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
-        }
-        .hero-eyebrow { display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: rgba(234,88,12,0.9); color: #fff; padding: 5px 12px; border-radius: 30px; margin-bottom: 14px; }
-        .hero h1 { font-size: 1.85rem; line-height: 1.22; font-weight: 700; margin-bottom: 12px; }
-        .hero h1 span { color: var(--accent); }
-        .hero p { font-size: 0.92rem; color: #e2e8f0; margin-bottom: 20px; max-width: 90%; }
-        .hero-actions { display: flex; gap: 10px; }
-
-        .btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-            padding: 13px 20px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; transition: var(--transition); white-space: nowrap;
-        }
-        .btn:active { transform: scale(0.97); }
-        .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 6px 18px rgba(234,88,12,0.32); }
-        .btn-ghost { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.4); backdrop-filter: blur(6px); }
-        .btn-block { width: 100%; }
-        .btn-wa { background: #25d366; color: #fff; box-shadow: 0 6px 18px rgba(37,211,102,0.32); }
-
-        /* ─────────── MILESTONES ─────────── */
-        .stats-strip { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 18px 16px; background: var(--primary); }
-        .stat-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 16px 12px; text-align: center; }
-        .stat-box i { color: var(--accent); font-size: 1.15rem; margin-bottom: 8px; display: block; }
-        .stat-box h3 { color: #fff; font-size: 1.5rem; font-weight: 700; line-height: 1; }
-        .stat-box p { color: #94a3b8; font-size: 0.72rem; margin-top: 5px; }
-
-        /* ─────────── HORIZONTAL RAILS ─────────── */
-        .rail { display: flex; gap: 12px; overflow-x: auto; padding: 4px 16px 8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
-        .rail > * { scroll-snap-align: start; flex-shrink: 0; }
-
-        /* Category card */
-        .cat-card { width: 140px; height: 160px; border-radius: 16px; overflow: hidden; position: relative; box-shadow: 0 4px 14px rgba(15,23,42,0.1); }
-        .cat-card .bg { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.4s ease; }
-        .cat-card:active .bg { transform: scale(1.06); }
-        .cat-card .ov { position: absolute; inset: 0; background: linear-gradient(transparent 35%, rgba(15,23,42,0.9)); display: flex; flex-direction: column; justify-content: flex-end; padding: 12px; }
-        .cat-card .ov h4 { color: #fff; font-size: 0.85rem; font-weight: 600; }
-        .cat-card .ov p { color: #cbd5e1; font-size: 0.68rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        /* ─────────── PRODUCT CARD ─────────── */
-        .prod-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 4px 16px; }
-        .prod-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 10px rgba(15,23,42,0.04); display: flex; flex-direction: column; transition: var(--transition); }
-        .prod-card:active { transform: scale(0.98); }
-        .rail .prod-card { width: 190px; }
-        .prod-img { position: relative; height: 130px; background: #f1f5f9; overflow: hidden; }
-        .prod-img img { width: 100%; height: 100%; object-fit: cover; }
-        .prod-badge { position: absolute; top: 8px; left: 8px; background: var(--primary); color: #fff; font-size: 0.62rem; font-weight: 600; padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.03em; }
-        .prod-body { padding: 11px 12px 13px; flex-grow: 1; display: flex; flex-direction: column; }
-        .prod-meta { font-size: 0.63rem; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.04em; }
-        .prod-title { font-size: 0.86rem; font-weight: 600; color: var(--primary); margin: 3px 0 6px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .prod-spec { font-size: 0.68rem; color: var(--secondary); margin-top: auto; }
-        .prod-spec b { display: block; color: var(--primary); font-size: 0.78rem; }
-        .prod-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; }
-        .prod-wa { width: 32px; height: 32px; border-radius: 10px; background: var(--light-bg); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0; transition: var(--transition); }
-        .prod-wa:active { background: var(--accent); color: #fff; }
-
-        /* ─────────── SEARCH BAR ─────────── */
-        .search-wrap { position: sticky; top: calc(var(--header-h) + var(--safe-top)); z-index: 50; background: var(--light-bg); padding: 14px 16px 8px; }
-        .search-box { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 11px 14px; box-shadow: 0 2px 10px rgba(15,23,42,0.04); }
-        .search-box i { color: var(--secondary); font-size: 0.9rem; }
-        .search-box input { flex: 1; border: none; outline: none; font-size: 0.9rem; background: transparent; color: var(--text-main); }
-        .chips { display: flex; gap: 8px; overflow-x: auto; padding: 10px 16px 4px; }
-        .chip { flex-shrink: 0; padding: 7px 15px; border-radius: 30px; font-size: 0.78rem; font-weight: 600; background: #fff; border: 1.5px solid var(--border); color: var(--secondary); transition: var(--transition); white-space: nowrap; }
-        .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-        .load-more { margin: 6px 16px 20px; }
-        .empty-state { text-align: center; padding: 48px 24px; color: var(--secondary); }
-        .empty-state i { font-size: 2.2rem; color: #cbd5e1; margin-bottom: 12px; }
-
-        /* skeleton */
-        .skel { background: linear-gradient(90deg,#eef2f7 25%,#e2e8f0 37%,#eef2f7 63%); background-size: 400% 100%; animation: shimmer 1.3s infinite; border-radius: 16px; height: 210px; }
-        @keyframes shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
-
-        /* ─────────── ABOUT ─────────── */
-        .about-img { border-radius: 18px; overflow: hidden; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(15,23,42,0.1); }
-        .about-img img { width: 100%; height: 210px; object-fit: cover; }
-        .about-text h3 { font-size: 1.25rem; color: var(--primary); margin-bottom: 10px; }
-        .about-text p { color: var(--secondary); font-size: 0.88rem; margin-bottom: 14px; }
-        .feat-list { display: grid; gap: 9px; margin: 14px 0; }
-        .feat-item { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 500; color: var(--primary); }
-        .feat-item i { color: var(--accent); }
-        .certs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-        .cert { background: #e2e8f0; color: var(--primary); padding: 6px 12px; border-radius: 8px; font-size: 0.72rem; font-weight: 600; display: flex; align-items: center; gap: 5px; }
-
-        /* clients marquee */
-        .marquee { overflow: hidden; white-space: nowrap; padding: 8px 0; position: relative; }
-        .marquee-track { display: inline-flex; align-items: center; animation: marquee 26s linear infinite; }
-        .m-logo { display: inline-flex; align-items: center; gap: 8px; margin: 0 16px; filter: grayscale(1); opacity: 0.6; }
-        .m-logo img { height: 32px; width: auto; max-width: 110px; object-fit: contain; }
-        .m-logo span { font-size: 0.82rem; font-weight: 700; color: #94a3b8; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
-        /* testimonial */
-        .testi-card { width: 270px; background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 18px; box-shadow: 0 2px 10px rgba(15,23,42,0.04); white-space: normal; }
-        .testi-card .quote { color: var(--accent); font-size: 1.3rem; margin-bottom: 6px; }
-        .testi-card p { font-style: italic; color: var(--secondary); font-size: 0.85rem; margin-bottom: 14px; }
-        .testi-author { display: flex; align-items: center; gap: 10px; }
-        .testi-av { width: 38px; height: 38px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
-        .testi-author h5 { font-size: 0.85rem; color: var(--primary); }
-        .testi-author small { color: var(--accent); font-size: 0.72rem; font-weight: 600; }
-
-        /* faq */
-        .faq-item { background: #fff; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
-        .faq-q { padding: 15px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 0.88rem; font-weight: 600; color: var(--primary); }
-        .faq-q i { transition: transform 0.3s; color: var(--secondary); flex-shrink: 0; }
-        .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; padding: 0 16px; color: var(--secondary); font-size: 0.84rem; }
-        .faq-item.open .faq-a { max-height: 400px; padding: 0 16px 15px; }
-        .faq-item.open .faq-q i { transform: rotate(180deg); color: var(--accent); }
-
-        /* video */
-        .video-card { border-radius: 16px; overflow: hidden; background: #fff; border: 1px solid var(--border); margin-bottom: 14px; }
-        .video-frame { position: relative; padding-bottom: 56.25%; background: #000 center/cover no-repeat; cursor: pointer; }
-        .video-frame::before { content: ''; position: absolute; inset: 0; background: rgba(15,23,42,0.28); }
-        .video-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 54px; height: 54px; border-radius: 50%; background: rgba(234,88,12,0.95); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; border: none; z-index: 2; box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
-        .video-play i { margin-left: 2px; }
-        .video-play:active { transform: translate(-50%,-50%) scale(0.92); }
-        .video-card .vi { padding: 13px 15px; }
-        .video-card .vi h4 { font-size: 0.9rem; color: var(--primary); margin-bottom: 3px; }
-        .video-card .vi p { font-size: 0.8rem; color: var(--secondary); }
-        /* video fullscreen overlay (mobile: langsung penuh layar) */
-        .video-fs { position: fixed; inset: 0; z-index: 500; background: #000; display: none; align-items: center; justify-content: center; }
-        .video-fs.open { display: flex; }
-        .video-fs-inner { position: relative; width: 100%; padding-bottom: 56.25%; }
-        .video-fs-inner iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-        .video-fs-close { position: absolute; top: calc(12px + var(--safe-top)); right: 14px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.16); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; z-index: 3; backdrop-filter: blur(4px); }
-        /* isi artikel dalam bottom-sheet */
-        .article-body { white-space: pre-line; color: var(--secondary); font-size: 0.9rem; line-height: 1.75; margin-bottom: 4px; }
-
-        /* blog */
-        .blog-card { display: flex; gap: 12px; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 10px; margin-bottom: 12px; cursor: pointer; }
-        .blog-card:active { transform: scale(0.99); }
-        .blog-thumb { width: 90px; height: 90px; border-radius: 10px; background-size: cover; background-position: center; flex-shrink: 0; }
-        .blog-info { display: flex; flex-direction: column; }
-        .blog-info .bm { font-size: 0.68rem; font-weight: 600; color: var(--accent); }
-        .blog-info h4 { font-size: 0.88rem; color: var(--primary); margin: 3px 0 5px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .blog-info p { font-size: 0.76rem; color: var(--secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        /* ─────────── CTA ─────────── */
-        .cta { margin: 20px 16px; background: linear-gradient(135deg, var(--primary), #1e293b); border-radius: 20px; padding: 26px 20px; text-align: center; color: #fff; }
-        .cta h3 { font-size: 1.15rem; margin-bottom: 8px; }
-        .cta p { font-size: 0.85rem; color: #cbd5e1; margin-bottom: 18px; }
-        .cta .btn { margin-bottom: 10px; }
-
-        /* ─────────── CONTACT ─────────── */
-        .contact-card { display: flex; gap: 14px; background: #fff; border: 1px solid var(--border); border-radius: 14px; padding: 15px; margin-bottom: 12px; }
-        .contact-ic { width: 44px; height: 44px; border-radius: 12px; background: rgba(234,88,12,0.1); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; flex-shrink: 0; }
-        .contact-card h5 { font-size: 0.85rem; color: var(--primary); margin-bottom: 3px; }
-        .contact-card p { font-size: 0.82rem; color: var(--secondary); }
-        .form-field { margin-bottom: 12px; }
-        .form-field input, .form-field textarea {
-            width: 100%; padding: 13px 15px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 0.9rem; color: var(--text-main); background: #fff; transition: var(--transition); outline: none;
-        }
-        .form-field input:focus, .form-field textarea:focus { border-color: var(--accent); }
-        .form-err { color: #dc2626; font-size: 0.74rem; margin-top: 4px; }
-        .alert-ok { background: #dcfce7; border: 1px solid #86efac; color: #166534; padding: 13px 15px; border-radius: 12px; font-size: 0.85rem; margin-bottom: 16px; }
-
-        /* ─────────── BOTTOM TAB BAR ─────────── */
-        .tabbar {
-            position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
-            height: calc(var(--tab-h) + var(--safe-bottom)); padding-bottom: var(--safe-bottom);
-            background: rgba(255,255,255,0.96); backdrop-filter: blur(14px);
-            border-top: 1px solid var(--border);
-            display: flex; align-items: stretch;
-        }
-        .tab {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-            color: var(--secondary); font-size: 0.66rem; font-weight: 600; transition: var(--transition); position: relative;
-        }
-        .tab i { font-size: 1.15rem; }
-        .tab.active { color: var(--accent); }
-        .tab.active::before { content: ''; position: absolute; top: 0; width: 26px; height: 3px; border-radius: 0 0 4px 4px; background: var(--accent); }
-
-        /* ─────────── BOTTOM SHEET (product detail) ─────────── */
-        .sheet-backdrop { position: fixed; inset: 0; z-index: 300; background: rgba(15,23,42,0.55); backdrop-filter: blur(3px); opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
-        .sheet-backdrop.open { opacity: 1; visibility: visible; }
-        .sheet {
-            position: fixed; left: 0; right: 0; bottom: 0; z-index: 301;
-            background: #fff; border-radius: 22px 22px 0 0; max-height: 92vh; overflow-y: auto;
-            transform: translateY(100%); transition: transform 0.34s cubic-bezier(0.22,1,0.36,1);
-            padding-bottom: calc(20px + var(--safe-bottom));
-        }
-        .sheet.open { transform: translateY(0); }
-        .sheet-handle { width: 42px; height: 5px; border-radius: 3px; background: #cbd5e1; margin: 10px auto 4px; }
-        .sheet-close { position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 50%; background: rgba(15,23,42,0.6); color: #fff; border: 1.5px solid rgba(255,255,255,0.85); box-shadow: 0 2px 8px rgba(0,0,0,0.35); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; z-index: 10; }
-        .sheet-close:active { background: rgba(15,23,42,0.8); }
-        .sheet-img { width: 100%; height: 240px; object-fit: cover; background: #f1f5f9; }
-        .sheet-content { padding: 18px 18px 0; }
-        .sheet-badge { display: inline-block; background: var(--primary); color: #fff; font-size: 0.68rem; font-weight: 600; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px; }
-        .sheet-content h2 { font-size: 1.3rem; color: var(--primary); margin-bottom: 8px; line-height: 1.3; }
-        .sheet-content > p { color: var(--secondary); font-size: 0.88rem; margin-bottom: 16px; }
-        .spec-list { background: var(--light-bg); border-radius: 12px; padding: 4px 14px; margin-bottom: 18px; }
-        .spec-list div { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 0.84rem; }
-        .spec-list div:last-child { border-bottom: none; }
-        .spec-list span { color: var(--secondary); }
-        .spec-list b { color: var(--primary); text-align: right; }
-        .related-title { font-size: 1rem; color: var(--primary); font-weight: 600; margin: 22px 0 4px; }
-        .related-rail { margin: 0 -18px; padding: 8px 18px 20px; }
-        .related-rail .prod-card { width: 160px; }
-
-        /* toast */
-        .toast { position: fixed; bottom: calc(var(--tab-h) + 20px + var(--safe-bottom)); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--primary); color: #fff; padding: 11px 20px; border-radius: 30px; font-size: 0.82rem; z-index: 400; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-        .footer-note { text-align: center; padding: 22px 16px; color: #94a3b8; font-size: 0.76rem; }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/home-mobile.css') }}?v={{ filemtime(public_path('css/home-mobile.css')) }}">
 </head>
 <body>
 
     {{-- ══════════ HEADER ══════════ --}}
     <header class="app-header">
         <a class="app-logo" onclick="showScreen('home')">
-            @if(!empty($s['company_logo']))
-                <img src="{{ Storage::url($s['company_logo']) }}" alt="{{ $s['company_name'] ?? '' }}">
-            @else
-                {{ explode(' ', $s['company_name'] ?? 'Company')[0] }}
-                <span>{{ implode(' ', array_slice(explode(' ', $s['company_name'] ?? ''), 1)) }}</span>
-            @endif
-        </a>
+                @include('home._brand')
+            </a>
         <div class="header-actions">
             <button class="icon-btn" onclick="showScreen('products'); setTimeout(()=>document.getElementById('mSearch').focus(),350)" aria-label="Cari"><i class="fa-solid fa-magnifying-glass"></i></button>
-            <a class="icon-btn wa" href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+bertanya+tentang+produk+Anda" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            @if(!empty($s['phone']))
+            <a class="icon-btn" href="tel:{{ preg_replace('/[^0-9+]/', '', $s['phone']) }}" aria-label="Telepon"><i class="fa-solid fa-phone"></i></a>
+            @endif
+            @if($hasWa)
+            <a class="icon-btn wa" href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+bertanya+tentang+produk+Anda" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            @endif
         </div>
     </header>
 
@@ -331,15 +64,27 @@
             {{-- KATEGORI --}}
             @if($show('show_categories') && $categories->count())
             <div class="pad" style="padding-bottom: 6px;">
-                <div class="sec-title">{{ $s['categories_title'] ?? 'Kategori' }}</div>
+                <div class="sec-title">{{ $s['categories_title'] ?? 'Kategori' }} <span class="cat-total">{{ $categories->count() }} kategori</span></div>
                 <div class="sec-sub">{{ $s['categories_desc'] ?? 'Jelajahi kategori produk kami' }}</div>
             </div>
-            <div class="rail">
+            @php $catIcons = ['amplas-lembaran', 'amplas-roll-belt', 'flap-disc-wheel', 'gerinda-potong', 'poles-buffing', 'scouring-pad', 'mata-bor-fastener', 'pengelasan-pneumatik', 'tape-perekat', 'pelumas-cleaner', 'perlengkapan-kerja']; @endphp
+            @include('home._category-icons')
+            <div class="cat-list">
                 @foreach($categories as $cat)
-                    <div class="cat-card" onclick="goCategory('{{ $cat->id }}')">
-                        <div class="bg" style="background-image: url('{{ $cat->img ? Storage::url($cat->img) : 'https://images.unsplash.com/photo-1513828583835-c5417eb91e1d?auto=format&fit=crop&w=400&q=80' }}');"></div>
-                        <div class="ov"><h4>{{ $cat->title }}</h4><p>{{ $cat->desc }}</p></div>
-                    </div>
+                    <button type="button" class="cat-row" onclick="goCategory('{{ $cat->id }}')">
+                        <span class="cat-ico">
+                            @if(in_array($cat->id, $catIcons))
+                                <svg class="ci" aria-hidden="true"><use href="#ci-{{ $cat->id }}"></use></svg>
+                            @else
+                                <i class="fa-solid {{ $cat->icon ?: 'fa-layer-group' }}"></i>
+                            @endif
+                        </span>
+                        <span class="cat-info">
+                            <strong>{{ $cat->title }}</strong>
+                            <small>{{ $cat->products_count }} produk</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                 @endforeach
             </div>
             @endif
@@ -352,18 +97,52 @@
                 </div>
                 <div class="sec-sub">{{ $s['products_desc'] ?? '' }}</div>
             </div>
-            <div class="rail" id="featured-rail"></div>
+            <div class="view-bar">
+                <span class="view-count" id="homeCount">Menampilkan {{ $products->count() }} dari {{ $productsTotal }} produk</span>
+                <div class="view-toggle" role="group" aria-label="Tampilan produk">
+                    <button type="button" class="vt-btn" data-view="grid" onclick="setProdView('grid')" aria-label="Tampilan kotak"><i class="fa-solid fa-table-cells-large"></i></button>
+                    <button type="button" class="vt-btn" data-view="list" onclick="setProdView('list')" aria-label="Tampilan daftar"><i class="fa-solid fa-list"></i></button>
+                </div>
+            </div>
+            <div class="prod-grid" id="featured-grid">
+                @foreach($products as $p)
+                <div class="prod-card" onclick="location.href='{{ $p['url'] }}'">
+                    <div class="prod-img">
+                        @if($p['badge'])<span class="prod-badge">{{ $p['badge'] }}</span>@endif
+                        <img src="{{ $p['img'] ?: 'https://images.unsplash.com/photo-1620912189865-1e8a33da4c5e?auto=format&fit=crop&w=400&q=80' }}" alt="{{ $p['title'] }}" loading="lazy">
+                    </div>
+                    <div class="prod-body">
+                        <span class="prod-meta">{{ $p['meta'] }}</span>
+                        <h4 class="prod-title"><a href="{{ $p['url'] }}">{{ $p['title'] }}</a></h4>
+                        <div class="prod-foot">
+                            <div class="prod-spec">{{ $p['specLabel'] }}<b>{{ $p['specVal'] ?: '-' }}</b></div>
+                            @if($hasWa)
+                            <button class="prod-wa" onclick="event.stopPropagation(); waProduct('{{ rawurlencode($p['title']) }}')" aria-label="Tanya {{ $p['title'] }} via WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></button>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+                @if($products->isEmpty())<div style="grid-column:1/-1;padding:0 4px;color:#94a3b8;font-size:0.85rem;">Belum ada produk.</div>@endif
+            </div>
+            @if($productsTotal > $products->count())
+            <div class="load-more" id="homeLoadMore">
+                <button type="button" class="btn btn-ghost btn-block" style="color:var(--accent);border-color:var(--accent);" onclick="showScreen('products')"><span>Muat Lebih Banyak</span> <i class="fa-solid fa-arrow-right" style="font-size:0.75rem;margin-left:6px;"></i></button>
+            </div>
+            @endif
             @endif
 
             {{-- CTA --}}
             @if($show('show_cta'))
             <div class="cta">
                 <h3>{{ $s['cta_title'] ?? 'Butuh Spesifikasi Lengkap?' }}</h3>
-                <p>{{ $s['cta_desc'] ?? 'Dapatkan katalog produk lengkap kami.' }}</p>
+                <p>{{ strip_tags($s['cta_desc'] ?? 'Dapatkan katalog produk lengkap kami.') }}</p>
                 @if(!empty($s['ecatalog_file']))
                     <a href="{{ Storage::url($s['ecatalog_file']) }}" target="_blank" class="btn btn-primary btn-block"><i class="fa-solid fa-file-pdf"></i> Download E-Catalog</a>
                 @endif
-                <a href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+meminta+Katalog+Produk" target="_blank" class="btn btn-wa btn-block"><i class="fa-brands fa-whatsapp"></i> Minta via WhatsApp</a>
+                @if($hasWa)
+                <a href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+meminta+Katalog+Produk" target="_blank" rel="noopener" class="btn btn-wa btn-block"><i class="fa-brands fa-whatsapp"></i> Minta via WhatsApp</a>
+                @endif
             </div>
             @endif
 
@@ -378,7 +157,7 @@
                     @php $tripled = $clients->concat($clients)->concat($clients); @endphp
                     @foreach($tripled as $client)
                         <div class="m-logo">
-                            @if($client->logo)<img src="{{ Storage::url($client->logo) }}" alt="{{ $client->name }}">@endif
+                            @if($client->logo)<img src="{{ Storage::url($client->logo) }}" alt="{{ $client->name }}" loading="lazy">@endif
                             <span>{{ $client->name }}</span>
                         </div>
                     @endforeach
@@ -448,13 +227,14 @@
                         <div class="blog-info">
                             <span class="bm">{{ $blog->meta }}</span>
                             <h4>{{ $blog->title }}</h4>
-                            <p>{{ Str::limit($blog->desc, 80) }}</p>
+                            <p>{{ $blog->excerpt(80) }}</p>
                         </div>
                     </div>
                 @endforeach
             </div>
             @endif
 
+            @include('home._social')
             <div class="footer-note">{{ $s['footer_text'] ?? '© '.date('Y').' All Rights Reserved.' }}</div>
         </section>
 
@@ -472,6 +252,13 @@
                 @foreach($categories as $cat)
                     <button class="chip" data-cat="{{ $cat->id }}">{{ $cat->title }}</button>
                 @endforeach
+            </div>
+            <div class="view-bar">
+                <span class="view-count" id="prodCount"></span>
+                <div class="view-toggle" role="group" aria-label="Tampilan produk">
+                    <button type="button" class="vt-btn" data-view="grid" onclick="setProdView('grid')" aria-label="Tampilan kotak"><i class="fa-solid fa-table-cells-large"></i></button>
+                    <button type="button" class="vt-btn" data-view="list" onclick="setProdView('list')" aria-label="Tampilan daftar"><i class="fa-solid fa-list"></i></button>
+                </div>
             </div>
             <div class="prod-grid" id="prodResults"></div>
             <div id="loadMoreWrap" class="load-more" style="display:none;">
@@ -516,9 +303,12 @@
             {{-- CTA KONTAK --}}
             <div class="pad" style="padding-top: 18px;">
                 <button class="btn btn-primary btn-block" style="margin-bottom: 10px;" onclick="showScreen('contact')"><i class="fa-solid fa-paper-plane"></i> Hubungi Kami</button>
-                <a href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+bertanya+tentang+perusahaan+Anda" target="_blank" class="btn btn-wa btn-block"><i class="fa-brands fa-whatsapp"></i> Chat via WhatsApp</a>
+                @if($hasWa)
+                <a href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+bertanya+tentang+perusahaan+Anda" target="_blank" rel="noopener" class="btn btn-wa btn-block"><i class="fa-brands fa-whatsapp"></i> Chat via WhatsApp</a>
+                @endif
             </div>
 
+            @include('home._social')
             <div class="footer-note">{{ $s['footer_text'] ?? '© '.date('Y').' All Rights Reserved.' }}</div>
         </section>
 
@@ -526,7 +316,7 @@
         <section class="screen" id="screen-contact">
             <div class="pad">
                 <div class="sec-title">{{ $s['contact_title'] ?? 'Hubungi Kami' }}</div>
-                <div class="sec-sub">{{ $s['contact_desc'] ?? 'Kami siap membantu kebutuhan Anda' }}</div>
+                <div class="sec-sub">{{ strip_tags($s['contact_desc'] ?? 'Kami siap membantu kebutuhan Anda') }}</div>
 
                 @if(!empty($s['address']))
                 <div class="contact-card">
@@ -546,8 +336,20 @@
                     <div><h5>Email Resmi</h5><p>{{ $s['email'] }}</p></div>
                 </a>
                 @endif
+                @if(!empty($s['business_hours']))
+                <div class="contact-card">
+                    <div class="contact-ic"><i class="fa-regular fa-clock"></i></div>
+                    <div><h5>Jam Operasional</h5><p>{{ $s['business_hours'] }}</p></div>
+                </div>
+                @endif
+                @if(!empty($s['maps_embed']))
+                <iframe src="{{ $s['maps_embed'] }}" title="Lokasi" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                        style="width:100%; height:200px; border:0; border-radius:14px; margin:4px 0 12px;"></iframe>
+                @endif
 
-                <a class="btn btn-wa btn-block" style="margin: 8px 0 22px;" href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+berkonsultasi" target="_blank"><i class="fa-brands fa-whatsapp"></i> Chat WhatsApp Sekarang</a>
+                @if($hasWa)
+                <a class="btn btn-wa btn-block" style="margin: 8px 0 22px;" href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+berkonsultasi" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Chat WhatsApp Sekarang</a>
+                @endif
 
                 <div class="sec-title" style="font-size:1rem;margin-bottom:14px;">Kirim Pesan</div>
                 @if(session('contact_success'))
@@ -555,6 +357,9 @@
                 @endif
                 <form method="POST" action="{{ route('contact.store') }}">
                     @csrf
+                    <div style="position:absolute; left:-9999px;" aria-hidden="true">
+                        <label>Jangan diisi <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+                    </div>
                     <div class="form-field">
                         <input type="text" name="name" value="{{ old('name') }}" placeholder="Nama / Perusahaan" required>
                         @error('name')<p class="form-err">{{ $message }}</p>@enderror
@@ -568,12 +373,22 @@
                         @error('phone')<p class="form-err">{{ $message }}</p>@enderror
                     </div>
                     <div class="form-field">
-                        <textarea name="message" rows="4" placeholder="Detail kebutuhan Anda..." required>{{ old('message') }}</textarea>
+                        <select name="subject">
+                            <option value="">Pilih keperluan (opsional)</option>
+                            @foreach(\App\Models\ContactMessage::SUBJECTS as $opt)
+                                <option value="{{ $opt }}" @selected(old('subject', $prefill['subject'] ?? '') === $opt)>{{ $opt }}</option>
+                            @endforeach
+                        </select>
+                        @error('subject')<p class="form-err">{{ $message }}</p>@enderror
+                    </div>
+                    <div class="form-field">
+                        <textarea name="message" rows="4" placeholder="Detail kebutuhan Anda..." required>{{ old('message', $prefill['message'] ?? '') }}</textarea>
                         @error('message')<p class="form-err">{{ $message }}</p>@enderror
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Kirim Permintaan <i class="fa-solid fa-paper-plane"></i></button>
                 </form>
             </div>
+            @include('home._social')
             <div class="footer-note">{{ $s['footer_text'] ?? '© '.date('Y').' All Rights Reserved.' }}</div>
         </section>
     </main>
@@ -615,6 +430,10 @@
         const SEARCH_URL = "{{ route('products.search', [], false) }}";
         const FALLBACK_IMG = 'https://images.unsplash.com/photo-1620912189865-1e8a33da4c5e?auto=format&fit=crop&w=400&q=80';
 
+        @if(!empty($prefill) || $errors->any() || session('contact_success'))
+        document.addEventListener('DOMContentLoaded', () => showScreen('contact'));
+        @endif
+
         /* ───── SCREEN NAV ───── */
         function showScreen(name) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -626,7 +445,7 @@
 
         /* ───── PRODUCT CARD TEMPLATE ───── */
         function cardHTML(p) {
-            return `<div class="prod-card" onclick="openSheet(${p.id})">
+            return `<div class="prod-card" onclick="location.href='${p.url}'">
                 <div class="prod-img">
                     ${p.badge ? `<span class="prod-badge">${p.badge}</span>` : ''}
                     <img src="${p.img || FALLBACK_IMG}" alt="${escapeHtml(p.title)}" loading="lazy">
@@ -636,18 +455,39 @@
                     <h4 class="prod-title">${escapeHtml(p.title)}</h4>
                     <div class="prod-foot">
                         <div class="prod-spec">${escapeHtml(p.specLabel || '')}<b>${escapeHtml(p.specVal || '-')}</b></div>
-                        <button class="prod-wa" onclick="event.stopPropagation(); waProduct('${encodeURIComponent(p.title)}')"><i class="fa-brands fa-whatsapp"></i></button>
+                        ${WA ? `<button class="prod-wa" onclick="event.stopPropagation(); waProduct('${encodeURIComponent(p.title)}')" aria-label="Tanya via WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></button>` : ''}
                     </div>
                 </div>
             </div>`;
         }
 
-        /* ───── FEATURED RAIL (home) ───── */
-        var featuredRail = document.getElementById('featured-rail');
-        if (featuredRail) {
-            featuredRail.innerHTML = FEATURED.map(cardHTML).join('') ||
-                '<div style="padding:0 16px;color:#94a3b8;font-size:0.85rem;">Belum ada produk.</div>';
+
+        /* ───── TAMPILAN KOTAK / DAFTAR (disimpan di browser) ───── */
+        function setProdView(mode) {
+            document.querySelectorAll('.prod-grid').forEach(g => g.classList.toggle('list-view', mode === 'list'));
+            document.querySelectorAll('.vt-btn').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
+            try { localStorage.setItem('prodView', mode); } catch (e) {}
         }
+        (function () { let m = 'grid'; try { m = localStorage.getItem('prodView') === 'list' ? 'list' : 'grid'; } catch (e) {} setProdView(m); })();
+
+        /* ───── MUAT LEBIH BANYAK: jangan sampai ketukan kedua membuka produk ─────
+           Produk baru disisipkan di ATAS tombol, sehingga tombol turun jauh dan di titik jari tadi
+           muncul kartu produk. Ketukan ulang di sana (atau double tap) akan membuka halaman produk.
+           Solusinya: gulir ke produk baru, dan abaikan ketukan pada kartu sesaat setelah memuat. */
+        let navGuardUntil = 0;
+        function armClickGuard(ms = 900) { navGuardUntil = Date.now() + ms; }
+        document.addEventListener('click', e => {
+            if (Date.now() < navGuardUntil && e.target.closest('.prod-card')) { e.preventDefault(); e.stopPropagation(); }
+        }, true);
+        function revealNew(container, previousCount) {
+            const first = container.querySelectorAll('.prod-card')[previousCount];
+            if (!first) return;
+            armClickGuard(700);
+            const header = document.querySelector('.app-header');
+            const offset = (header ? header.getBoundingClientRect().height : 0) + 12;
+            window.scrollTo({ top: first.getBoundingClientRect().top + window.scrollY - offset, behavior: 'smooth' });
+        }
+
 
         /* ───── PRODUCTS SCREEN (live fetch + filter + search) ───── */
         let curCat = 'all', curQuery = '', curPage = 1, lastPage = 1, prodLoaded = false, fetching = false, searchTimer = null;
@@ -671,6 +511,7 @@
                 const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
                 const data = await res.json();
                 lastPage = data.lastPage || 1;
+                document.getElementById('prodCount').textContent = (data.total ?? 0) + ' produk';
                 const items = data.products || [];
                 if (reset) _resultsCache = items.slice();
                 else _resultsCache.push(...items);
@@ -678,7 +519,9 @@
                 if (reset) {
                     resultsEl.innerHTML = html || emptyState();
                 } else {
+                    const before = resultsEl.querySelectorAll('.prod-card').length;
                     resultsEl.insertAdjacentHTML('beforeend', html);
+                    revealNew(resultsEl, before);
                 }
                 loadMoreWrap.style.display = curPage < lastPage ? 'block' : 'none';
                 prodLoaded = true;
@@ -689,7 +532,7 @@
                 fetching = false;
             }
         }
-        function loadMore() { curPage++; loadProducts(false); }
+        function loadMore() { armClickGuard(4000); curPage++; loadProducts(false); }
         function emptyState(msg) {
             return `<div class="empty-state" style="grid-column:1/-1;"><i class="fa-solid fa-box-open"></i><p>${msg || 'Belum ada produk di kategori ini.'}</p></div>`;
         }
@@ -728,49 +571,6 @@
         /* ───── BOTTOM SHEET ───── */
         const sheet = document.getElementById('prodSheet');
         const sheetBackdrop = document.getElementById('sheetBackdrop');
-        function findProduct(id) {
-            // featured first; else the currently-rendered / fetched results
-            return FEATURED.find(p => p.id === id) || _resultsCache.find(p => p.id === id);
-        }
-        function openSheet(id) {
-            const p = findProduct(id);
-            if (!p) return;
-            document.getElementById('sheetBody').innerHTML = `
-                <img class="sheet-img" src="${p.img || FALLBACK_IMG}" alt="${escapeHtml(p.title)}">
-                <div class="sheet-content">
-                    <span class="sheet-badge">${escapeHtml(p.meta || 'Produk')}</span>
-                    <h2>${escapeHtml(p.title)}</h2>
-                    <p>${escapeHtml(p.desc || '')}</p>
-                    <div class="spec-list">
-                        <div><span>${escapeHtml(p.specLabel || 'Spesifikasi')}</span><b>${escapeHtml(p.specVal || '-')}</b></div>
-                        <div><span>Kecepatan Maks (RPM)</span><b>${escapeHtml(String(p.rpm || '-'))}</b></div>
-                        <div><span>Material Aplikasi</span><b>${escapeHtml(p.material || '-')}</b></div>
-                    </div>
-                    <button class="btn btn-wa btn-block" onclick="waProduct('${encodeURIComponent(p.title)}', 'memesan')"><i class="fa-brands fa-whatsapp"></i> Pesan via WhatsApp</button>
-                    <div id="relatedWrap"></div>
-                </div>`;
-            showSheet();
-            renderRelated(p);
-        }
-
-        /* ───── PRODUK SERUPA (kategori sama) ───── */
-        async function renderRelated(p) {
-            const wrap = document.getElementById('relatedWrap');
-            if (!wrap || !p.type) return;
-            try {
-                const url = new URL(SEARCH_URL, window.location.origin);
-                url.searchParams.set('category', p.type);
-                const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-                const data = await res.json();
-                const related = (data.products || []).filter(x => x.id !== p.id).slice(0, 6);
-                if (!related.length) return;
-                // cache agar bisa dibuka saat diklik
-                related.forEach(r => { if (!_resultsCache.some(c => c.id === r.id)) _resultsCache.push(r); });
-                wrap.innerHTML = `
-                    <h3 class="related-title">Produk Serupa</h3>
-                    <div class="rail related-rail">${related.map(cardHTML).join('')}</div>`;
-            } catch (e) { /* diam-diam sembunyikan jika gagal */ }
-        }
         function showSheet() {
             sheetBackdrop.classList.add('open');
             sheet.classList.add('open');
@@ -785,7 +585,7 @@
 
         /* ───── BLOG SHEET (baca artikel) ───── */
         @php
-            $blogsData = $blogs->map(fn($b) => ['id' => $b->id, 'meta' => $b->meta, 'title' => $b->title, 'desc' => $b->desc, 'img' => $b->img ? Storage::url($b->img) : '']);
+            $blogsData = $blogs->map(fn($b) => ['id' => $b->id, 'meta' => $b->meta, 'title' => $b->title, 'desc' => $b->excerpt(200), 'html' => $b->body_html, 'img' => $b->img ? Storage::url($b->img) : '']);
         @endphp
         const BLOGS = @json($blogsData);
         const BLOG_FALLBACK = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80';
@@ -797,7 +597,7 @@
                 <div class="sheet-content">
                     <span class="sheet-badge">${escapeHtml(b.meta || 'Artikel')}</span>
                     <h2>${escapeHtml(b.title)}</h2>
-                    <div class="article-body">${escapeHtml(b.desc || '')}</div>
+                    <div class="article-body rich-content">${b.html || ''}</div>
                 </div>`;
             showSheet();
         }
@@ -868,6 +668,12 @@
 
         // close sheet on Escape / back gesture
         window.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+
+        /* ───── buka layar dari hash (#products, #about, #contact), mis. dari halaman detail produk ───── */
+        (function () {
+            var h = location.hash.replace('#', '');
+            if (['products', 'about', 'contact'].indexOf(h) !== -1) showScreen(h);
+        })();
     </script>
 </body>
 </html>

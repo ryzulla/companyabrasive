@@ -18,8 +18,7 @@ class TestimonialController extends Controller
                 });
             })
             ->latest()
-            ->paginate(15)
-            ->withQueryString();
+            ->get();
 
         return view('admin.testimonials.index', compact('testimonials'));
     }

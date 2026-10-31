@@ -18,15 +18,14 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@example.com',
+            'role' => 'superuser',
         ]);
 
         $this->call([
             SettingSeeder::class,
-            CategorySeeder::class,
             ProductSeeder::class,
             ClientSeeder::class,
             FaqSeeder::class,
-            TestimonialSeeder::class,
             BlogSeeder::class,
             VideoSeeder::class,
             ContactMessageSeeder::class,

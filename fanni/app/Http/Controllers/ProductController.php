@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Setting;
+use App\Support\Device;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -31,6 +32,7 @@ class ProductController extends Controller
 
         $products = $paginated->getCollection()->map(fn($p) => [
             'id'            => $p->id,
+            'url'           => route('products.show', $p, false),
             'type'          => $p->category_id,
             'meta'          => $p->meta,
             'title'         => $p->title,
@@ -78,6 +80,7 @@ class ProductController extends Controller
 
         $productsJson = $products->getCollection()->map(fn($p) => [
             'id'        => $p->id,
+            'url'       => route('products.show', $p, false),
             'type'      => $p->category_id,
             'meta'      => $p->meta,
             'title'     => $p->title,
@@ -91,5 +94,57 @@ class ProductController extends Controller
         ]);
 
         return view('home.products', compact('s', 'categories', 'products', 'productsJson'));
+    }
+
+    /** URL lama /products/{id} dialihkan permanen (301) ke URL slug. */
+    public function legacyRedirect(int $id)
+    {
+        $product = Product::findOrFail($id);
+
+        return redirect()->route('products.show', $product, 301);
+    }
+
+    public function sitemap()
+    {
+        $urls = collect([
+            ['loc' => route('home'), 'lastmod' => null, 'priority' => '1.0'],
+            ['loc' => route('about'), 'lastmod' => null, 'priority' => '0.6'],
+            ['loc' => route('products.index'), 'lastmod' => null, 'priority' => '0.9'],
+        ])->concat(
+            Product::orderBy('id')->get()->map(fn($p) => [
+                'loc'      => route('products.show', $p),
+                'lastmod'  => $p->updated_at?->toAtomString(),
+                'priority' => '0.8',
+            ])
+        );
+
+        return response()
+            ->view('sitemap', compact('urls'))
+            ->header('Content-Type', 'application/xml');
+    }
+
+    public function show(Request $request, Product $product)
+    {
+        $s = Setting::allKeyed();
+        $product->load(['category', 'images']);
+
+        $images = $product->images->map(fn($i) => Storage::url($i->path))->values();
+        if ($images->isEmpty() && $product->img) {
+            $images = collect([Storage::url($product->img)]);
+        }
+
+        $related = Product::with('category')
+            ->where('category_id', $product->category_id)
+            ->whereKeyNot($product->id)
+            ->latest()
+            ->take(4)
+            ->get();
+
+        $view = Device::isMobile($request) ? 'home.product-show-mobile' : 'home.product-show';
+
+        // Satu URL, dua tampilan (desktop/mobile) → beri tahu cache & mesin pencari
+        return response()
+            ->view($view, compact('s', 'product', 'images', 'related'))
+            ->header('Vary', 'User-Agent');
     }
 }

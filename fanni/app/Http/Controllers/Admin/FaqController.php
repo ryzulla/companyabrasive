@@ -18,8 +18,7 @@ class FaqController extends Controller
                 });
             })
             ->latest()
-            ->paginate(15)
-            ->withQueryString();
+            ->get();
 
         return view('admin.faqs.index', compact('faqs'));
     }

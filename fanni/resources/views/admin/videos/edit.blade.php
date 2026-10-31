@@ -17,8 +17,15 @@
         <form method="POST" action="{{ route('admin.videos.update', $video) }}" class="space-y-5">
             @csrf @method('PUT')
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1.5">YouTube Video ID</label>
-                <input type="text" value="{{ $video->id }}" disabled class="w-full px-3.5 py-2.5 border border-slate-100 rounded-lg text-sm bg-slate-50 text-slate-400 cursor-not-allowed font-mono">
+                <label class="block text-sm font-medium text-slate-700 mb-1.5">Preview Video</label>
+                <div id="videoPreview" style="position:relative; width:100%; max-width:720px; aspect-ratio:16/9; background:#0f172a; border-radius:12px; overflow:hidden;">
+                    <iframe id="videoFrame" src="https://www.youtube-nocookie.com/embed/{{ old('id', $video->id) }}" title="{{ $video->title }}" style="position:absolute; inset:0; width:100%; height:100%; border:0;" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1.5">YouTube Video ID <span class="text-red-500">*</span></label>
+                <input type="text" name="id" id="videoIdInput" value="{{ old('id', $video->id) }}" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono">
+                <p class="text-xs text-slate-400 mt-1">Menempel URL lengkap juga bisa, ID diambil otomatis.</p>
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1.5">Judul <span class="text-red-500">*</span></label>
@@ -36,3 +43,29 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+    const input = document.getElementById('videoIdInput');
+    const frame = document.getElementById('videoFrame');
+    let timer;
+
+    function extractId(v) {
+        v = v.trim();
+        const m = v.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([A-Za-z0-9_-]{6,20})/);
+        if (m) return m[1];
+        return /^[A-Za-z0-9_-]{6,20}$/.test(v) ? v : '';
+    }
+    function update() {
+        const id = extractId(input.value);
+        if (id && id !== input.value.trim()) input.value = id;
+        if (id) {
+            const src = 'https://www.youtube-nocookie.com/embed/' + id;
+            if (frame.src !== src) frame.src = src;
+        }
+    }
+    input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(update, 400); });
+})();
+</script>
+@endpush

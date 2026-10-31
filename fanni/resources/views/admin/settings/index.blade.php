@@ -21,17 +21,19 @@
     @endif
 
     {{-- TAB BUTTONS --}}
-    <div style="background:#fff; border:1px solid #e5e7eb; border-radius:8px; margin-bottom:20px; overflow:hidden;">
+    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; margin-bottom:20px; overflow:hidden; box-shadow:0 1px 2px rgba(15,23,42,.04);">
         <div style="display:flex; overflow-x:auto; border-bottom:1px solid #e5e7eb;">
             @php
                 $tabs = [
                     ['id' => 'identitas', 'label' => 'Identitas'],
+                    ['id' => 'seo',       'label' => 'SEO'],
                     ['id' => 'hero',      'label' => 'Hero'],
                     ['id' => 'about',     'label' => 'Tentang'],
                     ['id' => 'statistik', 'label' => 'Statistik'],
                     ['id' => 'seksi',     'label' => 'Judul Seksi'],
                     ['id' => 'cta',       'label' => 'CTA'],
                     ['id' => 'kontak',    'label' => 'Kontak'],
+                    ['id' => 'sosial',    'label' => 'Lokasi & Sosial'],
                     ['id' => 'footer',    'label' => 'Footer'],
                 ];
             @endphp
@@ -47,7 +49,7 @@
 
     {{-- PANEL: IDENTITAS --}}
     <div id="panel-identitas" class="settings-panel" style="display:none;">
-        <div style="background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:24px;">
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; box-shadow:0 1px 2px rgba(15,23,42,.04);">
             <h3 style="font-size:15px; font-weight:600; color:#1f2937; margin:0 0 20px; padding-bottom:12px; border-bottom:1px solid #f3f4f6;">Identitas Perusahaan</h3>
             <div class="set-grid cols-2">
                 <div>
@@ -90,7 +92,7 @@
 
     {{-- PANEL: HERO --}}
     <div id="panel-hero" class="settings-panel" style="display:none;">
-        <div style="background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:24px;">
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; box-shadow:0 1px 2px rgba(15,23,42,.04);">
             <h3 style="font-size:15px; font-weight:600; color:#1f2937; margin:0 0 20px; padding-bottom:12px; border-bottom:1px solid #f3f4f6;">Bagian Hero (Banner Utama)</h3>
             <div style="display:flex; flex-direction:column; gap:16px;">
                 <div>
@@ -147,7 +149,7 @@
 
     {{-- PANEL: ABOUT --}}
     <div id="panel-about" class="settings-panel" style="display:none;">
-        <div style="background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:24px;">
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; box-shadow:0 1px 2px rgba(15,23,42,.04);">
             <h3 style="font-size:15px; font-weight:600; color:#1f2937; margin:0 0 20px; padding-bottom:12px; border-bottom:1px solid #f3f4f6;">Tentang Perusahaan</h3>
             <div style="display:flex; flex-direction:column; gap:16px;">
                 <div>
@@ -158,6 +160,14 @@
                     <label class="field-label">Deskripsi About</label>
                     <input type="hidden" name="about_desc" id="about_desc_input" value="{{ $v('about_desc') }}">
                     <div id="about_desc_editor">{!! $v('about_desc') !!}</div>
+                </div>
+                <div>
+                    <label class="field-label">Visi <span style="font-weight:400; color:#9ca3af;">(satu poin per baris)</span></label>
+                    <textarea name="about_vision" rows="4" class="field-input">{{ $v('about_vision') }}</textarea>
+                </div>
+                <div>
+                    <label class="field-label">Misi <span style="font-weight:400; color:#9ca3af;">(satu poin per baris)</span></label>
+                    <textarea name="about_mission" rows="4" class="field-input">{{ $v('about_mission') }}</textarea>
                 </div>
                 <div>
                     <label class="field-label">4 Keunggulan Perusahaan</label>
@@ -192,7 +202,7 @@
 
     {{-- PANEL: STATISTIK --}}
     <div id="panel-statistik" class="settings-panel" style="display:none;">
-        <div style="background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:24px;">
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; box-shadow:0 1px 2px rgba(15,23,42,.04);">
             <h3 style="font-size:15px; font-weight:600; color:#1f2937; margin:0 0 20px; padding-bottom:12px; border-bottom:1px solid #f3f4f6;">Statistik / Milestone</h3>
             <div class="set-grid cols-4">
                 <div>
@@ -217,7 +227,7 @@
 
     {{-- PANEL: JUDUL SEKSI + TAMPILKAN/SEMBUNYIKAN --}}
     <div id="panel-seksi" class="settings-panel" style="display:none;">
-        <div style="background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:24px;">
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; box-shadow:0 1px 2px rgba(15,23,42,.04);">
             <h3 style="font-size:15px; font-weight:600; color:#1f2937; margin:0 0 6px;">Judul, Deskripsi &amp; Tampilan Tiap Seksi</h3>
             <p style="font-size:13px; color:#6b7280; margin:0 0 20px; padding-bottom:16px; border-bottom:1px solid #f3f4f6;">
                 Atur judul/deskripsi tiap seksi dan gunakan sakelar untuk menampilkan atau menyembunyikannya di halaman utama. Seksi yang belum memiliki data tetap otomatis tersembunyi.
@@ -272,7 +282,7 @@
 
     {{-- PANEL: CTA --}}
     <div id="panel-cta" class="settings-panel" style="display:none;">
-        <div style="background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:24px;">
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; box-shadow:0 1px 2px rgba(15,23,42,.04);">
             <h3 style="font-size:15px; font-weight:600; color:#1f2937; margin:0 0 20px; padding-bottom:12px; border-bottom:1px solid #f3f4f6;">Banner CTA / E-Catalog</h3>
             <div style="display:flex; flex-direction:column; gap:16px;">
                 <div>
@@ -297,7 +307,7 @@
 
     {{-- PANEL: KONTAK --}}
     <div id="panel-kontak" class="settings-panel" style="display:none;">
-        <div style="background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:24px;">
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; box-shadow:0 1px 2px rgba(15,23,42,.04);">
             <h3 style="font-size:15px; font-weight:600; color:#1f2937; margin:0 0 20px; padding-bottom:12px; border-bottom:1px solid #f3f4f6;">Informasi Kontak</h3>
             <div style="display:flex; flex-direction:column; gap:16px;">
                 <div>
@@ -332,9 +342,199 @@
         </div>
     </div>
 
+    {{-- PANEL: SEO --}}
+    <div id="panel-seo" class="settings-panel" style="display:none;">
+        @php
+            $seoTitleVal = $v('seo_title');
+            $seoDescVal  = $v('seo_description');
+            $checks = [
+                ['Judul SEO terisi (30–60 karakter ideal)', mb_strlen($seoTitleVal) >= 20 && mb_strlen($seoTitleVal) <= 65],
+                ['Deskripsi SEO terisi (70–160 karakter ideal)', mb_strlen($seoDescVal) >= 70 && mb_strlen($seoDescVal) <= 170],
+                ['Kata kunci diisi', trim($v('seo_keywords')) !== ''],
+                ['Gambar preview share (Open Graph) diunggah', trim($v('seo_og_image')) !== ''],
+                ['Favicon diunggah', trim($v('favicon')) !== ''],
+                ['Website boleh diindeks mesin pencari', $v('seo_noindex', '0') !== '1'],
+                ['Google Search Console terverifikasi', trim($v('google_site_verification')) !== ''],
+                ['Google Analytics terpasang', trim($v('google_analytics_id')) !== ''],
+                ['Nama perusahaan, alamat, dan telepon terisi (data bisnis lokal)', trim($v('company_name')) !== '' && trim($v('address')) !== '' && trim($v('phone')) !== ''],
+            ];
+            $passed = collect($checks)->where(1, true)->count();
+        @endphp
+
+        <div class="set-card">
+            <h3 class="set-h">Tampilan di Google</h3>
+            <p class="set-sub">Pratinjau perkiraan hasil pencarian untuk halaman beranda. Judul dan deskripsi yang terlalu panjang akan dipotong Google.</p>
+            <div class="serp">
+                <div class="serp-url" id="serpUrl">{{ preg_replace('#^https?://#', '', url('/')) }}</div>
+                <div class="serp-title" id="serpTitle"></div>
+                <div class="serp-desc" id="serpDesc"></div>
+            </div>
+        </div>
+
+        <div class="set-card">
+            <h3 class="set-h">Meta Beranda</h3>
+            <p class="set-sub">Kosongkan untuk memakai nilai bawaan (nama perusahaan + tagline, dan subjudul hero).</p>
+            <div style="display:flex; flex-direction:column; gap:16px;">
+                <div>
+                    <label class="field-label" style="display:flex; justify-content:space-between;">Judul SEO (title) <span class="counter" id="cntTitle"></span></label>
+                    <input type="text" name="seo_title" id="seoTitle" value="{{ $seoTitleVal }}" maxlength="70" class="field-input" placeholder="Kata kunci utama | Nama Perusahaan">
+                    <p class="field-hint">Taruh kata kunci utama di depan. Ideal 50–60 karakter.</p>
+                </div>
+                <div>
+                    <label class="field-label" style="display:flex; justify-content:space-between;">Deskripsi SEO (meta description) <span class="counter" id="cntDesc"></span></label>
+                    <textarea name="seo_description" id="seoDesc" rows="3" maxlength="200" class="field-input" style="resize:vertical;" placeholder="Ringkasan menarik tentang bisnis Anda">{{ $seoDescVal }}</textarea>
+                    <p class="field-hint">Ideal 120–160 karakter. Tulis manfaat dan ajakan bertindak, bukan sekadar daftar kata kunci.</p>
+                </div>
+                <div>
+                    <label class="field-label">Kata Kunci (keywords)</label>
+                    <input type="text" name="seo_keywords" value="{{ $v('seo_keywords') }}" maxlength="255" class="field-input" placeholder="abrasive industri, grinding wheel, cutting disc">
+                    <p class="field-hint">Pisahkan dengan koma. Google tidak memakainya sebagai faktor peringkat, tetapi sebagian mesin pencari lain masih membacanya.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="set-card">
+            <h3 class="set-h">Gambar &amp; Ikon</h3>
+            <p class="set-sub">Dipakai saat tautan dibagikan di WhatsApp, Facebook, LinkedIn, dan tab browser.</p>
+            <div class="set-grid cols-2">
+                <div>
+                    <label class="field-label">Gambar Preview Share (Open Graph)</label>
+                    @if($v('seo_og_image'))
+                        <img src="{{ Storage::url($v('seo_og_image')) }}" alt="" style="width:100%; max-width:300px; aspect-ratio:1200/630; object-fit:cover; border-radius:8px; border:1px solid #e5e7eb; margin-bottom:8px; display:block;">
+                        <label style="font-size:12px; color:#dc2626; display:flex; gap:6px; align-items:center; margin-bottom:8px;"><input type="checkbox" name="remove_seo_og_image" value="1"> Hapus gambar ini</label>
+                    @endif
+                    <input type="file" name="seo_og_image_file" accept="image/*" class="field-input" style="padding:6px;">
+                    <p class="field-hint">Ukuran ideal 1200 × 630 px (JPG/PNG, maks 2MB). Jika kosong dipakai gambar hero, lalu logo.</p>
+                </div>
+                <div>
+                    <label class="field-label">Favicon</label>
+                    @if($v('favicon'))
+                        <img src="{{ Storage::url($v('favicon')) }}" alt="" style="width:48px; height:48px; object-fit:contain; border-radius:8px; border:1px solid #e5e7eb; padding:6px; margin-bottom:8px; display:block;">
+                        <label style="font-size:12px; color:#dc2626; display:flex; gap:6px; align-items:center; margin-bottom:8px;"><input type="checkbox" name="remove_favicon" value="1"> Hapus favicon ini</label>
+                    @endif
+                    <input type="file" name="favicon_file" accept=".png,.ico,.svg,.webp,.jpg,.jpeg" class="field-input" style="padding:6px;">
+                    <p class="field-hint">PNG/SVG persegi, minimal 192 × 192 px. Jika kosong dipakai logo perusahaan.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="set-card">
+            <h3 class="set-h">Verifikasi &amp; Analitik</h3>
+            <p class="set-sub">Hanya isi kodenya saja, bukan seluruh tag HTML.</p>
+            <div class="set-grid cols-3">
+                <div>
+                    <label class="field-label">Google Search Console</label>
+                    <input type="text" name="google_site_verification" value="{{ $v('google_site_verification') }}" class="field-input" placeholder="kode verifikasi" style="font-family:monospace;">
+                </div>
+                <div>
+                    <label class="field-label">Bing Webmaster</label>
+                    <input type="text" name="bing_site_verification" value="{{ $v('bing_site_verification') }}" class="field-input" placeholder="kode verifikasi" style="font-family:monospace;">
+                </div>
+                <div>
+                    <label class="field-label">Google Analytics (GA4)</label>
+                    <input type="text" name="google_analytics_id" value="{{ $v('google_analytics_id') }}" class="field-input" placeholder="G-XXXXXXXXXX" style="font-family:monospace;">
+                </div>
+            </div>
+        </div>
+
+        <div class="set-card">
+            <h3 class="set-h">Indeks Mesin Pencari</h3>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; border:1px solid #f1f5f9; border-radius:8px; padding:14px 16px; background:#fcfcfd;">
+                <div>
+                    <div style="font-size:14px; font-weight:600; color:#1f2937;">Sembunyikan website dari mesin pencari</div>
+                    <div style="font-size:12px; color:#6b7280; margin-top:2px;">Aktifkan hanya saat website masih dalam pengembangan (menambah <code>noindex</code> dan memblokir robots.txt).</div>
+                </div>
+                <span class="switch">
+                    <input type="hidden" name="seo_noindex" value="0">
+                    <input type="checkbox" name="seo_noindex" value="1" {{ $v('seo_noindex', '0') === '1' ? 'checked' : '' }}>
+                    <span class="slider"></span>
+                </span>
+            </div>
+            <div style="margin-top:16px; display:grid; grid-template-columns:auto 1fr; gap:6px 14px; font-size:13px; color:#475569;">
+                <span style="color:#94a3b8;">Sitemap</span><a href="{{ route('sitemap') }}" target="_blank" style="color:#4f46e5;">{{ route('sitemap') }}</a>
+                <span style="color:#94a3b8;">robots.txt</span><a href="{{ route('robots') }}" target="_blank" style="color:#4f46e5;">{{ route('robots') }}</a>
+            </div>
+            <p class="field-hint" style="margin-top:10px;">Setelah website online, daftarkan URL sitemap di Google Search Console agar halaman produk cepat terindeks.</p>
+        </div>
+
+        <div class="set-card">
+            <h3 class="set-h" style="display:flex; justify-content:space-between; align-items:center;">Checklist SEO <span style="font-size:12px; font-weight:600; color:{{ $passed === count($checks) ? '#059669' : '#d97706' }};">{{ $passed }}/{{ count($checks) }} terpenuhi</span></h3>
+            <ul style="list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px;">
+                @foreach($checks as [$label, $ok])
+                    <li style="display:flex; gap:10px; align-items:center; font-size:13px; color:{{ $ok ? '#334155' : '#92400e' }};">
+                        <span style="width:18px; height:18px; border-radius:50%; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; background:{{ $ok ? '#d1fae5' : '#fef3c7' }}; color:{{ $ok ? '#047857' : '#b45309' }};">{{ $ok ? '✓' : '!' }}</span>
+                        {{ $label }}
+                    </li>
+                @endforeach
+            </ul>
+            <p class="field-hint" style="margin-top:12px;">Halaman produk otomatis memakai judul, deskripsi, gambar, schema <em>Product</em>, dan breadcrumb dari data produk masing-masing.</p>
+        </div>
+    </div>
+
+    {{-- PANEL: LOKASI & SOSIAL --}}
+    <div id="panel-sosial" class="settings-panel" style="display:none;">
+        <div class="set-card">
+            <h3 class="set-h">Jam Operasional &amp; Lokasi</h3>
+            <p class="set-sub">Ditampilkan di bagian kontak dan dipakai sebagai data bisnis lokal untuk Google.</p>
+            <div style="display:flex; flex-direction:column; gap:16px;">
+                <div>
+                    <label class="field-label">Jam Operasional</label>
+                    <input type="text" name="business_hours" value="{{ $v('business_hours') }}" class="field-input" placeholder="Senin – Jumat, 08.00 – 17.00 WIB">
+                </div>
+                <div class="set-grid cols-2">
+                    <div>
+                        <label class="field-label">Kota</label>
+                        <input type="text" name="address_city" value="{{ $v('address_city') }}" class="field-input" placeholder="Jakarta Barat">
+                    </div>
+                    <div>
+                        <label class="field-label">Kode Pos</label>
+                        <input type="text" name="address_postal" value="{{ $v('address_postal') }}" class="field-input" placeholder="11180">
+                    </div>
+                </div>
+                <div>
+                    <label class="field-label">Lokasi di Peta</label>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+                        <input type="text" id="mapSearch" class="field-input" style="flex:1; min-width:220px;" placeholder="Cari alamat atau nama tempat, lalu tekan Enter">
+                        <button type="button" id="mapSearchBtn" class="map-btn">Cari</button>
+                        <button type="button" id="mapUseAddress" class="map-btn" title="Cari berdasarkan alamat di tab Kontak">Pakai alamat perusahaan</button>
+                    </div>
+                    <div id="mapResults" style="display:none; border:1px solid #e2e8f0; border-radius:8px; margin-bottom:8px; overflow:hidden; background:#fff;"></div>
+                    <div id="locationMap" style="width:100%; height:340px; border-radius:10px; border:1px solid #e2e8f0; z-index:0;"></div>
+                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:10px;">
+                        <input type="text" name="maps_lat" id="mapsLat" value="{{ $v('maps_lat') }}" readonly class="field-input" style="width:150px; font-family:monospace; background:#f8fafc;" placeholder="Latitude">
+                        <input type="text" name="maps_lng" id="mapsLng" value="{{ $v('maps_lng') }}" readonly class="field-input" style="width:150px; font-family:monospace; background:#f8fafc;" placeholder="Longitude">
+                        <button type="button" id="mapClear" class="map-btn" style="color:#dc2626;">Hapus lokasi</button>
+                    </div>
+                    @error('maps_lat')<p style="color:#dc2626; font-size:12px; margin-top:4px;">{{ $message }}</p>@enderror
+                    <p class="field-hint">Klik peta atau seret pin untuk menentukan titik lokasi. Peta Google ditampilkan otomatis di bagian Kontak website dan titik koordinatnya dikirim ke Google sebagai lokasi bisnis.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="set-card">
+            <h3 class="set-h">Sosial Media</h3>
+            <p class="set-sub">Ikon tampil di footer dan dikirim ke Google sebagai profil resmi perusahaan. Kosongkan yang tidak dipakai.</p>
+            <div class="set-grid cols-2">
+                @foreach([
+                    ['social_instagram', 'Instagram', 'https://instagram.com/akunanda'],
+                    ['social_facebook',  'Facebook',  'https://facebook.com/halamananda'],
+                    ['social_linkedin',  'LinkedIn',  'https://linkedin.com/company/nama'],
+                    ['social_youtube',   'YouTube',   'https://youtube.com/@channelanda'],
+                    ['social_tiktok',    'TikTok',    'https://tiktok.com/@akunanda'],
+                    ['social_twitter',   'X (Twitter)', 'https://x.com/akunanda'],
+                ] as [$k, $label, $ph])
+                    <div>
+                        <label class="field-label">{{ $label }}</label>
+                        <input type="url" name="{{ $k }}" value="{{ $v($k) }}" class="field-input" placeholder="{{ $ph }}">
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
     {{-- PANEL: FOOTER --}}
     <div id="panel-footer" class="settings-panel" style="display:none;">
-        <div style="background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:24px;">
+        <div style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; box-shadow:0 1px 2px rgba(15,23,42,.04);">
             <h3 style="font-size:15px; font-weight:600; color:#1f2937; margin:0 0 20px; padding-bottom:12px; border-bottom:1px solid #f3f4f6;">Footer</h3>
             <div>
                 <label class="field-label">Teks Copyright Footer</label>
@@ -344,9 +544,9 @@
     </div>
 
     {{-- SAVE BAR --}}
-    <div style="margin-top:20px; display:flex; gap:12px; align-items:center;">
+    <div class="save-bar" style="margin-top:20px; display:flex; gap:12px; align-items:center;">
         <button type="submit"
-                style="background:#2563eb; color:#fff; font-size:14px; font-weight:500; padding:10px 24px; border-radius:6px; border:none; cursor:pointer; display:flex; align-items:center; gap:8px;">
+                style="background:#4f46e5; color:#fff; font-size:14px; font-weight:500; padding:10px 24px; border-radius:6px; border:none; cursor:pointer; display:flex; align-items:center; gap:8px;">
             <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
             </svg>
@@ -363,9 +563,24 @@
 </form>
 
 <style>
+    .map-btn { padding:8px 14px; border:1px solid #d1d5db; border-radius:6px; background:#fff; font-size:13px; font-weight:500; color:#374151; cursor:pointer; white-space:nowrap; }
+    .map-btn:hover { background:#f8fafc; border-color:#a5b4fc; color:#4f46e5; }
+    .map-result { display:block; width:100%; text-align:left; padding:9px 12px; border:0; border-bottom:1px solid #f1f5f9; background:#fff; font-size:13px; color:#334155; cursor:pointer; }
+    .map-result:hover { background:#eef2ff; }
+    .set-card { background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:24px; box-shadow:0 1px 2px rgba(15,23,42,.04); margin-bottom:16px; }
+    .set-h { font-size:15px; font-weight:600; color:#1f2937; margin:0 0 16px; }
+    .set-sub { font-size:13px; color:#6b7280; margin:-10px 0 18px; padding-bottom:14px; border-bottom:1px solid #f3f4f6; }
+    .counter { font-size:12px; font-weight:500; color:#94a3b8; }
+    .counter.ok { color:#059669; } .counter.warn { color:#d97706; } .counter.bad { color:#dc2626; }
+    .serp { border:1px solid #e2e8f0; border-radius:10px; padding:16px 18px; background:#fff; max-width:640px; font-family:Arial, sans-serif; }
+    .serp-url { font-size:12px; color:#4d5156; margin-bottom:2px; }
+    .serp-title { font-size:19px; line-height:1.3; color:#1a0dab; margin-bottom:3px; overflow-wrap:anywhere; }
+    .serp-desc { font-size:13px; line-height:1.55; color:#4d5156; overflow-wrap:anywhere; }
+    #settingsForm .save-bar { position:sticky; bottom:0; z-index:50; margin:20px -28px -28px; padding:14px 28px; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); border-top:1px solid #e2e8f0; }
+    @media (max-width:768px) { #settingsForm .save-bar { margin:20px -16px -16px; padding:12px 16px; } }
     .field-label { display:block; font-size:13px; font-weight:500; color:#374151; margin-bottom:6px; }
     .field-input { width:100%; padding:8px 12px; border:1px solid #d1d5db; border-radius:6px; font-size:14px; color:#1f2937; box-sizing:border-box; outline:none; }
-    .field-input:focus { border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.15); }
+    .field-input:focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,.15); }
     .field-hint { font-size:12px; color:#9ca3af; margin-top:4px; }
     .ck-editor__editable { min-height: 100px !important; }
 
@@ -383,16 +598,18 @@
     .switch input[type=checkbox] { position:absolute; opacity:0; width:0; height:0; }
     .switch .slider { position:absolute; inset:0; background:#cbd5e1; border-radius:24px; transition:background .2s; }
     .switch .slider::before { content:''; position:absolute; height:18px; width:18px; left:3px; top:3px; background:#fff; border-radius:50%; transition:transform .2s; box-shadow:0 1px 2px rgba(0,0,0,.2); }
-    .switch input:checked + .slider { background:#2563eb; }
+    .switch input:checked + .slider { background:#4f46e5; }
     .switch input:checked + .slider::before { transform:translateX(20px); }
-    .switch input:focus-visible + .slider { box-shadow:0 0 0 3px rgba(59,130,246,.3); }
+    .switch input:focus-visible + .slider { box-shadow:0 0 0 3px rgba(99,102,241,.3); }
 </style>
 
 @push('scripts')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
 (function() {
-    var allTabs = ['identitas','hero','about','statistik','seksi','cta','kontak','footer'];
+    var allTabs = ['identitas','seo','hero','about','statistik','seksi','cta','kontak','sosial','footer'];
 
     // CKEditor fields per tab
     var tabCkFields = {
@@ -413,8 +630,8 @@
         allTabs.forEach(function(t) {
             var btn = document.getElementById('tab-btn-' + t);
             if (t === tabId) {
-                btn.style.color = '#2563eb';
-                btn.style.borderBottomColor = '#2563eb';
+                btn.style.color = '#4f46e5';
+                btn.style.borderBottomColor = '#4f46e5';
                 btn.style.fontWeight = '600';
             } else {
                 btn.style.color = '#6b7280';
@@ -439,6 +656,8 @@
             }
         });
 
+        if (tabId === 'sosial' && window.initLocationMap) window.initLocationMap();
+
         // Save current tab to localStorage
         localStorage.setItem('settings_tab', tabId);
     }
@@ -458,6 +677,141 @@
     var savedTab = localStorage.getItem('settings_tab');
     var startTab = (savedTab && allTabs.indexOf(savedTab) !== -1) ? savedTab : 'identitas';
     showTab(startTab);
+})();
+
+
+// SEO: pratinjau Google + penghitung karakter
+(function () {
+    var t = document.getElementById('seoTitle'), d = document.getElementById('seoDesc');
+    if (!t || !d) return;
+    var fallbackTitle = @json(($settings['company_name'] ?? 'Website') . (!empty($settings['company_tagline']) ? ' | ' . $settings['company_tagline'] : ''));
+    var fallbackDesc = @json(trim(strip_tags($settings['hero_subtitle'] ?? '')));
+    function cut(s, n) { return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s; }
+    function counter(el, len, min, max) {
+        el.textContent = len + ' karakter';
+        el.className = 'counter ' + (len === 0 ? '' : (len >= min && len <= max ? 'ok' : (len > max + 10 ? 'bad' : 'warn')));
+    }
+    function update() {
+        document.getElementById('serpTitle').textContent = cut(t.value.trim() || fallbackTitle, 60);
+        document.getElementById('serpDesc').textContent = cut(d.value.trim() || fallbackDesc, 160);
+        counter(document.getElementById('cntTitle'), t.value.length, 30, 60);
+        counter(document.getElementById('cntDesc'), d.value.length, 70, 160);
+    }
+    t.addEventListener('input', update); d.addEventListener('input', update); update();
+})();
+
+
+// Pemilih lokasi (Leaflet + OpenStreetMap, tanpa API key)
+(function () {
+    var map = null, marker = null;
+    var latEl = document.getElementById('mapsLat'), lngEl = document.getElementById('mapsLng');
+    var results = document.getElementById('mapResults');
+    var DEFAULT = [-6.2088, 106.8456]; // Jakarta
+
+    function setPoint(lat, lng, zoom) {
+        lat = Math.round(lat * 1e6) / 1e6; lng = Math.round(lng * 1e6) / 1e6;
+        latEl.value = lat; lngEl.value = lng;
+        if (!marker) {
+            marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+            marker.on('dragend', function () { var p = marker.getLatLng(); setPoint(p.lat, p.lng); });
+        } else { marker.setLatLng([lat, lng]); }
+        if (zoom) map.setView([lat, lng], zoom);
+    }
+    // Alamat lengkap (lantai, blok, nomor, nama gedung) sering tidak dikenali geocoder.
+    // Karena itu dicoba beberapa versi yang makin sederhana sampai ada hasil.
+    function clean(t) {
+        return t.replace(/\(.*?\)/g, ' ')
+            .replace(/\b(Lantai|Lt)\.?\s*[A-Za-z]*\s*\d*/gi, ' ')
+            .replace(/\bBlok\s*\S+/gi, ' ')
+            .replace(/\b(No|Nomor|Kav)\.?\s*\d+\S*/gi, ' ')
+            .replace(/\b(Gedung|Ruko|Komplek|Kompleks)\b/gi, ' ')
+            .replace(/\bJl\.?\s*/gi, 'Jalan ')
+            .replace(/\s*,\s*/g, ' ').replace(/\s+/g, ' ').trim();
+    }
+    function variants(q) {
+        var lines = q.split(/\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+        var full = q.replace(/\s*\n\s*/g, ', ').replace(/\bJl\.?\s*/gi, 'Jalan ');
+        var list = lines.length > 1 ? [] : [full];
+        lines.forEach(function (l) { list.push(clean(l)); });
+        if (lines.length > 1) { list.push(clean(lines[lines.length - 2] + ' ' + lines[lines.length - 1])); list.push(full); }
+        var seen = {};
+        return list.filter(function (v) { if (!v || v.length < 3 || seen[v.toLowerCase()]) return false; seen[v.toLowerCase()] = 1; return true; }).slice(0, 5);
+    }
+    function nominatim(q) {
+        return fetch('https://nominatim.openstreetmap.org/search?format=json&limit=5&countrycodes=id&accept-language=id&q=' + encodeURIComponent(q))
+            .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); });
+    }
+    function showMessage(html, color) {
+        results.style.display = 'block';
+        results.innerHTML = '<div style="padding:10px 12px; font-size:13px; color:' + (color || '#94a3b8') + ';">' + html + '</div>';
+    }
+    var searchToken = 0;
+    function search(q) {
+        q = (q || '').trim();
+        if (!q) return;
+        var token = ++searchToken, tries = variants(q), i = 0;
+        function next() {
+            if (token !== searchToken) return;
+            if (i >= tries.length) {
+                showMessage('Lokasi tidak ditemukan. Coba ketik nama gedung/jalan saja (mis. "Lindeteves Trade Center"), atau klik langsung di peta.');
+                return;
+            }
+            var attempt = tries[i++];
+            showMessage('Mencari: ' + attempt.replace(/</g, '&lt;') + '…');
+            nominatim(attempt).then(function (list) {
+                if (token !== searchToken) return;
+                if (!list.length) { setTimeout(next, 1100); return; } // jeda 1 dtk sesuai kebijakan Nominatim
+                results.innerHTML = '';
+                if (attempt !== tries[0] || i > 1) {
+                    var note = document.createElement('div');
+                    note.style.cssText = 'padding:8px 12px; font-size:12px; color:#94a3b8; background:#f8fafc; border-bottom:1px solid #f1f5f9;';
+                    note.textContent = 'Alamat lengkap tidak dikenali, menampilkan hasil untuk "' + attempt + '". Pilih yang paling sesuai lalu geser pin bila perlu.';
+                    results.appendChild(note);
+                }
+                list.forEach(function (it) {
+                    var b = document.createElement('button');
+                    b.type = 'button'; b.className = 'map-result'; b.textContent = it.display_name;
+                    b.onclick = function () { setPoint(parseFloat(it.lat), parseFloat(it.lon), 17); results.style.display = 'none'; };
+                    results.appendChild(b);
+                });
+            }).catch(function () {
+                if (token !== searchToken) return;
+                showMessage('Gagal menghubungi layanan pencarian lokasi. Periksa koneksi internet, atau klik langsung di peta.', '#dc2626');
+            });
+        }
+        next();
+    }
+
+    window.initLocationMap = function () {
+        if (map) { setTimeout(function () { map.invalidateSize(); }, 50); return; }
+        if (typeof L === 'undefined') {
+            document.getElementById('locationMap').innerHTML = '<p style="padding:20px; font-size:13px; color:#dc2626;">Peta gagal dimuat (library Leaflet tidak terunduh). Periksa koneksi internet lalu muat ulang halaman.</p>';
+            return;
+        }
+        var has = latEl.value && lngEl.value;
+        var start = has ? [parseFloat(latEl.value), parseFloat(lngEl.value)] : DEFAULT;
+        map = L.map('locationMap').setView(start, has ? 17 : 11);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
+        if (has) setPoint(start[0], start[1]);
+        map.on('click', function (e) { setPoint(e.latlng.lat, e.latlng.lng); results.style.display = 'none'; });
+        setTimeout(function () { map.invalidateSize(); }, 100);
+    };
+
+    document.getElementById('mapSearchBtn').onclick = function () { search(document.getElementById('mapSearch').value); };
+    document.getElementById('mapSearch').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); search(this.value); } });
+    document.getElementById('mapUseAddress').onclick = function () {
+        var a = (document.querySelector('[name="address"]').value || '').trim();
+        document.getElementById('mapSearch').value = a;
+        search(a);
+    };
+    document.getElementById('mapClear').onclick = function () {
+        latEl.value = ''; lngEl.value = '';
+        if (marker) { map.removeLayer(marker); marker = null; }
+    };
+
+    // Tab "Lokasi & Sosial" bisa sudah terbuka saat halaman dimuat (tab terakhir diingat browser),
+    // sedangkan showTab() berjalan sebelum fungsi ini ada → inisialisasi peta di sini.
+    if (document.getElementById('panel-sosial').style.display === 'block') window.initLocationMap();
 })();
 
 // Hero background preview

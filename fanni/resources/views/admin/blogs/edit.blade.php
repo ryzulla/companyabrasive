@@ -67,49 +67,7 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
 <script>
-let ckEditor;
-
-ClassicEditor.create(document.querySelector('#editor'), {
-    toolbar: {
-        items: [
-            'heading', '|',
-            'bold', 'italic', 'underline', '|',
-            'link', 'bulletedList', 'numberedList', '|',
-            'blockQuote', 'insertTable', 'horizontalLine', '|',
-            'undo', 'redo'
-        ]
-    },
-    heading: {
-        options: [
-            { model: 'paragraph', title: 'Paragraf', class: 'ck-heading_paragraph' },
-            { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-            { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
-        ]
-    },
-    language: 'id',
-}).then(editor => {
-    ckEditor = editor;
-
-    editor.editing.view.change(writer => {
-        writer.setStyle('min-height', '280px', editor.editing.view.document.getRoot());
-    });
-}).catch(err => console.error(err));
-
-// Sync CKEditor → textarea sebelum submit
-document.getElementById('blogForm').addEventListener('submit', function(e) {
-    if (ckEditor) {
-        const content = ckEditor.getData();
-        if (!content.trim()) {
-            e.preventDefault();
-            alert('Konten artikel tidak boleh kosong.');
-            return;
-        }
-        document.getElementById('descInput').value = content;
-    }
-});
-
 document.getElementById('imgInput').addEventListener('change', function() {
     const file = this.files[0];
     if (!file) return;
@@ -124,10 +82,6 @@ document.getElementById('imgInput').addEventListener('change', function() {
 });
 </script>
 
-<style>
-.ck-editor__editable { min-height: 280px !important; font-size: 0.9rem; line-height: 1.7; }
-.ck.ck-toolbar { border-color: #e2e8f0 !important; background: #f8fafc !important; }
-.ck.ck-editor__main .ck-editor__editable { border-color: #e2e8f0 !important; }
-.ck.ck-editor__main .ck-editor__editable:focus { border-color: #3b82f6 !important; box-shadow: 0 0 0 3px rgba(59,130,246,0.1) !important; }
-</style>
 @endpush
+
+@include('admin.blogs._editor')

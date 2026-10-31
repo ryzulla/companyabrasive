@@ -6,5 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContactMessage extends Model
 {
-    protected $fillable = ['name', 'email', 'phone', 'message'];
+    public const SUBJECTS = [
+        'Permintaan Penawaran',
+        'Tanya Produk',
+        'Kerja Sama / Distributor',
+        'Lainnya',
+    ];
+
+    protected $fillable = ['name', 'email', 'phone', 'subject', 'message'];
 }

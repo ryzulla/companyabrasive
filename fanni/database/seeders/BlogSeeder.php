@@ -25,25 +25,11 @@ class BlogSeeder extends Seeder
                 'created_at' => now()->subDays(12),
             ],
             [
-                'meta'  => 'Produk & Inovasi',
-                'title' => 'Keunggulan Flap Disc Dibanding Grinding Wheel Konvensional',
-                'desc'  => 'Flap disc menjadi pilihan populer di kalangan profesional fabrikasi logam karena kemampuannya menggabungkan fungsi grinding, blending, dan finishing dalam satu alat. Berbeda dengan grinding wheel konvensional yang keras dan cenderung membuat permukaan kasar, flap disc menghasilkan permukaan yang lebih halus dengan kontrol lebih baik. Struktur "kelopak" (flap) dari aluminium oksida memberikan pendinginan yang lebih baik, mengurangi panas berlebih pada material. Flap disc juga lebih aman karena tidak mudah pecah seperti bonded abrasive. Tersedia dalam berbagai grit dari 40 (agresif) hingga 120 (halus) untuk berbagai tahap pengerjaan.',
-                'img'   => null,
-                'created_at' => now()->subDays(18),
-            ],
-            [
                 'meta'  => 'Panduan Penggunaan',
                 'title' => 'Teknik Pengamplasan yang Benar untuk Hasil Finishing Sempurna',
                 'desc'  => 'Finishing permukaan yang baik dimulai dari teknik pengamplasan yang tepat. Mulailah selalu dengan grit kasar untuk menghilangkan cacat, karat, atau cat lama, kemudian lanjutkan secara bertahap ke grit yang lebih halus. Jangan melompat terlalu jauh dalam urutan grit — misalnya dari 60 langsung ke 220 — karena goresan dari grit sebelumnya tidak akan hilang sempurna. Untuk pengamplasan kayu, gerakan searah serat memberikan hasil terbaik. Untuk logam, gerakan melingkar pada tahap awal dan lurus pada tahap finishing. Gunakan blok sanding untuk permukaan datar agar tekanan merata. Ganti amplas secara berkala; amplas yang sudah tumpul bekerja lebih lambat dan menghasilkan panas berlebih.',
                 'img'   => null,
                 'created_at' => now()->subDays(25),
-            ],
-            [
-                'meta'  => 'Industri & Aplikasi',
-                'title' => 'Aplikasi Produk Abrasif di Industri Perkapalan Indonesia',
-                'desc'  => 'Industri perkapalan Indonesia yang terus berkembang membutuhkan produk abrasif berkualitas tinggi untuk berbagai proses produksi. Mulai dari persiapan permukaan (surface preparation) lambung kapal sebelum pengecatan, pemotongan pelat baja tebal, pengelasan dan penggerindaan sambungan, hingga finishing interior kapal. Grinding wheel berkecepatan tinggi digunakan untuk memotong pelat baja kapal yang tebal. Flap disc digunakan untuk menghaluskan area las dan mempersiapkan permukaan sebelum dicat. Wire brush digunakan untuk membersihkan karat dan sisa terak las. PT PAL Indonesia dan galangan kapal swasta di Surabaya, Batam, dan Makassar menjadi pengguna utama produk abrasif industri grade.',
-                'img'   => null,
-                'created_at' => now()->subDays(32),
             ],
             [
                 'meta'  => 'Tips & Teknik',
@@ -52,10 +38,81 @@ class BlogSeeder extends Seeder
                 'img'   => null,
                 'created_at' => now()->subDays(40),
             ],
+            [
+                'meta'  => 'Tips & Teknik',
+                'title' => 'Panduan Memilih Grit Amplas untuk Kayu, Besi, dan Dinding',
+                'desc'  => '<p>Angka pada kertas amplas menunjukkan ukuran grit, yaitu kerapatan butiran abrasif. Semakin kecil angkanya, semakin kasar amplasnya. Memilih grit yang tepat membuat pekerjaan lebih cepat dan permukaan lebih rata.</p>
+<h2>Pembagian grit secara umum</h2>
+<ul>
+<li><strong>Kasar (40–80):</strong> menghilangkan cat lama, karat tebal, atau meratakan permukaan yang sangat kasar.</li>
+<li><strong>Sedang (100–180):</strong> menghaluskan permukaan setelah tahap kasar dan menyiapkan permukaan sebelum dempul atau cat dasar.</li>
+<li><strong>Halus (220–400):</strong> penghalusan akhir pada kayu, serta antar lapisan cat dasar atau vernis.</li>
+<li><strong>Sangat halus (600 ke atas):</strong> finishing cat dan pemolesan, umumnya memakai amplas tahan air.</li>
+</ul>
+<h2>Tips pemakaian</h2>
+<p>Mulailah dari grit yang paling kasar yang diperlukan, lalu naik bertahap tanpa melompat terlalu jauh, misalnya 80, 120, lalu 180. Melompat terlalu jauh meninggalkan goresan dalam yang tidak terhapus oleh grit halus.</p>
+<p>Untuk kayu, amplas searah serat. Untuk besi dan cat, amplas waterproof biasanya dipakai dengan air agar debu terbawa dan permukaan lebih halus. Ganti amplas begitu butirannya aus atau tersumbat, karena amplas yang sudah tumpul justru membuat permukaan panas dan tidak rata.</p>',
+                'img'   => null,
+                'created_at' => now()->subDays(3),
+            ],
+            [
+                'meta'  => 'Panduan Penggunaan',
+                'title' => 'Cara Memilih Batu Gerinda: Potong, Asah, atau Poles?',
+                'desc'  => '<p>Batu gerinda dibuat untuk fungsi yang berbeda. Memakai jenis yang salah menurunkan hasil kerja dan membahayakan operator.</p>
+<h2>Kenali fungsinya</h2>
+<ul>
+<li><strong>Batu potong (cutting disc):</strong> tipis, khusus untuk memotong. Jangan dipakai untuk menggerinda dari samping karena bisa pecah.</li>
+<li><strong>Batu gerinda asah (grinding wheel):</strong> lebih tebal, dipakai untuk meratakan, membentuk, dan mengasah.</li>
+<li><strong>Flap disc:</strong> lembaran amplas tersusun pada piringan, untuk menggerinda sekaligus menghaluskan permukaan.</li>
+</ul>
+<h2>Yang perlu dicek sebelum memakai</h2>
+<ul>
+<li><strong>Diameter dan lubang as:</strong> harus sesuai dengan mesin dan pelindung (guard) yang terpasang.</li>
+<li><strong>Kecepatan maksimum (RPM):</strong> tertera pada batu gerinda dan harus sama dengan atau lebih tinggi dari RPM mesin.</li>
+<li><strong>Bahan yang dikerjakan:</strong> pilih batu yang sesuai, misalnya untuk besi, stainless steel, atau beton dan batu. Untuk stainless steel pilih jenis yang bebas besi agar tidak mengotori permukaan.</li>
+<li><strong>Kondisi fisik:</strong> jangan pakai batu yang retak, gompal, atau pernah jatuh.</li>
+</ul>
+<p>Simpan di tempat kering dan datar, dan selalu pasang pelindung mesin saat bekerja.</p>',
+                'img'   => null,
+                'created_at' => now()->subDays(10),
+            ],
+            [
+                'meta'  => 'Tips & Teknik',
+                'title' => 'Mengenal Roda Poles (Buffing Wheel) dan Tahapan Memolesnya',
+                'desc'  => '<p>Roda poles dipakai untuk menghaluskan dan mengkilapkan permukaan logam, misalnya stainless steel, kuningan, dan aluminium. Hasilnya bergantung pada kombinasi roda dan compound yang dipakai.</p>
+<h2>Tiga tahap memoles</h2>
+<ul>
+<li><strong>Tahap potong (cutting):</strong> menghilangkan goresan memakai roda yang lebih keras dan compound yang lebih kasar.</li>
+<li><strong>Tahap penghalusan (coloring):</strong> menghaluskan bekas tahap pertama memakai roda katun dan compound yang lebih halus.</li>
+<li><strong>Tahap akhir (finishing):</strong> memberi kilap akhir memakai roda yang lembut dan compound paling halus.</li>
+</ul>
+<h2>Tips penting</h2>
+<p>Gunakan satu roda untuk satu jenis compound agar partikel kasar tidak terbawa ke tahap halus. Tekan benda dengan ringan dan jaga agar tidak panas berlebihan karena bisa mengubah warna logam. Benda yang dipoles sebaiknya ditempatkan di bagian bawah roda, bukan di bagian atas, agar tidak terlempar.</p>
+<p>Pakai kacamata pelindung dan sarung tangan yang pas, dan jangan memakai pakaian atau perhiasan yang bisa tersangkut roda yang berputar.</p>',
+                'img'   => null,
+                'created_at' => now()->subDays(17),
+            ],
+            [
+                'meta'  => 'Keamanan Kerja',
+                'title' => 'Perlengkapan Safety Dasar Saat Menggerinda dan Mengelas',
+                'desc'  => '<p>Pekerjaan menggerinda, memotong, dan mengelas menghasilkan percikan api, serpihan logam, debu, dan suara keras. Perlengkapan pelindung diri yang tepat mengurangi risiko cedera.</p>
+<h2>Perlengkapan yang dianjurkan</h2>
+<ul>
+<li><strong>Kacamata pelindung atau face shield:</strong> melindungi mata dari serpihan dan percikan api. Untuk menggerinda, face shield dipakai bersama kacamata.</li>
+<li><strong>Sarung tangan:</strong> pilih yang sesuai pekerjaan. Sarung tangan kulit untuk pengelasan dan menggerinda.</li>
+<li><strong>Masker atau respirator:</strong> mengurangi debu dan asap las yang terhirup.</li>
+<li><strong>Pelindung telinga:</strong> penting untuk pekerjaan gerinda yang lama.</li>
+<li><strong>Pakaian kerja dan sepatu safety:</strong> berlengan panjang dan tidak mudah terbakar, dengan sepatu yang melindungi jari kaki.</li>
+</ul>
+<h2>Kebiasaan aman</h2>
+<p>Pastikan pelindung mesin terpasang, benda kerja terjepit kuat, dan area sekitar bebas dari bahan mudah terbakar. Periksa kondisi batu gerinda sebelum dipakai, dan matikan mesin serta tunggu sampai berhenti berputar sebelum meletakkannya.</p>',
+                'img'   => null,
+                'created_at' => now()->subDays(24),
+            ],
         ];
 
         foreach ($blogs as $data) {
-            Blog::create($data);
+            Blog::firstOrCreate(['title' => $data['title']], $data);
         }
     }
 }

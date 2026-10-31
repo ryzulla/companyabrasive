@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Setting;
 use App\Models\Testimonial;
 use App\Models\Video;
+use App\Support\Device;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,11 +20,15 @@ class HomeController extends Controller
     {
         $s = Setting::allKeyed();
 
-        $categories = Category::all();
+        $categories = Category::withCount('products')->orderBy('title')->get();
 
-        $products = Product::with('category')->latest()->take(8)->get()->map(function ($p) {
+        // Mobile menampilkan 12 produk pertama (= halaman 1 pencarian), lalu "Muat Lebih Banyak" mengambil halaman berikutnya.
+        $mobile = Device::isMobile($request);
+        $productsTotal = Product::count();
+        $products = Product::with('category')->latest()->take($mobile ? 12 : 8)->get()->map(function ($p) {
             return [
                 'id'        => $p->id,
+                'url'       => route('products.show', $p, false),
                 'type'      => $p->category_id,
                 'meta'      => $p->meta,
                 'title'     => $p->title,
@@ -43,36 +48,24 @@ class HomeController extends Controller
         $faqs        = Faq::all();
         $blogs       = Blog::latest()->take(3)->get();
 
-        $view = $this->isMobile($request) ? 'home.mobile' : 'home.index';
-
-        return view($view, compact(
-            's', 'categories', 'products', 'videos',
-            'clients', 'testimonials', 'faqs', 'blogs'
-        ));
-    }
-
-    /**
-     * Deteksi perangkat mobile via User-Agent.
-     * Bisa dipaksa untuk pengujian: ?view=mobile atau ?view=desktop.
-     */
-    private function isMobile(Request $request): bool
-    {
-        if ($request->query('view') === 'mobile') {
-            return true;
-        }
-        if ($request->query('view') === 'desktop') {
-            return false;
+        // Dari tombol "Minta Penawaran" di halaman produk
+        $prefill = null;
+        if ($request->filled('produk')) {
+            $title = Product::where('slug', $request->query('produk'))->value('title');
+            if ($title) {
+                $prefill = [
+                    'subject' => 'Permintaan Penawaran',
+                    'message' => "Halo, saya ingin meminta penawaran untuk produk {$title}.\n\nKebutuhan/jumlah: ",
+                ];
+            }
         }
 
-        $ua = (string) $request->header('User-Agent');
+        $view = $mobile ? 'home.mobile' : 'home.index';
 
-        if ($ua === '' || preg_match('/iPad|Tablet|PlayBook|Silk|Kindle/i', $ua)) {
-            return false; // tablet & UA kosong → tampilan desktop
-        }
-
-        return (bool) preg_match(
-            '/Mobile|Android.+Mobile|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|webOS|Windows Phone/i',
-            $ua
-        );
+        // Satu URL, dua tampilan (desktop/mobile) → beri tahu cache & mesin pencari
+        return response()->view($view, compact(
+            's', 'categories', 'products', 'productsTotal', 'videos',
+            'clients', 'testimonials', 'faqs', 'blogs', 'prefill'
+        ))->header('Vary', 'User-Agent');
     }
 }

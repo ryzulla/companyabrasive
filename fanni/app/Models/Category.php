@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $fillable = ['id', 'title', 'desc', 'img'];
+    protected $fillable = ['id', 'title', 'desc', 'icon', 'img'];
     protected $keyType = 'string';
     public $incrementing = false;
 

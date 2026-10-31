@@ -36,9 +36,17 @@
                 <textarea name="desc" rows="3" required class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none" placeholder="Deskripsi singkat kategori">{{ old('desc') }}</textarea>
             </div>
             <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1.5">Gambar <span class="text-red-500">*</span></label>
+                <label class="block text-sm font-medium text-slate-700 mb-1.5">Ikon Kategori <span class="text-slate-400 font-normal">(opsional)</span></label>
+                <div class="flex items-center gap-3">
+                    <span class="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0"><i id="iconPreview" class="fa-solid {{ old('icon', '') ?: 'fa-layer-group' }}"></i></span>
+                    <input type="text" name="icon" id="iconInput" value="{{ old('icon', '') }}" placeholder="fa-screwdriver-wrench" class="w-full px-3.5 py-2.5 border border-slate-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                <p class="text-xs text-slate-400 mt-1.5">Nama ikon Font Awesome (gratis), contoh <code>fa-gear</code>, <code>fa-tape</code>, <code>fa-helmet-safety</code>. Dicari di <a href="https://fontawesome.com/search?o=r&m=free&s=solid" target="_blank" rel="noopener" class="text-blue-600 underline">fontawesome.com</a>. Tampil di kartu kategori beranda desktop.</p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1.5">Gambar <span class="text-slate-400 font-normal">(opsional)</span></label>
                 <div class="relative">
-                    <input type="file" name="img" accept="image/*" id="imgInput" class="sr-only" required>
+                    <input type="file" name="img" accept="image/*" id="imgInput" class="sr-only">
                     <label for="imgInput" id="imgLabel" class="flex flex-col items-center justify-center w-full border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/30 transition overflow-hidden" style="min-height:160px;">
                         <div id="imgEmpty" class="flex flex-col items-center gap-2 text-slate-400 py-8">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -49,6 +57,7 @@
                     </label>
                     <button type="button" id="imgChange" class="absolute bottom-2 right-2 hidden bg-white text-xs text-slate-600 px-2.5 py-1 rounded-md border border-slate-200 hover:bg-slate-50 transition shadow-sm" onclick="document.getElementById('imgInput').click()">Ganti</button>
                 </div>
+                <p class="text-xs text-slate-400 mt-1.5">Tidak wajib. Kartu kategori di website memakai ikon; foto hanya disimpan sebagai cadangan.</p>
             </div>
             <div class="flex gap-3 pt-2">
                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition">Simpan</button>
@@ -72,6 +81,16 @@ document.getElementById('imgInput').addEventListener('change', function() {
         document.getElementById('imgChange').classList.remove('hidden');
     };
     reader.readAsDataURL(file);
+});
+</script>
+@endpush
+
+@push('scripts')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script>
+document.getElementById('iconInput').addEventListener('input', function () {
+    const v = this.value.trim();
+    document.getElementById('iconPreview').className = 'fa-solid ' + (/^fa-[a-z0-9-]+$/.test(v) ? v : 'fa-layer-group');
 });
 </script>
 @endpush

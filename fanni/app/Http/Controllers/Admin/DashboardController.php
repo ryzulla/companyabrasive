@@ -27,6 +27,9 @@ class DashboardController extends Controller
             'clients'  => Client::count(),
         ];
 
-        return view('admin.dashboard', compact('stats'));
+        $recentMessages = ContactMessage::latest()->take(5)->get();
+        $recentProducts = Product::with('category')->latest()->take(5)->get();
+
+        return view('admin.dashboard', compact('stats', 'recentMessages', 'recentProducts'));
     }
 }

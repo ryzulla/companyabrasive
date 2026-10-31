@@ -16,8 +16,7 @@ class ClientController extends Controller
             })
             ->orderBy('order')
             ->orderBy('name')
-            ->paginate(15)
-            ->withQueryString();
+            ->get();
 
         return view('admin.clients.index', compact('clients'));
     }
