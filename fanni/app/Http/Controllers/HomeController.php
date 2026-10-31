@@ -46,7 +46,7 @@ class HomeController extends Controller
         $clients     = Client::orderBy('order')->orderBy('name')->get();
         $testimonials = Testimonial::all();
         $faqs        = Faq::all();
-        $blogs       = Blog::latest()->take(3)->get();
+        $blogs       = Blog::latest()->get();
 
         // Dari tombol "Minta Penawaran" di halaman produk
         $prefill = null;

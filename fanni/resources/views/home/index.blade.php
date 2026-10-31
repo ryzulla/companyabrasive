@@ -299,7 +299,7 @@
         </div>
         <div class="dynamic-grid">
             @foreach($blogs as $blog)
-                <div class="blog-card" onclick="openBlogModal({{ $blog->id }})">
+                <div class="blog-card" @if($loop->index >= 4) data-blog-extra style="display:none" @endif onclick="openBlogModal({{ $blog->id }})">
                     <div class="blog-img" style="background-image: url('{{ $blog->img ? Storage::url($blog->img) : 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=400&q=80' }}')"></div>
                     <div class="blog-content">
                         <div class="blog-meta">{{ $blog->meta }}</div>
@@ -310,6 +310,13 @@
                 </div>
             @endforeach
         </div>
+        @if($blogs->count() > 4)
+        <div style="text-align: center; margin-top: 40px;">
+            <button type="button" class="btn-outline" id="blogShowAll" onclick="showAllBlogs()" style="cursor:pointer; background:none;">
+                Lihat Semua Artikel ({{ $blogs->count() }}) <i class="fa-solid fa-chevron-down"></i>
+            </button>
+        </div>
+        @endif
     </section>
     @endif
 
@@ -507,6 +514,10 @@
         // ── BLOG MODAL (baca artikel) ──
         const blogsData = @json($blogsData);
         const blogModal = document.getElementById('blogModal');
+        function showAllBlogs() {
+            document.querySelectorAll('[data-blog-extra]').forEach(el => el.style.display = '');
+            document.getElementById('blogShowAll').parentElement.style.display = 'none';
+        }
         window.openBlogModal = function(id) {
             const b = blogsData.find(x => x.id === id);
             if (!b) return;

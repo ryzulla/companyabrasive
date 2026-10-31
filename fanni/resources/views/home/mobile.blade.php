@@ -222,7 +222,7 @@
             </div>
             <div class="pad" style="padding-top: 6px;">
                 @foreach($blogs as $blog)
-                    <div class="blog-card" onclick="openBlogSheet({{ $blog->id }})">
+                    <div class="blog-card" @if($loop->index >= 4) data-blog-extra style="display:none" @endif onclick="openBlogSheet({{ $blog->id }})">
                         <div class="blog-thumb" style="background-image: url('{{ $blog->img ? Storage::url($blog->img) : 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=300&q=80' }}');"></div>
                         <div class="blog-info">
                             <span class="bm">{{ $blog->meta }}</span>
@@ -231,6 +231,9 @@
                         </div>
                     </div>
                 @endforeach
+                @if($blogs->count() > 4)
+                <button type="button" class="btn btn-ghost btn-block" id="blogShowAll" onclick="showAllBlogs()" style="color:var(--accent);border-color:var(--accent);">Lihat Semua Artikel ({{ $blogs->count() }})</button>
+                @endif
             </div>
             @endif
 
@@ -589,6 +592,10 @@
         @endphp
         const BLOGS = @json($blogsData);
         const BLOG_FALLBACK = 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80';
+        function showAllBlogs() {
+            document.querySelectorAll('[data-blog-extra]').forEach(el => el.style.display = '');
+            document.getElementById('blogShowAll').style.display = 'none';
+        }
         function openBlogSheet(id) {
             const b = BLOGS.find(x => x.id === id);
             if (!b) return;
