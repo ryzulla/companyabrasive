@@ -64,7 +64,7 @@
     </div>
 
     @if($products->hasPages())
-        <div class="pad" style="padding-top: 6px;">
+        <div class="pad pad-t6">
             <div class="pg-row">
                 @if($products->onFirstPage())<span class="pg-btn disabled">‹ Sebelumnya</span>@else<a class="pg-btn" href="{{ $products->previousPageUrl() }}" rel="prev">‹ Sebelumnya</a>@endif
                 <span class="pg-info">{{ $products->currentPage() }} / {{ $products->lastPage() }}</span>

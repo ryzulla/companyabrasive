@@ -33,7 +33,7 @@
     @if($cover)<img class="art-cover" src="{{ $cover }}" alt="{{ $blog->title }}">@endif
     <div class="art-body">
         <span class="pd-tag">{{ $blog->meta }}</span>
-        <h1 class="pd-title" style="margin-top:10px;">{{ $blog->title }}</h1>
+        <h1 class="pd-title mt-10">{{ $blog->title }}</h1>
         <div class="art-date">{{ $blog->created_at?->translatedFormat('d F Y') }}</div>
         <div class="rich-content">{!! $blog->body_html !!}</div>
 
@@ -45,10 +45,10 @@
     </div>
 
     @if($related->isNotEmpty())
-    <div class="pad" style="padding-top: 22px;">
+    <div class="pad pad-t22">
         <div class="sec-title">Artikel Lainnya</div>
         @foreach($related as $r)
-            <a href="{{ route('blog.show', $r) }}" class="blog-card" style="text-decoration:none; margin-top:12px; margin-bottom:0;">
+            <a href="{{ route('blog.show', $r) }}" class="blog-card blog-card--stack">
                 <div class="blog-thumb" style="background-image: url('{{ $r->img ? Storage::url($r->img) : 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=300&q=80' }}');"></div>
                 <div class="blog-info">
                     <span class="bm">{{ $r->meta }}</span>

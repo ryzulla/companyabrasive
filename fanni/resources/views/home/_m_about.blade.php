@@ -35,7 +35,7 @@
 </div>
 
 @foreach($vm as [$label, $icon, $items])
-    <div class="pad" style="padding-top:0;">
+    <div class="pad pad-t0">
         <div class="vm-card">
             <h4><i class="fa-solid {{ $icon }}"></i> {{ $label }}</h4>
             <ul>@foreach($items as $item)<li>{{ $item }}</li>@endforeach</ul>
@@ -44,7 +44,7 @@
 @endforeach
 
 @if($showMilestone)
-<div class="stats-strip" style="margin: 0 16px; border-radius: 18px;">
+<div class="stats-strip stats-strip--card">
     <div class="stat-box"><i class="fa-solid fa-calendar-check"></i><h3><span class="counter" data-target="{{ $s['milestone_years'] ?? 0 }}">0</span>+</h3><p>Tahun Pengalaman</p></div>
     <div class="stat-box"><i class="fa-solid fa-building-user"></i><h3><span class="counter" data-target="{{ $s['milestone_clients'] ?? 0 }}">0</span>+</h3><p>Klien Aktif</p></div>
     <div class="stat-box"><i class="fa-solid fa-box-open"></i><h3><span class="counter" data-target="{{ $s['milestone_products'] ?? 0 }}">0</span>+</h3><p>Varian Produk</p></div>
@@ -52,11 +52,11 @@
 </div>
 @endif
 
-<div class="pad" style="padding-top: 18px;">
+<div class="pad pad-t18">
     @if($standalone ?? false)
-        <a href="{{ route('home') }}#contact" class="btn btn-primary btn-block" style="margin-bottom: 10px;"><i class="fa-solid fa-paper-plane"></i> Hubungi Kami</a>
+        <a href="{{ route('home') }}#contact" class="btn btn-primary btn-block mb-10"><i class="fa-solid fa-paper-plane"></i> Hubungi Kami</a>
     @else
-        <button class="btn btn-primary btn-block" style="margin-bottom: 10px;" onclick="showScreen('contact')"><i class="fa-solid fa-paper-plane"></i> Hubungi Kami</button>
+        <button class="btn btn-primary btn-block mb-10" onclick="showScreen('contact')"><i class="fa-solid fa-paper-plane"></i> Hubungi Kami</button>
     @endif
     @if(!empty($s['wa_number']))
         <a href="https://wa.me/{{ $s['wa_number'] }}?text=Halo%2C+saya+ingin+bertanya+tentang+perusahaan+Anda" target="_blank" rel="noopener" class="btn btn-wa btn-block"><i class="fa-brands fa-whatsapp"></i> Chat via WhatsApp</a>

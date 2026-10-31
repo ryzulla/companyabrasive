@@ -34,7 +34,7 @@
 
     <main class="app-main @yield('main-class')">
         @yield('content')
-        <div class="footer-note" style="padding: 22px 16px 6px;">{{ $s['footer_text'] ?? '© '.date('Y').' All Rights Reserved.' }}</div>
+        <div class="footer-note footer-note--page">{{ $s['footer_text'] ?? '© '.date('Y').' All Rights Reserved.' }}</div>
     </main>
 
     @yield('after-main')

@@ -8,7 +8,11 @@
     ]])
 @endsection
 
-@section('nav-blog', 'active')
+@section('active', 'blog')
+
+@push('head')
+    <link rel="stylesheet" href="{{ asset('css/home-inner.css') }}?v={{ filemtime(public_path('css/home-inner.css')) }}">
+@endpush
 
 @section('content')
     <section class="page-header">
@@ -16,16 +20,16 @@
             <div class="breadcrumb">
                 <a href="{{ route('home') }}">Beranda</a>
                 <i class="fa-solid fa-chevron-right"></i>
-                <span style="color: #fff;">Blog</span>
+                <span class="bc-current">Blog</span>
             </div>
             <h1>{{ $s['blog_title'] ?? 'Blog' }}</h1>
             <p>{{ strip_tags($s['blog_desc'] ?? '') }}</p>
         </div>
     </section>
 
-    <section class="container section-padding" style="padding: 60px 20px 80px;">
+    <section class="container section-padding blog-list-section">
         @if($blogs->isEmpty())
-            <p style="text-align:center; color:#64748b;">Belum ada artikel.</p>
+            <p class="empty-note">Belum ada artikel.</p>
         @else
             <div class="blog-grid">
                 @foreach($blogs as $blog)

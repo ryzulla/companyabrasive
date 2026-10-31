@@ -9,13 +9,13 @@
 @endsection
 
 @section('content')
-    <div class="pad" style="padding-bottom: 6px;">
+    <div class="pad pad-b6">
         <div class="sec-title">{{ $s['blog_title'] ?? 'Blog' }}</div>
         <div class="sec-sub">{{ strip_tags($s['blog_desc'] ?? '') }}</div>
     </div>
-    <div class="pad" style="padding-top: 6px;">
+    <div class="pad pad-t6">
         @forelse($blogs as $blog)
-            <a href="{{ route('blog.show', $blog) }}" class="blog-card" style="text-decoration:none;">
+            <a href="{{ route('blog.show', $blog) }}" class="blog-card">
                 <div class="blog-thumb" style="background-image: url('{{ $blog->img ? Storage::url($blog->img) : 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=300&q=80' }}');"></div>
                 <div class="blog-info">
                     <span class="bm">{{ $blog->meta }}</span>
@@ -24,7 +24,7 @@
                 </div>
             </a>
         @empty
-            <p style="text-align:center;color:#94a3b8;font-size:.85rem;">Belum ada artikel.</p>
+            <p class="empty-note">Belum ada artikel.</p>
         @endforelse
 
         @if($blogs->hasPages())

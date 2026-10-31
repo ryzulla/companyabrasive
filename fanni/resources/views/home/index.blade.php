@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
+    <link rel="stylesheet" href="{{ asset('css/home-base.css') }}?v={{ filemtime(public_path('css/home-base.css')) }}">
     <link rel="stylesheet" href="{{ asset('css/home-desktop.css') }}?v={{ filemtime(public_path('css/home-desktop.css')) }}">
 </head>
 <body>
@@ -56,7 +57,7 @@
                 <p>{!! $s['hero_subtitle'] ?? '' !!}</p>
                 <div class="hero-buttons">
                     <a href="#products" class="btn-primary">{{ $s['hero_btn_primary'] ?? 'Jelajahi Produk' }} <i class="fa-solid fa-arrow-right"></i></a>
-                    <a href="#contact" class="btn-outline" style="color:#fff;border-color:#fff;">{{ $s['hero_btn_secondary'] ?? 'Minta Penawaran' }}</a>
+                    <a href="#contact" class="btn-outline btn-outline-light">{{ $s['hero_btn_secondary'] ?? 'Minta Penawaran' }}</a>
                 </div>
             </div>
         </div>
@@ -121,7 +122,7 @@
 
     {{-- PRODUK --}}
     @if($show('show_products'))
-    <section id="products" class="container section-padding" style="padding-bottom: 40px;">
+    <section id="products" class="container section-padding pb-40">
         <div class="section-header">
             <h2>{{ $s['products_title'] ?? 'Katalog Produk' }}</h2>
             <p>{{ $s['products_desc'] ?? '' }}</p>
@@ -154,9 +155,9 @@
                 </div>
             @endforeach
         </div>
-        <p id="product-empty" style="{{ $products->isEmpty() ? '' : 'display:none; ' }}text-align:center; color:#666;">Belum ada produk di kategori ini.</p>
-        <div style="text-align: center; margin-top: 50px;">
-            <a href="{{ route('products.index') }}" id="allProductsLink" class="btn-primary" style="display: inline-flex;">
+        <p id="product-empty" class="empty-note" @if($products->isNotEmpty()) hidden @endif>Belum ada produk di kategori ini.</p>
+        <div class="center-block mt-50">
+            <a href="{{ route('products.index') }}" id="allProductsLink" class="btn-primary">
                 Lihat Semua Produk <i class="fa-solid fa-arrow-right"></i>
             </a>
         </div>
@@ -172,19 +173,11 @@
         </div>
     </div>
 
-    {{-- MODAL ARTIKEL --}}
-    <div id="blogModal" class="modal">
-        <div class="modal-content blog-modal-content">
-            <span class="close-modal" id="closeBlogModal">&times;</span>
-            <div id="blogModalBody"></div>
-        </div>
-    </div>
-
     {{-- VIDEO --}}
     @if($show('show_video') && $videos->count())
-    <section class="container section-padding" style="padding-top: 0;">
-        <div class="section-header" style="margin-bottom: 30px;">
-            <h2 style="font-size: 2rem;">{{ $s['video_title'] ?? 'Video' }}</h2>
+    <section class="container section-padding pt-0">
+        <div class="section-header mb-30">
+            <h2 class="h2-lg">{{ $s['video_title'] ?? 'Video' }}</h2>
             <p>{{ $s['video_desc'] ?? '' }}</p>
         </div>
         <div class="dynamic-grid">
@@ -216,7 +209,7 @@
                     <a href="#contact" class="btn-primary"><i class="fa-solid fa-file-pdf"></i> Download E-Catalog (PDF)</a>
                 @endif
                 @if($hasWa)
-                <a href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+meminta+Katalog+Produk" target="_blank" rel="noopener" class="btn-outline" style="color: #fff; border-color: #fff;"><i class="fa-brands fa-whatsapp"></i> Minta via WhatsApp</a>
+                <a href="https://wa.me/{{ $s['wa_number'] ?? '' }}?text=Halo%2C+saya+ingin+meminta+Katalog+Produk" target="_blank" rel="noopener" class="btn-outline btn-outline-light"><i class="fa-brands fa-whatsapp"></i> Minta via WhatsApp</a>
                 @endif
             </div>
         </div>
@@ -248,9 +241,9 @@
 
     {{-- TESTIMONI --}}
     @if($show('show_testimonials') && $testimonials->count())
-    <section class="container section-padding" style="padding-top: 0;">
-        <div class="section-header" style="margin-bottom: 40px;">
-            <h2 style="font-size: 2rem;">{{ $s['testimonials_title'] ?? 'Apa Kata Mereka?' }}</h2>
+    <section class="container section-padding pt-0">
+        <div class="section-header mb-40">
+            <h2 class="h2-lg">{{ $s['testimonials_title'] ?? 'Apa Kata Mereka?' }}</h2>
         </div>
         <div class="dynamic-grid">
             @foreach($testimonials as $t)
@@ -284,7 +277,7 @@
                             {{ $faq->question }}
                             <i class="fa-solid fa-chevron-down"></i>
                         </div>
-                        <div class="faq-answer"><p style="padding-bottom: 20px;">{{ $faq->answer }}</p></div>
+                        <div class="faq-answer"><p>{{ $faq->answer }}</p></div>
                     </div>
                 @endforeach
             </div>
@@ -313,7 +306,7 @@
             @endforeach
         </div>
         @if($blogsTotal > $blogs->count())
-        <div style="text-align: center; margin-top: 40px;">
+        <div class="center-block mt-40">
             <a href="{{ route('blog.index') }}" class="btn-outline">
                 Lihat Semua Artikel ({{ $blogsTotal }}) <i class="fa-solid fa-arrow-right"></i>
             </a>
@@ -370,19 +363,18 @@
                     </div>
                     @endif
                     @if(!empty($s['maps_embed']))
-                    <iframe src="{{ $s['maps_embed'] }}" title="Lokasi {{ $s['company_name'] ?? '' }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                            style="width:100%; height:220px; border:0; border-radius:12px; margin-top:6px;"></iframe>
+                    <iframe src="{{ $s['maps_embed'] }}" title="Lokasi {{ $s['company_name'] ?? '' }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map-embed"></iframe>
                     @endif
                 </div>
                 <div class="contact-form">
                     @if(session('contact_success'))
-                        <div style="background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #4ade80; padding: 14px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
+                        <div class="alert-ok">
                             {{ session('contact_success') }}
                         </div>
                     @endif
                     <form method="POST" action="{{ route('contact.store') }}">
                         @csrf
-                        <div style="position:absolute; left:-9999px;" aria-hidden="true">
+                        <div class="hp-field" aria-hidden="true">
                             <label>Jangan diisi <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
                         </div>
                         <div class="form-group">
@@ -440,230 +432,18 @@
             'img'   => $c->img ? asset('storage/'.$c->img) : 'https://images.unsplash.com/photo-1513828583835-c5417eb91e1d?auto=format&fit=crop&w=400&q=80',
         ]);
     @endphp
+    @php
+        $videosData = $videos->map(fn($v) => ['id' => (string) $v->id, 'title' => $v->title]);
+    @endphp
     <script>
-        const categoriesData = @json($categoriesJson);
-
-        let currentFilter = 'all';
-
-        function renderFilterButtons() {
-            const container = document.getElementById('filter-container');
-            if (!container) return;
-            let html = `<button class="filter-btn active" data-filter="all">Semua Produk</button>`;
-            categoriesData.forEach(cat => {
-                html += `<button class="filter-btn" data-filter="${escapeHtml(cat.id)}">${escapeHtml(cat.title)}</button>`;
-            });
-            container.innerHTML = html;
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    e.currentTarget.classList.add('active');
-                    currentFilter = e.currentTarget.getAttribute('data-filter');
-                    renderProducts(currentFilter);
-                });
-            });
-        }
-
-        function triggerFilter(type) {
-            document.querySelector('#products').scrollIntoView();
-            document.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.remove('active');
-                if(b.getAttribute('data-filter') === String(type)) b.classList.add('active');
-            });
-            currentFilter = type;
-            renderProducts(type);
-        }
-
-        // ── TAMPILAN THUMBNAIL / DAFTAR (disimpan di browser; default thumbnail)
-        function setProdView(mode) {
-            document.getElementById('product-container').classList.toggle('list-view', mode === 'list');
-            document.querySelectorAll('.vt-btn').forEach(b => b.classList.toggle('active', b.dataset.view === mode));
-            try { localStorage.setItem('prodView', mode); } catch (e) {}
-        }
-        (function () { let m = 'grid'; try { m = localStorage.getItem('prodView') === 'list' ? 'list' : 'grid'; } catch (e) {} setProdView(m); })();
-
-        // Beranda hanya memuat 8 produk terbaru. Untuk kategori tertentu, produknya diambil dari server
-        // supaya kategori yang produknya tidak termasuk 8 terbaru tidak tampil kosong.
-        const SEARCH_URL = @json(route('products.search', [], false));
-        const WA_NUMBER  = @json($s['wa_number'] ?? '');
-        const FALLBACK_IMG = 'https://images.unsplash.com/photo-1620912189865-1e8a33da4c5e?auto=format&fit=crop&w=400&q=80';
-        const catCache = {};
-        let renderToken = 0;
-
-        function productCardHTML(p) {
-            const wa = WA_NUMBER ? `<a class="btn-sm" href="https://wa.me/${WA_NUMBER}?text=Halo%2C+saya+tertarik+dengan+${encodeURIComponent(p.title)}" target="_blank" rel="noopener" aria-label="Tanya ${escapeAttr(p.title)} via WhatsApp" onclick="event.stopPropagation()"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></a>` : '';
-            return `<div class="product-card fetched" data-type="${escapeAttr(p.type)}" onclick="location.href='${escapeAttr(p.url)}'">
-                <div class="product-img-wrapper">
-                    ${p.badge ? `<span class="product-badge">${escapeHtml(p.badge)}</span>` : ''}
-                    <img src="${escapeAttr(p.img || FALLBACK_IMG)}" alt="${escapeAttr(p.title)}" loading="lazy">
-                </div>
-                <div class="product-info">
-                    <div class="product-meta">${escapeHtml(p.meta)}</div>
-                    <h3 class="product-title"><a href="${escapeAttr(p.url)}">${escapeHtml(p.title)}</a></h3>
-                    <p class="product-desc">${escapeHtml(p.desc)}</p>
-                    <div class="product-footer">
-                        <div class="product-spec">${escapeHtml(p.specLabel)}:<span>${escapeHtml(p.specVal)}</span></div>
-                        ${wa}
-                    </div>
-                </div>
-            </div>`;
-        }
-
-        async function renderProducts(filterType) {
-            const container = document.getElementById('product-container');
-            const empty = document.getElementById('product-empty');
-            const token = ++renderToken;
-            const allLink = document.getElementById('allProductsLink');
-            if (allLink) allLink.href = @json(route('products.index')) + (filterType === 'all' ? '' : '?category=' + encodeURIComponent(filterType));
-            const initial = container.querySelectorAll('.product-card:not(.fetched)');
-            container.querySelectorAll('.product-card.fetched').forEach(el => el.remove());
-
-            if (filterType === 'all') {
-                initial.forEach(card => card.style.display = '');
-                empty.style.display = initial.length ? 'none' : 'block';
-                return;
-            }
-
-            initial.forEach(card => card.style.display = 'none');
-            empty.style.display = 'none';
-            container.classList.add('loading');
-            try {
-                if (!catCache[filterType]) {
-                    const res = await fetch(SEARCH_URL + '?category=' + encodeURIComponent(filterType), { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
-                    catCache[filterType] = (await res.json()).products || [];
-                }
-                if (token !== renderToken) return; // pengguna sudah pindah kategori
-                const items = catCache[filterType];
-                container.insertAdjacentHTML('beforeend', items.map(productCardHTML).join(''));
-                empty.style.display = items.length ? 'none' : 'block';
-            } catch (e) {
-                if (token !== renderToken) return;
-                empty.textContent = 'Gagal memuat produk. Coba lagi.';
-                empty.style.display = 'block';
-            } finally {
-                if (token === renderToken) container.classList.remove('loading');
-            }
-        }
-
-        // ── VIDEO MODAL (desktop: tampil lebih besar) ──
-        @php
-            $videosData = $videos->map(fn($v) => ['id' => (string) $v->id, 'title' => $v->title]);
-            $blogsData  = $blogs->map(fn($b) => ['id' => $b->id, 'meta' => $b->meta, 'title' => $b->title, 'desc' => $b->excerpt(200), 'html' => $b->body_html, 'img' => $b->img ? asset('storage/'.$b->img) : '']);
-        @endphp
-        const videosData  = @json($videosData);
-        const videoModal  = document.getElementById('videoModal');
-        const videoPlayer = document.getElementById('videoModalPlayer');
-        window.openVideoModal = function(id) {
-            const v = videosData.find(x => x.id === String(id));
-            videoPlayer.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" title="${v ? escapeAttr(v.title) : ''}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
-            document.getElementById('videoModalTitle').textContent = v ? v.title : '';
-            videoModal.classList.add('show');
-            document.body.style.overflow = 'hidden';
+        window.PAGE = {
+            categories: @json($categoriesJson),
+            searchUrl: @json(route('products.search', [], false)),
+            waNumber: @json($s['wa_number'] ?? ''),
+            allProductsUrl: @json(route('products.index')),
+            videos: @json($videosData),
         };
-        function closeVideoModal() { videoModal.classList.remove('show'); videoPlayer.innerHTML = ''; document.body.style.overflow = ''; }
-        document.getElementById('closeVideoModal').onclick = closeVideoModal;
-
-        // ── BLOG MODAL (baca artikel) ──
-        const blogsData = @json($blogsData);
-        const blogModal = document.getElementById('blogModal');
-        window.openBlogModal = function(id) {
-            const b = blogsData.find(x => x.id === id);
-            if (!b) return;
-            const img = b.img || 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1000&q=80';
-            document.getElementById('blogModalBody').innerHTML = `
-                <img src="${img}" alt="${escapeAttr(b.title)}" class="article-hero">
-                <div class="article-body-wrap">
-                    ${b.meta ? `<span class="badge">${escapeHtml(b.meta)}</span>` : ''}
-                    <h2>${escapeHtml(b.title)}</h2>
-                    <div class="article-content rich-content">${b.html}</div>
-                </div>`;
-            blogModal.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        };
-        function closeBlogModal() { blogModal.classList.remove('show'); document.body.style.overflow = ''; }
-        document.getElementById('closeBlogModal').onclick = closeBlogModal;
-
-        function escapeHtml(s) { return String(s ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
-        function escapeAttr(s) { return escapeHtml(s); }
-
-        // ── CLOSE HANDLERS (klik luar + Escape) untuk semua modal ──
-        window.onclick = (e) => {
-            if (e.target == videoModal) { closeVideoModal(); }
-            if (e.target == blogModal)  { closeBlogModal(); }
-        };
-        document.addEventListener('keydown', e => {
-            if (e.key !== 'Escape') return;
-            if (videoModal.classList.contains('show')) closeVideoModal();
-            if (blogModal.classList.contains('show'))  closeBlogModal();
-            document.body.style.overflow = '';
-        });
-
-        function toggleMobileNav() {
-            var nav = document.getElementById('mobileNav');
-            var btn = document.getElementById('hamburger');
-            var backdrop = document.getElementById('navBackdrop');
-            var isOpen = nav.classList.contains('open');
-            if (isOpen) {
-                nav.classList.remove('open');
-                btn.classList.remove('open');
-                backdrop.classList.remove('open');
-                document.body.style.overflow = '';
-            } else {
-                nav.classList.add('open');
-                btn.classList.add('open');
-                backdrop.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-        function closeMobileNav() {
-            document.getElementById('mobileNav').classList.remove('open');
-            document.getElementById('hamburger').classList.remove('open');
-            document.getElementById('navBackdrop').classList.remove('open');
-            document.body.style.overflow = '';
-        }
-        // Tutup menu saat scroll cukup jauh (bukan setiap pixel — hindari false trigger di iOS)
-        var _navScrollY = 0;
-        window.addEventListener('scroll', function() {
-            if (document.getElementById('mobileNav').classList.contains('open')) {
-                if (Math.abs(window.scrollY - _navScrollY) > 60) closeMobileNav();
-            } else {
-                _navScrollY = window.scrollY;
-            }
-        }, { passive: true });
-
-        window.toggleFaq = function(element) {
-            const parent = element.parentElement;
-            const wasActive = parent.classList.contains('active');
-            document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
-            if(!wasActive) parent.classList.add('active');
-        }
-
-        // Milestone counter animation
-        const counters = document.querySelectorAll('.counter');
-        const counterObserver = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting) {
-                    const counter = entry.target;
-                    const target = +counter.getAttribute('data-target');
-                    const inc = target / 200;
-                    const updateCount = () => {
-                        const count = +counter.innerText;
-                        if(count < target) {
-                            counter.innerText = Math.ceil(count + inc);
-                            setTimeout(updateCount, 10);
-                        } else {
-                            counter.innerText = target;
-                        }
-                    };
-                    updateCount();
-                    observer.unobserve(counter);
-                }
-            });
-        }, { threshold: 0.5 });
-        counters.forEach(c => counterObserver.observe(c));
-
-        document.addEventListener('DOMContentLoaded', () => {
-            renderFilterButtons();
-        });
     </script>
+    <script src="{{ asset('js/home-desktop.js') }}?v={{ filemtime(public_path('js/home-desktop.js')) }}"></script>
 </body>
 </html>

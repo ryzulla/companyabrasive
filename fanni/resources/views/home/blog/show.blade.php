@@ -28,24 +28,28 @@
     ]])
 @endsection
 
-@section('nav-blog', 'active')
+@section('active', 'blog')
+
+@push('head')
+    <link rel="stylesheet" href="{{ asset('css/home-inner.css') }}?v={{ filemtime(public_path('css/home-inner.css')) }}">
+@endpush
 
 @section('content')
-    <section class="page-header" style="padding: 36px 0 30px;">
+    <section class="page-header page-header--article">
         <div class="container">
-            <div class="breadcrumb" style="flex-wrap: wrap;">
+            <div class="breadcrumb breadcrumb--wrap">
                 <a href="{{ route('home') }}">Beranda</a>
                 <i class="fa-solid fa-chevron-right"></i>
                 <a href="{{ route('blog.index') }}">Blog</a>
                 <i class="fa-solid fa-chevron-right"></i>
-                <span style="color: #fff;">{{ \Illuminate\Support\Str::limit($blog->title, 60) }}</span>
+                <span class="bc-current">{{ \Illuminate\Support\Str::limit($blog->title, 60) }}</span>
             </div>
-            <h1 style="max-width: 820px;">{{ $blog->title }}</h1>
+            <h1 class="article-title">{{ $blog->title }}</h1>
             <p>{{ $blog->meta }} · {{ $blog->created_at?->translatedFormat('d F Y') }}</p>
         </div>
     </section>
 
-    <article class="container" style="padding-top: 44px; padding-bottom: 60px;">
+    <article class="container article-section">
         <div class="article-wrap">
             @if($cover)<img class="article-cover" src="{{ $cover }}" alt="{{ $blog->title }}">@endif
             <div class="rich-content">{!! $blog->body_html !!}</div>
