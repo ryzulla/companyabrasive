@@ -31,7 +31,9 @@ function UploadAdapterPlugin(editor) {
 // Tombol "Gambar dari URL"
 function ImageUrlPlugin(editor) {
     editor.ui.componentFactory.add('imageUrl', locale => {
-        const view = new editor.ui.button.ButtonView(locale);
+        // Build CDN tidak mengekspos ButtonView; ambil kelasnya dari tombol bawaan
+        const ButtonView = editor.ui.componentFactory.create('bold').constructor;
+        const view = new ButtonView(locale);
         view.set({
             label: 'Gambar dari URL',
             tooltip: true,

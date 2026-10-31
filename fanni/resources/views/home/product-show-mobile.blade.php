@@ -60,9 +60,7 @@
             @include('home._brand')
         </a>
         <div class="header-actions">
-            @if(!empty($s['phone']))
-            <a class="icon-btn" href="tel:{{ preg_replace('/[^0-9+]/', '', $s['phone']) }}" aria-label="Telepon"><i class="fa-solid fa-phone"></i></a>
-            @endif
+            <a class="icon-btn" href="{{ route('products.index', ['cari' => 1]) }}" aria-label="Cari"><i class="fa-solid fa-magnifying-glass"></i></a>
             @if($hasWa)
             <a class="icon-btn wa" href="https://wa.me/{{ $s['wa_number'] }}?text={{ urlencode('Halo, saya tertarik dengan '.$product->title) }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
             @endif

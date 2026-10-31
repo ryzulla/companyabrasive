@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\TestimonialFormController;
 use App\Http\Controllers\BlogController as PublicBlogController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -34,10 +35,16 @@ Route::get('/robots.txt', function () {
     $noindex = \App\Models\Setting::get('seo_noindex', '0') === '1';
     $body = $noindex
         ? "User-agent: *\nDisallow: /\n"
-        : "User-agent: *\nDisallow: /admin\nDisallow: /login\nDisallow: /products/search\n\nSitemap: " . url('/sitemap.xml') . "\n";
+        : "User-agent: *\nDisallow: /admin\nDisallow: /login\nDisallow: /products/search\nDisallow: /t/\nDisallow: /testimoni/\n\nSitemap: " . url('/sitemap.xml') . "\n";
 
     return response($body, 200)->header('Content-Type', 'text/plain; charset=UTF-8');
 })->name('robots');
+// Link privat untuk klien mengisi testimoni
+Route::get('/t/terima-kasih', [TestimonialFormController::class, 'thanks'])->name('testimonial.thanks');
+Route::get('/t/{token}', [TestimonialFormController::class, 'show'])->name('testimonial.form');
+// Alamat lama (/testimoni/...) tetap berfungsi untuk link yang sudah telanjur dikirim
+Route::get('/testimoni/{token}', [TestimonialFormController::class, 'show']);
+Route::post('/t/{token}', [TestimonialFormController::class, 'store'])->middleware('throttle:10,1')->name('testimonial.store');
 Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 
 // Auth
@@ -52,6 +59,9 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::resource('products', AdminProductController::class)->except(['show']);
     Route::resource('videos', VideoController::class)->except(['show']);
     Route::resource('faqs', FaqController::class)->except(['show']);
+    Route::post('testimonials/invites', [TestimonialController::class, 'storeInvite'])->name('testimonials.invites.store');
+    Route::delete('testimonials/invites/{invite}', [TestimonialController::class, 'destroyInvite'])->name('testimonials.invites.destroy');
+    Route::post('testimonials/{testimonial}/approve', [TestimonialController::class, 'approve'])->name('testimonials.approve');
     Route::resource('testimonials', TestimonialController::class)->except(['show']);
     Route::post('blogs/upload-image', [BlogController::class, 'uploadImage'])->name('blogs.upload-image');
     Route::resource('blogs', BlogController::class)->except(['show']);

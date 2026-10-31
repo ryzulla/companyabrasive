@@ -24,7 +24,7 @@
             @if($cat !== 'all')<input type="hidden" name="category" value="{{ $cat }}">@endif
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="search" name="q" value="{{ $q }}" placeholder="Cari produk..." autocomplete="off" enterkeyhint="search">
+                <input type="search" name="q" value="{{ $q }}" placeholder="Cari produk..." autocomplete="off" enterkeyhint="search" @if(request()->boolean('cari')) autofocus @endif>
                 @if($q)<a href="{{ route('products.index', array_filter(['category' => $cat !== 'all' ? $cat : null])) }}" aria-label="Hapus pencarian"><i class="fa-solid fa-xmark"></i></a>@endif
             </div>
         </form>

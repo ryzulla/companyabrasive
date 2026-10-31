@@ -44,7 +44,7 @@ class HomeController extends Controller
 
         $videos      = Video::all();
         $clients     = Client::orderBy('order')->orderBy('name')->get();
-        $testimonials = Testimonial::all();
+        $testimonials = Testimonial::approved()->get();
         $faqs        = Faq::all();
         $blogs       = Blog::latest()->take(4)->get();
         $blogsTotal  = Blog::count();

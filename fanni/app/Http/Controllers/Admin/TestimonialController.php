@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Testimonial;
+use App\Models\TestimonialInvite;
 use Illuminate\Http\Request;
 
 class TestimonialController extends Controller
@@ -20,7 +21,9 @@ class TestimonialController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.testimonials.index', compact('testimonials'));
+        $invites = TestimonialInvite::latest()->get();
+
+        return view('admin.testimonials.index', compact('testimonials', 'invites'));
     }
 
     public function create()
@@ -67,5 +70,36 @@ class TestimonialController extends Controller
 
         return redirect()->route('admin.testimonials.index')
             ->with('success', 'Testimoni berhasil dihapus.');
+    }
+
+    /** Buat link undangan sekali pakai untuk dikirim ke klien. */
+    public function storeInvite(Request $request)
+    {
+        $data = $request->validate([
+            'label' => ['required', 'string', 'max:150'],
+            'days'  => ['nullable', 'integer', 'in:7,14,30,90'],
+        ]);
+
+        $invite = TestimonialInvite::generate($data['label'], $data['days'] ?? null);
+
+        return redirect()->route('admin.testimonials.index')
+            ->with('success', 'Link undangan dibuat. Salin dan kirim ke klien.')
+            ->with('new_invite', $invite->id);
+    }
+
+    public function destroyInvite(TestimonialInvite $invite)
+    {
+        $invite->delete();
+
+        return redirect()->route('admin.testimonials.index')
+            ->with('success', 'Link undangan dicabut. Link tersebut tidak bisa dipakai lagi.');
+    }
+
+    public function approve(Testimonial $testimonial)
+    {
+        $testimonial->update(['status' => Testimonial::APPROVED]);
+
+        return redirect()->route('admin.testimonials.index')
+            ->with('success', 'Testimoni disetujui dan sekarang tampil di website.');
     }
 }
