@@ -41,7 +41,25 @@ $PHP artisan config:cache
 $PHP artisan route:cache
 $PHP artisan view:cache
 
-if [ ! -d public/build ]; then
+echo "==> Build aset (Vite)"
+export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+if ! command -v npm >/dev/null 2>&1; then
+  echo "==> npm belum ada, install Node via nvm (tanpa root, ke $NVM_DIR)"
+  if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+    curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash || true
+  fi
+  # shellcheck disable=SC1091
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && nvm install 20 || true
+fi
+
+if command -v npm >/dev/null 2>&1; then
+  npm ci
+  npm run build
+else
+  echo "!! Install Node gagal, build dilewati."
+fi
+
+if [ ! -f public/build/manifest.json ]; then
   echo "!! public/build belum ada. Jalankan 'npm run build' di lokal lalu upload folder public/build."
 fi
 
