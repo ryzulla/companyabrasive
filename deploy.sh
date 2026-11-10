@@ -43,7 +43,12 @@ echo "==> Migrasi database"
 $PHP artisan migrate --force
 
 echo "==> Storage link"
+# Hapus symlink rusak (mis. menunjuk ke path lama) lalu buat ulang
+if [ -L public/storage ] && [ ! -e public/storage ]; then rm -f public/storage; fi
 [ -e public/storage ] || $PHP artisan storage:link
+if [ ! -f public/storage/settings/.keep ] && [ -z "$(ls -A public/storage 2>/dev/null)" ]; then
+  echo "!! public/storage kosong/rusak. Cek: ls -la public/storage  (gambar ada di storage/app/public)"
+fi
 
 echo "==> Permission"
 chmod -R 775 storage bootstrap/cache
