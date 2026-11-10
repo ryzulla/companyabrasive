@@ -17,6 +17,11 @@ cat > .htaccess <<'HTACCESS'
 Options -Indexes
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Domain lama (salah ketik) -> domain utama, permanen
+    RewriteCond %{HTTP_HOST} ^(www\.)?anekabarasiveandalan\.com$ [NC]
+    RewriteRule ^(.*)$ https://anekaabrasiveandalan.com/$1 [R=301,L]
+
     RewriteRule ^$ public/ [L]
     RewriteRule ^(?!public/)(.*)$ public/$1 [L]
 </IfModule>
