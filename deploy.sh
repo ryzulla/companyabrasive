@@ -10,6 +10,18 @@ cd "$(dirname "$0")"
 PHP="${PHP:-php}"
 COMPOSER="${COMPOSER:-composer}"
 
+echo "==> Routing ke public/ (.htaccess di root project)"
+# Document root domain bisa mengarah ke folder project, bukan ke public/.
+# Selalu ditulis ulang supaya konsisten; tidak berpengaruh jika docroot sudah ke public/.
+cat > .htaccess <<'HTACCESS'
+Options -Indexes
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^$ public/ [L]
+    RewriteRule ^(?!public/)(.*)$ public/$1 [L]
+</IfModule>
+HTACCESS
+
 echo "==> Versi PHP"
 $PHP -v | head -1
 
@@ -61,20 +73,6 @@ fi
 
 if [ ! -f public/build/manifest.json ]; then
   echo "!! public/build belum ada. Jalankan 'npm run build' di lokal lalu upload folder public/build."
-fi
-
-echo "==> Routing ke public/ (.htaccess di root project)"
-# Berguna jika document root domain mengarah ke folder project, bukan ke public/.
-# Aman juga jika document root sudah ke public/ (file ini tidak terpakai).
-if [ ! -f .htaccess ]; then
-  cat > .htaccess <<'HTACCESS'
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteRule ^$ public/ [L]
-    RewriteRule ^(?!public/)(.*)$ public/$1 [L]
-</IfModule>
-HTACCESS
-  echo "    .htaccess dibuat"
 fi
 
 echo "==> Selesai"
