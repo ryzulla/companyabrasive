@@ -46,7 +46,8 @@
 @section('active', 'products')
 
 @push('head')
-    <link rel="stylesheet" href="{{ asset('css/home-product-show.css') }}?v={{ filemtime(public_path('css/home-product-show.css')) }}">
+    {{-- CSS ditanam langsung ke HTML supaya tidak memblokir render (sumber: public/css/home-product-show.css) --}}
+    <style>{!! file_get_contents(public_path('css/home-product-show.css')) !!}</style>
 @endpush
 
 @section('wa-text', urlencode('Halo, saya tertarik dengan '.$product->title))

@@ -7,7 +7,8 @@
 @section('active', 'products')
 
 @push('head')
-    <link rel="stylesheet" href="{{ asset('css/home-products.css') }}?v={{ filemtime(public_path('css/home-products.css')) }}">
+    {{-- CSS ditanam langsung ke HTML supaya tidak memblokir render (sumber: public/css/home-products.css) --}}
+    <style>{!! file_get_contents(public_path('css/home-products.css')) !!}</style>
 @endpush
 
 @section('wa-text', 'Halo%2C+saya+ingin+bertanya+tentang+produk+Anda')

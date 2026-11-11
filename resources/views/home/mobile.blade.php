@@ -17,7 +17,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
-    <link rel="stylesheet" href="{{ asset('css/home-mobile.css') }}?v={{ filemtime(public_path('css/home-mobile.css')) }}">
+    {{-- CSS ditanam langsung ke HTML supaya tidak memblokir render (sumber: public/css/home-mobile.css) --}}
+    <style>{!! file_get_contents(public_path('css/home-mobile.css')) !!}</style>
 </head>
 <body>
 
@@ -325,19 +326,19 @@
                         <label>Jangan diisi <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
                     </div>
                     <div class="form-field">
-                        <input type="text" name="name" value="{{ old('name') }}" placeholder="Nama / Perusahaan" required>
+                        <input type="text" name="name" aria-label="Nama lengkap atau nama perusahaan" autocomplete="name" value="{{ old('name') }}" placeholder="Nama / Perusahaan" required>
                         @error('name')<p class="form-err">{{ $message }}</p>@enderror
                     </div>
                     <div class="form-field">
-                        <input type="email" name="email" value="{{ old('email') }}" placeholder="Alamat Email" required>
+                        <input type="email" name="email" aria-label="Alamat email" autocomplete="email" value="{{ old('email') }}" placeholder="Alamat Email" required>
                         @error('email')<p class="form-err">{{ $message }}</p>@enderror
                     </div>
                     <div class="form-field">
-                        <input type="text" name="phone" value="{{ old('phone') }}" placeholder="No. Telepon / WhatsApp" required>
+                        <input type="text" name="phone" aria-label="Nomor telepon atau WhatsApp" autocomplete="tel" inputmode="tel" value="{{ old('phone') }}" placeholder="No. Telepon / WhatsApp" required>
                         @error('phone')<p class="form-err">{{ $message }}</p>@enderror
                     </div>
                     <div class="form-field">
-                        <select name="subject">
+                        <select name="subject" aria-label="Keperluan">
                             <option value="">Pilih keperluan (opsional)</option>
                             @foreach(\App\Models\ContactMessage::SUBJECTS as $opt)
                                 <option value="{{ $opt }}" @selected(old('subject', $prefill['subject'] ?? '') === $opt)>{{ $opt }}</option>
@@ -346,7 +347,7 @@
                         @error('subject')<p class="form-err">{{ $message }}</p>@enderror
                     </div>
                     <div class="form-field">
-                        <textarea name="message" rows="4" placeholder="Detail kebutuhan Anda..." required>{{ old('message', $prefill['message'] ?? '') }}</textarea>
+                        <textarea name="message" aria-label="Detail kebutuhan Anda" rows="4" placeholder="Detail kebutuhan Anda..." required>{{ old('message', $prefill['message'] ?? '') }}</textarea>
                         @error('message')<p class="form-err">{{ $message }}</p>@enderror
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Kirim Permintaan <i class="fa-solid fa-paper-plane"></i></button>

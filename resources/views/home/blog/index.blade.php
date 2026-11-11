@@ -11,7 +11,8 @@
 @section('active', 'blog')
 
 @push('head')
-    <link rel="stylesheet" href="{{ asset('css/home-inner.css') }}?v={{ filemtime(public_path('css/home-inner.css')) }}">
+    {{-- CSS ditanam langsung ke HTML supaya tidak memblokir render (sumber: public/css/home-inner.css) --}}
+    <style>{!! file_get_contents(public_path('css/home-inner.css')) !!}</style>
 @endpush
 
 @section('content')

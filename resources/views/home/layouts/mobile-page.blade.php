@@ -15,7 +15,8 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"></noscript>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
-    <link rel="stylesheet" href="{{ asset('css/home-mobile.css') }}?v={{ filemtime(public_path('css/home-mobile.css')) }}">
+    {{-- CSS ditanam langsung ke HTML supaya tidak memblokir render (sumber: public/css/home-mobile.css) --}}
+    <style>{!! file_get_contents(public_path('css/home-mobile.css')) !!}</style>
 </head>
 <body>
     @php $hasWa = !empty($s['wa_number']); @endphp
