@@ -48,6 +48,7 @@ clearBtn.addEventListener('click', function () {
 document.getElementById('categoryPills').addEventListener('click', function (e) {
     const pill = e.target.closest('.category-pill');
     if (!pill) return;
+    e.preventDefault(); // pill berupa tautan (agar bisa dirayapi), tapi filter tetap tanpa muat ulang
     document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
     pill.classList.add('active');
     state.category = pill.dataset.cat;
@@ -109,7 +110,7 @@ function renderGrid(products) {
             </div>
             <div class="product-info">
                 <div class="product-meta">${p.meta}</div>
-                <h3 class="product-title">${p.title}</h3>
+                <h3 class="product-title"><a href="${p.url}">${p.title}</a></h3>
                 <p class="product-desc">${p.desc}</p>
                 <div class="product-footer">
                     <div class="product-spec">${p.specLabel}:<span>${p.specVal}</span></div>
@@ -162,6 +163,11 @@ function renderPagination(data) {
 
 // ── ACTIVE FILTER BAR
 function updateFilterBar() {
+    const heading = document.getElementById('catalogHeading');
+    if (heading) {
+        const catName = state.category ? document.querySelector(`.category-pill[data-cat="${state.category}"]`)?.textContent.trim() : '';
+        heading.textContent = catName || 'Katalog Produk';
+    }
     if (!state.q && !state.category) {
         filterBar.style.display = 'none';
         return;

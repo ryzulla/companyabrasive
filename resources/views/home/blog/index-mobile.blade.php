@@ -10,7 +10,7 @@
 
 @section('content')
     <div class="pad pad-b6">
-        <div class="sec-title">{{ $s['blog_title'] ?? 'Blog' }}</div>
+        <h1 class="sec-title">{{ $s['blog_title'] ?? 'Blog' }}</h1>
         <div class="sec-sub">{{ strip_tags($s['blog_desc'] ?? '') }}</div>
     </div>
     <div class="pad pad-t6">

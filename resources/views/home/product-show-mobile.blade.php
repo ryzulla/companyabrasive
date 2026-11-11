@@ -27,9 +27,12 @@
             'itemListElement' => [
                 ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => route('home')],
                 ['@type' => 'ListItem', 'position' => 2, 'name' => 'Produk', 'item' => route('products.index')],
-                ['@type' => 'ListItem', 'position' => 3, 'name' => $product->title, 'item' => $canonical],
             ],
         ];
+        if ($product->category) {
+            $breadcrumb['itemListElement'][] = ['@type' => 'ListItem', 'position' => 3, 'name' => $product->category->title, 'item' => route('products.index', ['category' => $product->category->id])];
+        }
+        $breadcrumb['itemListElement'][] = ['@type' => 'ListItem', 'position' => count($breadcrumb['itemListElement']) + 1, 'name' => $product->title, 'item' => $canonical];
     @endphp
     @include('home._seo', ['page' => [
         'title'       => $product->title . ' | ' . $company,
@@ -97,7 +100,7 @@
         <div class="pd-body">
             <div class="pd-tags">
                 <span class="pd-tag">{{ $product->meta }}</span>
-                @if($product->category)<span class="pd-tag cat">{{ $product->category->title }}</span>@endif
+                @if($product->category)<a class="pd-tag cat" href="{{ route('products.index', ['category' => $product->category->id]) }}">{{ $product->category->title }}</a>@endif
             </div>
             <h1 class="pd-title">{{ $product->title }}</h1>
             <p class="pd-desc">{{ $product->desc }}</p>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
     <meta name="theme-color" content="#0f172a">
-    @include('home._seo', ['page' => ['canonical' => route('home'), 'org' => true]])
+    @include('home._seo', ['page' => ['canonical' => route('home'), 'org' => true, 'faq' => $show('show_faq') ? $faqs : []]])
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,7 +68,7 @@
             @include('home._category-icons')
             <div class="cat-list">
                 @foreach($categories as $cat)
-                    <button type="button" class="cat-row" onclick="goCategory('{{ $cat->id }}')">
+                    <a class="cat-row" href="{{ route('products.index', ['category' => $cat->id]) }}" onclick="goCategory('{{ $cat->id }}'); return false;">
                         <span class="cat-ico">
                             @if(in_array($cat->id, $catIcons))
                                 <svg class="ci" aria-hidden="true"><use href="#ci-{{ $cat->id }}"></use></svg>
@@ -81,7 +81,7 @@
                             <small>{{ $cat->products_count }} produk</small>
                         </span>
                         <i class="fa-solid fa-chevron-right"></i>
-                    </button>
+                    </a>
                 @endforeach
             </div>
             @endif
@@ -90,7 +90,7 @@
             @if($show('show_products'))
             <div class="pad pad-b6">
                 <div class="sec-title">{{ $s['products_title'] ?? 'Produk Unggulan' }}
-                    <a class="link-more" onclick="showScreen('products')">Semua <i class="fa-solid fa-chevron-right i-xs"></i></a>
+                    <a class="link-more" href="{{ route('products.index') }}" onclick="showScreen('products'); return false;">Semua <i class="fa-solid fa-chevron-right i-xs"></i></a>
                 </div>
                 <div class="sec-sub">{{ $s['products_desc'] ?? '' }}</div>
             </div>
@@ -223,7 +223,7 @@
                         <div class="blog-thumb" style="background-image: url('{{ $blog->img ? Storage::url($blog->img) : 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=300&q=80' }}');"></div>
                         <div class="blog-info">
                             <span class="bm">{{ $blog->meta }}</span>
-                            <h4>{{ $blog->title }}</h4>
+                            <h4><a href="{{ route('blog.show', $blog) }}">{{ $blog->title }}</a></h4>
                             <p>{{ $blog->excerpt(80) }}</p>
                         </div>
                     </div>

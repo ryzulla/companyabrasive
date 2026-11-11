@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @include('home._seo', ['page' => ['canonical' => route('home'), 'org' => true]])
+    @include('home._seo', ['page' => ['canonical' => route('home'), 'org' => true, 'faq' => $show('show_faq') ? $faqs : []]])
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -111,7 +111,7 @@
                                 <i class="fa-solid {{ $cat->icon ?: 'fa-layer-group' }}"></i>
                             @endif
                         </div>
-                        <h3>{{ $cat->title }}</h3>
+                        <h3><a href="{{ route('products.index', ['category' => $cat->id]) }}" onclick="return false">{{ $cat->title }}</a></h3>
                         <span class="category-meta">{{ $cat->products_count }} produk</span>
                     </div>
                 @endforeach

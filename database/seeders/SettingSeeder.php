@@ -93,7 +93,7 @@ class SettingSeeder extends Seeder
             // SEO
             'seo_title'           => 'Supplier Abrasive Industri | CV. Aneka Abrasive Andalan',
             'seo_description'     => 'Specialist abrasive sejak 2010: amplas, batu gerinda, roda poles, serta perlengkapan safety, las, power tools, dan elektrikal. Lindeteves Trade Center, Jakarta Barat.',
-            'seo_keywords'        => 'abrasive industri, grinding wheel, cutting disc, flap disc, distributor abrasive, alat poles, mata gerinda',
+            'seo_keywords'        => 'abrasive, aneka abrasive, aneka abrasive andalan, abrasive industri, supplier abrasive, distributor abrasive, toko abrasive jakarta, amplas, batu gerinda, mata gerinda, roda poles, alat poles, grinding wheel, cutting disc, flap disc, lindeteves trade center',
             'seo_og_image'        => '',
             'favicon'             => '',
             'seo_noindex'         => '0',

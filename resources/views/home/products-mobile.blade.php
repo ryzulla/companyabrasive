@@ -8,17 +8,13 @@
 @endphp
 
 @section('seo')
-    @include('home._seo', ['page' => [
-        'title'       => ($catTitle ? $catTitle . ' | ' : '') . 'Katalog Produk | ' . ($s['company_name'] ?? 'Company Profile'),
-        'description' => $s['products_desc'] ?? 'Katalog amplas, batu gerinda, roda poles, dan perlengkapan industri.',
-        'canonical'   => route('products.index', array_filter(['category' => $cat !== 'all' ? $cat : null])),
-        'robots'      => ($q || $products->currentPage() > 1) ? 'noindex, follow' : null,
-    ]])
+    @include('home._seo', ['page' => $seo])
 @endsection
 
 @section('tab-products', 'active')
 
 @section('content')
+    <h1 class="sr-only">{{ $heading }}</h1>
     <div class="search-wrap">
         <form method="GET" action="{{ route('products.index') }}">
             @if($cat !== 'all')<input type="hidden" name="category" value="{{ $cat }}">@endif

@@ -24,9 +24,12 @@
         'itemListElement' => [
             ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => route('home')],
             ['@type' => 'ListItem', 'position' => 2, 'name' => 'Produk', 'item' => route('products.index')],
-            ['@type' => 'ListItem', 'position' => 3, 'name' => $product->title, 'item' => $canonical],
         ],
     ];
+    if ($product->category) {
+        $breadcrumb['itemListElement'][] = ['@type' => 'ListItem', 'position' => 3, 'name' => $product->category->title, 'item' => route('products.index', ['category' => $product->category->id])];
+    }
+    $breadcrumb['itemListElement'][] = ['@type' => 'ListItem', 'position' => count($breadcrumb['itemListElement']) + 1, 'name' => $product->title, 'item' => $canonical];
 @endphp
 
 @section('seo')
@@ -56,6 +59,10 @@
                 <i class="fa-solid fa-chevron-right"></i>
                 <a href="{{ route('products.index') }}">Produk</a>
                 <i class="fa-solid fa-chevron-right"></i>
+                @if($product->category)
+                <a href="{{ route('products.index', ['category' => $product->category->id]) }}">{{ $product->category->title }}</a>
+                <i class="fa-solid fa-chevron-right"></i>
+                @endif
                 <span class="bc-current">{{ $product->title }}</span>
             </div>
         </div>
@@ -89,7 +96,7 @@
                 <div class="detail-info">
                     <div>
                         <span class="badge">{{ $product->meta }}</span>
-                        @if($product->category)<span class="cat-tag">{{ $product->category->title }}</span>@endif
+                        @if($product->category)<a class="cat-tag" href="{{ route('products.index', ['category' => $product->category->id]) }}">{{ $product->category->title }}</a>@endif
                     </div>
                     <h1>{{ $product->title }}</h1>
                     <p class="desc">{{ $product->desc }}</p>

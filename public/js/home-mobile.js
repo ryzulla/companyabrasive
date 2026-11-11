@@ -26,7 +26,7 @@ function cardHTML(p) {
         </div>
         <div class="prod-body">
             <span class="prod-meta">${escapeHtml(p.meta || '')}</span>
-            <h4 class="prod-title">${escapeHtml(p.title)}</h4>
+            <h4 class="prod-title"><a href="${p.url}">${escapeHtml(p.title)}</a></h4>
             <div class="prod-foot">
                 <div class="prod-spec">${escapeHtml(p.specLabel || '')}<b>${escapeHtml(p.specVal || '-')}</b></div>
                 ${WA ? `<button class="prod-wa" onclick="event.stopPropagation(); waProduct('${encodeURIComponent(p.title)}')" aria-label="Tanya via WhatsApp"><i class="fa-brands fa-whatsapp" aria-hidden="true"></i></button>` : ''}

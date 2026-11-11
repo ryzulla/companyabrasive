@@ -1,6 +1,7 @@
 {{--
     Head SEO terpusat. Semua nilai bawaan diambil dari Pengaturan > SEO.
-    Parameter ($page): title, description, canonical, image, og_type, robots, keywords, jsonld (array), org (bool)
+    Parameter ($page): title, description, canonical, image, og_type, robots, keywords, jsonld (array), org (bool),
+    faq (daftar objek/array berisi question & answer → FAQPage)
 --}}
 @php
     use Illuminate\Support\Str;
@@ -42,7 +43,8 @@
         $addr = trim(preg_replace('/\s*\n\s*/', ', ', (string) ($s['address'] ?? '')));
         $org = array_filter([
             '@context'    => 'https://schema.org',
-            '@type'       => 'Organization',
+            // Punya alamat toko → LocalBusiness (Store) supaya terbaca di pencarian lokal/Maps
+            '@type'       => $addr ? 'Store' : 'Organization',
             '@id'         => url('/') . '#organization',
             'name'        => $s['company_full_name'] ?? $company,
             'alternateName' => $company,
@@ -70,6 +72,8 @@
                 'areaServed'        => 'ID',
                 'availableLanguage' => ['id', 'en'],
             ]),
+            'hasMap'    => (!empty($s['maps_lat']) && !empty($s['maps_lng'])) ? 'https://www.google.com/maps?q=' . $s['maps_lat'] . ',' . $s['maps_lng'] : null,
+            'areaServed' => 'ID',
             'sameAs' => $socials ?: null,
         ]);
         $site = [
@@ -78,6 +82,7 @@
             'name'     => $company,
             'url'      => url('/'),
             'inLanguage' => 'id-ID',
+            'publisher'  => ['@id' => url('/') . '#organization'],
             'potentialAction' => [
                 '@type'       => 'SearchAction',
                 'target'      => route('products.index') . '?q={search_term_string}',
@@ -86,6 +91,15 @@
         ];
         array_unshift($jsonld, $org, $site);
     }
+
+    $faqItems = collect($page['faq'] ?? [])->map(fn($f) => [
+        '@type' => 'Question',
+        'name'  => $plain(data_get($f, 'question')),
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $plain(data_get($f, 'answer'))],
+    ])->filter(fn($f) => $f['name'] !== '' && $f['acceptedAnswer']['text'] !== '')->values()->all();
+    if ($faqItems) {
+        $jsonld[] = ['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $faqItems];
+    }
 @endphp
 <title>{{ $title }}</title>
 @if($description)<meta name="description" content="{{ $description }}">@endif
@@ -93,6 +107,7 @@
 <meta name="robots" content="{{ $robots }}">
 <link rel="canonical" href="{{ $canonical }}">
 <link rel="alternate" hreflang="id" href="{{ $canonical }}">
+<link rel="alternate" hreflang="x-default" href="{{ $canonical }}">
 <meta name="author" content="{{ $s['company_full_name'] ?? $company }}">
 @if($iconUrl)
 <link rel="icon" href="{{ $iconUrl }}">

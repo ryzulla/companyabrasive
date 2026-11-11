@@ -4,6 +4,19 @@
     $company  = $s['company_name'] ?? 'Company Profile';
     $cover    = $blog->img ? Storage::url($blog->img) : null;
     $url      = route('blog.show', $blog);
+    $logo = !empty($s['company_logo']) ? url(Storage::url($s['company_logo'])) : null;
+    $publisher = array_filter([
+        '@type' => 'Organization', '@id' => url('/') . '#organization', 'name' => $company, 'url' => url('/'),
+        'logo' => $logo ? ['@type' => 'ImageObject', 'url' => $logo] : null,
+    ]);
+    $breadcrumb = [
+        '@context' => 'https://schema.org', '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => route('home')],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Blog', 'item' => route('blog.index')],
+            ['@type' => 'ListItem', 'position' => 3, 'name' => $blog->title, 'item' => $url],
+        ],
+    ];
     $jsonLd   = [
         '@context' => 'https://schema.org', '@type' => 'Article',
         'headline' => $blog->title,
@@ -12,8 +25,9 @@
         'datePublished' => $blog->created_at?->toAtomString(),
         'dateModified' => $blog->updated_at?->toAtomString(),
         'mainEntityOfPage' => $url,
-        'author' => ['@type' => 'Organization', 'name' => $company],
-        'publisher' => ['@type' => 'Organization', 'name' => $company],
+        'inLanguage' => 'id-ID',
+        'author' => $publisher,
+        'publisher' => $publisher,
     ];
 @endphp
 
@@ -24,7 +38,7 @@
         'canonical'   => $url,
         'image'       => $cover ? url($cover) : null,
         'og_type'     => 'article',
-        'jsonld'      => [$jsonLd],
+        'jsonld'      => [$jsonLd, $breadcrumb],
     ]])
 @endsection
 

@@ -1,12 +1,7 @@
 @extends('home.layouts.inner')
 
 @section('seo')
-    @include('home._seo', ['page' => [
-        'title'       => 'Katalog Produk | ' . ($s['company_name'] ?? 'Company Profile'),
-        'description' => $s['products_desc'] ?? null,
-        'canonical'   => route('products.index'),
-        'robots'      => (request()->filled('q') || request()->filled('category')) ? 'noindex, follow' : 'index, follow, max-image-preview:large',
-    ]])
+    @include('home._seo', ['page' => $seo])
 @endsection
 
 @section('active', 'products')
@@ -26,7 +21,7 @@
                 <i class="fa-solid fa-chevron-right"></i>
                 <span class="bc-current">Katalog Produk</span>
             </div>
-            <h1>Katalog Produk</h1>
+            <h1 id="catalogHeading">{{ $heading }}</h1>
             <p>{{ $s['products_desc'] ?? 'Temukan produk yang sesuai dengan kebutuhan industri Anda.' }}</p>
         </div>
     </section>
@@ -61,13 +56,13 @@
 
             {{-- Row 2: Category Pills (wraps automatically) --}}
             <div class="pills-row" id="categoryPills">
-                <button class="category-pill {{ !request('category') ? 'active' : '' }}" data-cat="">
+                <a href="{{ route('products.index') }}" class="category-pill {{ !request('category') ? 'active' : '' }}" data-cat="">
                     Semua
-                </button>
+                </a>
                 @foreach($categories as $cat)
-                    <button class="category-pill {{ request('category') == $cat->id ? 'active' : '' }}" data-cat="{{ $cat->id }}">
+                    <a href="{{ route('products.index', ['category' => $cat->id]) }}" class="category-pill {{ request('category') == $cat->id ? 'active' : '' }}" data-cat="{{ $cat->id }}">
                         {{ $cat->title }}
-                    </button>
+                    </a>
                 @endforeach
             </div>
         </div>
@@ -113,7 +108,7 @@
                         </div>
                         <div class="product-info">
                             <div class="product-meta">{{ $p->meta }}</div>
-                            <h3 class="product-title">{{ $p->title }}</h3>
+                            <h3 class="product-title"><a href="{{ route('products.show', $p, false) }}">{{ $p->title }}</a></h3>
                             <p class="product-desc">{{ $p->desc }}</p>
                             <div class="product-footer">
                                 <div class="product-spec">

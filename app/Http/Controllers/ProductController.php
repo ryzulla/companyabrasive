@@ -94,14 +94,59 @@ class ProductController extends Controller
             'material'  => $p->material,
         ]);
 
+        // Halaman kategori (/products?category=...) = landing page yang boleh diindeks.
+        // Hasil pencarian & halaman 2 dst. tidak diindeks, tapi tautannya tetap diikuti.
+        $activeCat = $request->filled('category') ? $categories->firstWhere('id', $request->category) : null;
+        $company   = $s['company_name'] ?? 'Company Profile';
+        $canonical = route('products.index', array_filter(['category' => $activeCat?->id]));
+        $thin      = $request->filled('q') || $products->currentPage() > 1
+            || ($request->filled('category') && $request->category !== 'all' && ! $activeCat)
+            || $products->total() === 0;
+        $heading   = $activeCat ? $activeCat->title : 'Katalog Produk';
+
+        $crumbs = [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => route('home')],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Katalog Produk', 'item' => route('products.index')],
+        ];
+        if ($activeCat) {
+            $crumbs[] = ['@type' => 'ListItem', 'position' => 3, 'name' => $activeCat->title, 'item' => $canonical];
+        }
+
+        $seo = [
+            'title'       => ($activeCat ? 'Jual ' . $activeCat->title : 'Katalog Produk Abrasive') . ' | ' . $company,
+            'description' => $activeCat
+                ? trim(($activeCat->desc ?: $activeCat->title) . ' Tersedia di ' . $company . ', hubungi kami untuk info stok dan harga.')
+                : ($s['products_desc'] ?? 'Katalog amplas, batu gerinda, roda poles, dan perlengkapan industri.'),
+            'canonical'   => $canonical,
+            'robots'      => $thin ? 'noindex, follow' : null,
+            'jsonld'      => [
+                ['@context' => 'https://schema.org', '@type' => 'BreadcrumbList', 'itemListElement' => $crumbs],
+                [
+                    '@context' => 'https://schema.org',
+                    '@type'    => 'CollectionPage',
+                    'name'     => $heading,
+                    'url'      => $canonical,
+                    'isPartOf' => ['@type' => 'WebSite', 'url' => url('/')],
+                    'mainEntity' => [
+                        '@type' => 'ItemList',
+                        'numberOfItems' => $products->total(),
+                        'itemListElement' => $products->getCollection()->values()->map(fn($p, $i) => [
+                            '@type' => 'ListItem', 'position' => $i + 1,
+                            'name' => $p->title, 'url' => route('products.show', $p),
+                        ])->all(),
+                    ],
+                ],
+            ],
+        ];
+
         if (Device::isMobile($request)) {
             return response()
-                ->view('home.products-mobile', compact('s', 'categories', 'products'))
+                ->view('home.products-mobile', compact('s', 'categories', 'products', 'seo', 'heading'))
                 ->header('Vary', 'User-Agent');
         }
 
         return response()
-            ->view('home.products', compact('s', 'categories', 'products', 'productsJson'))
+            ->view('home.products', compact('s', 'categories', 'products', 'productsJson', 'seo', 'heading'))
             ->header('Vary', 'User-Agent');
     }
 
@@ -115,22 +160,37 @@ class ProductController extends Controller
 
     public function sitemap()
     {
+        $abs = fn(?string $path) => $path ? url(Storage::url($path)) : null;
+        $productsMod = Product::max('updated_at');
+        $blogsMod    = Blog::max('updated_at');
+        $iso = fn($d) => $d ? \Illuminate\Support\Carbon::parse($d)->toAtomString() : null;
+
         $urls = collect([
-            ['loc' => route('home'), 'lastmod' => null, 'priority' => '1.0'],
+            ['loc' => route('home'), 'lastmod' => $iso(max($productsMod, $blogsMod)), 'priority' => '1.0'],
             ['loc' => route('about'), 'lastmod' => null, 'priority' => '0.6'],
-            ['loc' => route('products.index'), 'lastmod' => null, 'priority' => '0.9'],
-            ['loc' => route('blog.index'), 'lastmod' => null, 'priority' => '0.7'],
+            ['loc' => route('products.index'), 'lastmod' => $iso($productsMod), 'priority' => '0.9'],
+            ['loc' => route('blog.index'), 'lastmod' => $iso($blogsMod), 'priority' => '0.7'],
         ])->concat(
+            // Halaman kategori (hanya yang ada produknya)
+            Category::withMax('products', 'updated_at')->has('products')->orderBy('title')->get()->map(fn($c) => [
+                'loc'      => route('products.index', ['category' => $c->id]),
+                'lastmod'  => $iso($c->products_max_updated_at),
+                'priority' => '0.8',
+            ])
+        )->concat(
             Blog::orderBy('id')->get()->map(fn($b) => [
                 'loc'      => route('blog.show', $b),
                 'lastmod'  => $b->updated_at?->toAtomString(),
                 'priority' => '0.6',
+                'images'   => array_filter([$abs($b->img)]),
             ])
         )->concat(
-            Product::orderBy('id')->get()->map(fn($p) => [
+            Product::with('images')->orderBy('id')->get()->map(fn($p) => [
                 'loc'      => route('products.show', $p),
                 'lastmod'  => $p->updated_at?->toAtomString(),
                 'priority' => '0.8',
+                'images'   => $p->images->pluck('path')->whenEmpty(fn($c) => $c->push($p->img))
+                    ->filter()->take(10)->map($abs)->values()->all(),
             ])
         );
 
