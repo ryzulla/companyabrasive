@@ -7,10 +7,6 @@
     <meta name="theme-color" content="#0f172a">
     @include('home._seo', ['page' => ['canonical' => route('home'), 'org' => true, 'faq' => $show('show_faq') ? $faqs : []]])
 
-    {{-- Gambar hero = elemen LCP. Latar CSS tidak terlihat oleh pemindai awal browser, jadi dimuat lebih dulu di sini.
-         URL bawaan harus sama persis dengan yang ada di CSS .hero --}}
-    @php $heroImg = !empty($s['hero_bg']) ? Storage::url($s['hero_bg']) : 'https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?auto=format&fit=crop&w=1200&q=80'; @endphp
-    <link rel="preload" as="image" href="{{ $heroImg }}" fetchpriority="high">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
@@ -393,6 +389,6 @@
             openContact: @json(!empty($prefill) || $errors->any() || session('contact_success')),
         };
     </script>
-    <script src="{{ asset('js/home-mobile.js') }}?v={{ filemtime(public_path('js/home-mobile.js')) }}" defer></script>
+    <script src="{{ asset('js/home-mobile.js') }}?v={{ filemtime(public_path('js/home-mobile.js')) }}"></script>
 </body>
 </html>
