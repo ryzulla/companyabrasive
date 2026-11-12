@@ -41,10 +41,37 @@
     $jsonld = $page['jsonld'] ?? [];
     if (($page['org'] ?? false) === true) {
         $addr = trim(preg_replace('/\s*\n\s*/', ', ', (string) ($s['address'] ?? '')));
+        // streetAddress tanpa baris terakhir "Kota 12345" (kota & kode pos sudah punya field sendiri)
+        $addrLines = array_values(array_filter(array_map('trim', preg_split('/\R/', (string) ($s['address'] ?? '')))));
+        if (count($addrLines) > 1 && preg_match('/^\D*\d{5}\s*$/u', end($addrLines))) array_pop($addrLines);
+        $street = implode(', ', $addrLines);
+        $city   = $s['address_city'] ?? null;
+        $region = ($city && stripos($city, 'jakarta') !== false) ? 'DKI Jakarta' : null;
+
+        // "Senin – Jumat, 08.00 – 17.00 WIB" → OpeningHoursSpecification (dilewati bila format tidak dikenali)
+        $dayMap = ['senin' => 'Monday', 'selasa' => 'Tuesday', 'rabu' => 'Wednesday', 'kamis' => 'Thursday', 'jumat' => 'Friday', "jum'at" => 'Friday', 'sabtu' => 'Saturday', 'minggu' => 'Sunday'];
+        $dayKeys = array_keys($dayMap);
+        $hoursSpecs = [];
+        foreach (preg_split('/[;\n]+/', (string) ($s['business_hours'] ?? '')) as $seg) {
+            if (!preg_match("/([a-z']+)\s*(?:[-–—]|s\.?d\.?|sampai)\s*([a-z']+)\s*,?\s*(\d{1,2})[.:](\d{2})\s*[-–—]\s*(\d{1,2})[.:](\d{2})/iu", $seg, $m)) continue;
+            $from = array_search(strtolower($m[1]), $dayKeys, true);
+            $to   = array_search(strtolower($m[2]), $dayKeys, true);
+            if ($from === false || $to === false) continue;
+            $days = [];
+            foreach (array_slice($dayKeys, min($from, $to), abs($to - $from) + 1) as $d) $days[$dayMap[$d]] = true;
+            $hoursSpecs[] = [
+                '@type'     => 'OpeningHoursSpecification',
+                'dayOfWeek' => array_keys($days),
+                'opens'     => sprintf('%02d:%s', $m[3], $m[4]),
+                'closes'    => sprintf('%02d:%s', $m[5], $m[6]),
+            ];
+        }
+        $hours = $hoursSpecs ?: null;
+
         $org = array_filter([
             '@context'    => 'https://schema.org',
-            // Punya alamat toko → LocalBusiness (Store) supaya terbaca di pencarian lokal/Maps
-            '@type'       => $addr ? 'Store' : 'Organization',
+            // Punya alamat toko → LocalBusiness (HardwareStore ⊂ Store) supaya terbaca di pencarian lokal/Maps
+            '@type'       => $addr ? 'HardwareStore' : 'Organization',
             '@id'         => url('/') . '#organization',
             'name'        => $s['company_full_name'] ?? $company,
             'alternateName' => $company,
@@ -56,8 +83,9 @@
             'telephone'   => $s['phone'] ?? null,
             'address'     => $addr ? array_filter([
                 '@type'           => 'PostalAddress',
-                'streetAddress'   => $addr,
-                'addressLocality' => $s['address_city'] ?? null,
+                'streetAddress'   => $street ?: $addr,
+                'addressLocality' => $city,
+                'addressRegion'   => $region,
                 'postalCode'      => $s['address_postal'] ?? null,
                 'addressCountry'  => 'ID',
             ]) : null,
@@ -73,7 +101,15 @@
                 'availableLanguage' => ['id', 'en'],
             ]),
             'hasMap'    => (!empty($s['maps_lat']) && !empty($s['maps_lng'])) ? 'https://www.google.com/maps?q=' . $s['maps_lat'] . ',' . $s['maps_lng'] : null,
-            'areaServed' => 'ID',
+            'openingHoursSpecification' => $addr ? $hours : null,
+            'priceRange' => $addr ? 'Rp' : null,
+            'currenciesAccepted' => $addr ? 'IDR' : null,
+            'areaServed' => $addr ? [
+                ['@type' => 'City', 'name' => 'Jakarta'],
+                ['@type' => 'AdministrativeArea', 'name' => 'Jabodetabek'],
+                ['@type' => 'Country', 'name' => 'Indonesia'],
+            ] : 'ID',
+            'keywords' => $keywords ?: null,
             'sameAs' => $socials ?: null,
         ]);
         $site = [
